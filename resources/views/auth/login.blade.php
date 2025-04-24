@@ -23,6 +23,9 @@
                                 @csrf
                                 <h2>Log in<span>!</span></h2>
                                 <p class="new_user">Welcome Back, please provide your cradentials for login</p>
+                                <a href="{{ route('auth.google.redirect') }}" class="btn bg-blue-100 p-3 shadow-sm border rounded-md text-blue-900">
+                                    Login with Google
+                                </a>
                                 <div class="row">
                                     <div class="col-xl-12">
                                         <div class="wsus__login_form_input">
@@ -31,7 +34,7 @@
                                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                         </div>
                                     </div>
-                                         
+
                                     <div class="col-xl-12">
                                         <div class="wsus__login_form_input">
                                             <label>Password* <a href="{{ route('password.request') }}">Forgot Password?</a></label>
