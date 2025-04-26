@@ -1,6 +1,25 @@
 @extends('frontend.layouts.master')
 
 @section('content')
+<style>
+    .card-custom {
+        max-width: 400px;
+        margin: 40px auto;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+    .price {
+        font-weight: bold;
+    }
+    .discount {
+        color: red;
+    }
+    .card-custom a{
+        width: 100%;
+        text-align: center;
+    }
+</style>
     <!--===========================
         BREADCRUMB START
     ============================-->
@@ -61,9 +80,9 @@
                                         </td>
                                         <td class="pro_tk">
                                             @if($item->course->discount > 0)
-                                            <del><h6>${{ $item->course->price }}</h6></del> <h6>${{ $item->course->discount }}</h6>
+                                                <del><h6>đ{{ number_format($item->course->price) }}</h6></del> <h6>đ{{ number_format($item->course->discount) }}</h6>
                                             @else
-                                            <h6>${{ $item->course->price }}</h6>
+                                                <h6>đ{{ number_format($item->course->price) }}</h6>
                                             @endif
                                         </td>
                                         <td class="pro_icon">
@@ -80,20 +99,53 @@
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-between">
+            <div class="row justify-content-between mt-4">
                 <div class="col-xxl-7 col-md-5 col-lg-6 wow fadeInUp"
                     style="visibility: visible; animation-name: fadeInUp;">
-                    <div class="continue_shopping">
-                        <a href="{{ route('courses.index') }}" class="common_btn">continue shopping</a>
-                    </div>
+                        <form action="{{ route('cart.index') }}" class="">  
+                            <input type="text" name="coupon_code" value="{{ request('coupon_code') }}" class="col-md-4 border border-2" style="text-transform: uppercase;" placeholder="Enter coupon code">
+                            <button type="submit" class="common_btn">Apply Code</button>
+                        </form>
                 </div>
                 <div class="col-xxl-4 col-md-7 col-lg-6 wow fadeInUp"
                     style="visibility: visible; animation-name: fadeInUp;">
-                    <div class="total_price">
-                        <div class="subtotal_area">
-                            <h5>Total<span>${{ cartTotal() }}</span></h5>
-                            <a href="{{ route('checkout.index') }}" class="common_btn">proceed checkout</a>
+                        <?php
+                            $originalPrice = cartTotal();
+                            $totalPrice = cartTotal($couponCode);
+                            $discountAmount = $originalPrice - $totalPrice;
+                        ?>
+                    <div class="card card-custom">
+                        <h5 class="mb-4 fw-bold">Summary</h5>
+                
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Original Price</span>
+                            <span class="price text-muted">đ{{ number_format($originalPrice) }}</span>
                         </div>
+                
+                        <hr>
+                        
+                        @if($couponCode)
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Coupon code<br><small class="text-muted">({{ $couponCode }})</small></span>
+                                <span class="discount">
+                                    - đ{{ number_format($discountAmount) }}
+                                    <span class="pro_icon ">
+                                        <a href="{{ route('cart.index') }}"><i class="fal fa-times text-secondary" aria-hidden="true"></i></a>
+                                    </span>
+                                </span>
+                            </div>
+                            <hr>
+                        @endif
+                
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fw-bold">Total:</span>
+                            <span class="fw-bold fs-5">đ{{ number_format($totalPrice) }}</span>
+                        </div>
+
+                        {{-- Nếu $couponCode rỗng/null thì sẽ bị loại bỏ  --}}
+                        <a class="common_btn" href="{{ route('checkout.index', array_filter(['coupon_code' => $couponCode])) }}" >
+                            Buy now
+                        </a>
                     </div>
                 </div>
             </div>

@@ -45,7 +45,7 @@
                                     <div class="col-xl-12">
                                         <div class="wsus__login_form_input">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="remember"  value=""
+                                                <input class="form-check-input" type="checkbox" name="remember"
                                                     id="flexCheckDefault">
                                                 <label class="form-check-label" for="flexCheckDefault">
                                                     Remember Me

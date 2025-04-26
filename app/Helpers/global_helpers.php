@@ -5,6 +5,7 @@
 /** convert minutes to hours */
 
 use App\Models\Cart;
+use App\Models\Coupon;
 
 if(!function_exists('convertMinutesToHours')) {
     function convertMinutesToHours(int $minutes) : string {
@@ -38,7 +39,7 @@ if(!function_exists('cartCount')) {
 
 /** calculate cart total */
 if(!function_exists('cartTotal')) {
-    function cartTotal() {
+    function cartTotal($couponCode = '') {
         $total = 0;
 
         $cart = Cart::where('user_id', user()->id)->get();
@@ -48,6 +49,17 @@ if(!function_exists('cartTotal')) {
                 $total += $item->course->discount;
             }else {
                 $total += $item->course->price;
+            }
+        }
+
+        if($couponCode != '') {
+            $coupon = Coupon::where('code', $couponCode)->first();
+            if($coupon) {
+                if($coupon->type == 'fixed') {
+                    $total -= $coupon->value;
+                }else if($coupon->type == 'percent') {
+                    $total -= ($total * $coupon->value) / 100;
+                }
             }
         }
 

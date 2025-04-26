@@ -71,6 +71,7 @@
                 DASHBOARD ADD COURSE END
             ==============================-->
 @endsection
+
 @push('header_scripts')
     @vite(['resources/js/frontend/course.js'])
 @endpush

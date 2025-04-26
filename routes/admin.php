@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\CertificateBuilderController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ContactSettingController;
 use App\Http\Controllers\Admin\CounterController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CourseCategoryController;
 use App\Http\Controllers\Admin\CourseContentController;
 use App\Http\Controllers\Admin\CourseController;
@@ -125,7 +126,7 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
     Route::put('/{course_category}/sub-categories/{course_sub_category}', [CourseSubCategoryController::class, 'update'])->name('course-sub-categories.update');
     Route::delete('/{course_category}/sub-categories/{course_sub_category}', [CourseSubCategoryController::class, 'destroy'])->name('course-sub-categories.destroy');
 
-    /** Crouse Module Routes */
+    /** Course Module Routes */
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
     Route::put('courses/{course}/update-approval', [CourseController::class, 'updateApproval'])->name('courses.update-approval');
 
@@ -154,7 +155,8 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
     Route::get('course-content/{course}/sort-chapter', [CourseContentController::class, 'sortChapter'])->name('course-content.sort-chpater');
     Route::post('course-content/{course}/sort-chapter', [CourseContentController::class, 'updateSortChapter'])->name('course-content.update-sort-chpater');
 
-
+    /** Coupon Routes */
+    Route::resource('coupons', CouponController::class);
 
     /** Order Routes */
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');

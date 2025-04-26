@@ -341,11 +341,11 @@
                         </div>
                         <h3 class="wsus__courses_sidebar_price">
                             @if($course->discount > 0)
-                            Price: <del>{{ config('settings.currency_icon') }}{{ $course->price }}</del>${{ $course->discount }}
+                            Price: <del>{{ config('settings.currency_icon') }}{{ number_format($course->price) }}</del>${{ $course->discount }}
                             @elseif($course->price <= 0)
                                 FREE
                             @else
-                               Price: {{ config('settings.currency_icon') }}{{ $course->price }}
+                               Price: {{ config('settings.currency_icon') }}{{ number_format($course->price) }}
                             @endif
                         </h3>
                       
@@ -385,6 +385,9 @@
                                 </li>
                             </ul>
                             <a class="common_btn add_to_cart" data-course-id="{{ $course->id }}" href="" >Add to Cart <i class="far fa-arrow-right"></i></a>
+                            <a class="common_btn" href="{{ route('checkout.index') }}">
+                                Buy now
+                            </a>
                         </div>
                         
                         <div class="wsus__courses_sidebar_share_area">

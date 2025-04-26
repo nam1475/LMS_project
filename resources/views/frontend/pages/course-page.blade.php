@@ -197,9 +197,9 @@
                                     <a class="common_btn add_to_cart" href="#" data-course-id="{{ $course->id }}">Add to Cart<i class="far fa-arrow-right"></i></a>
                                     <p>
                                         @if($course->discount > 0)
-                                        <del>${{ $course->price }}</del> ${{ $course->discount }}
+                                        <del>đ{{ number_format($course->price) }}</del> đ{{ number_format($course->discount) }}
                                         @else
-                                        ${{ $course->price }}
+                                        đ{{ number_format($course->price) }}
                                         @endif
                                     </p>
                                 </div>

@@ -38,4 +38,42 @@ $(function() {
         let courseId = $(this).data('course-id');
        addToCart(courseId);
    })
+
+   /** Notify when apply wrong coupon */
+   $('.apply_coupon').on('submit', function (e) {
+       e.preventDefault();
+       var form = $(this)[0];
+       var data = new FormData(form);
+       console.log(data);
+       console.log(123);
+       
+       
+
+    //    let couponCode = $('#coupon_code').val();
+    //    $.ajax({
+    //        method: "POST",
+    //        url: base_url + "/apply-coupon",
+    //        data: {
+    //            _token: csrf_token,
+    //            coupon_code: couponCode
+    //        },
+    //        beforeSend: function() {
+    //            $('.apply_coupon').text('Applying...');
+    //        },
+    //        success: function(data) {
+    //            notyf.success(data.message);
+    //            $('.apply_coupon').text('Apply');
+    //        },
+    //        error: function(xhr, status, error) {
+    //            console.log(xhr);
+    //            let errorMessage = xhr.responseJSON.message;
+    //            notyf.error(errorMessage);
+
+    //            $('.apply_coupon').text('Apply');
+    //        }
+    //    });
+   });
+
 });
+
+

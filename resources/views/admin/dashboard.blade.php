@@ -8,7 +8,7 @@
                 <div class="col">
                     <!-- Page pre-title -->
                     <h2 class="page-title">
-                       Dashboard 
+                       Thống kê
                     </h2>
                 </div>
 
@@ -44,7 +44,7 @@
                                                 <b>{{ config('settings.currency_icon') }}{{ $todaysOrder }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Today's Orders
+                                                Đơn hàng hôm nay
                                             </div>
                                         </div>
                                     </div>
@@ -74,7 +74,7 @@
                                                 <b>{{ config('settings.currency_icon') }}{{ $thisWeekOrders }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                This weeks Orders
+                                                Đơn hàng tuần này
                                             </div>
                                         </div>
                                     </div>
@@ -104,7 +104,7 @@
                                                 <b>{{ config('settings.currency_icon') }}{{ $thisMonthOrders }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Monthly Orders
+                                                Đơn hàng tháng này
                                             </div>
                                         </div>
                                     </div>
@@ -134,7 +134,7 @@
                                                 <b>{{ config('settings.currency_icon') }}{{ $thisYearOrders }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                This Year's Orders
+                                                Đơn hàng năm nay
                                             </div>
                                         </div>
                                     </div>
@@ -156,7 +156,7 @@
                                                 <b>{{ $totalOrders }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Total Orders
+                                                Tổng số đơn hàng
                                             </div>
                                         </div>
                                     </div>
@@ -179,7 +179,7 @@
                                                 <b>{{ $pendingCourses }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Pending Courses
+                                                Khóa học đang chờ duyệt
                                             </div>
                                         </div>
                                     </div>
@@ -202,7 +202,7 @@
                                                 <b>{{ $rejectedCourses }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Rejected Courses
+                                                Khóa học bị từ chối
                                             </div>
                                         </div>
                                     </div>
@@ -225,7 +225,7 @@
                                                 <b>{{ $totalCourses }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Total Courses
+                                                Tổng số khóa học
                                             </div>
                                         </div>
                                     </div>
@@ -245,14 +245,14 @@
                     <div class="col-4">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Recent Courses</h3>
+                                <h3 class="card-title">Khóa học gần đây</h3>
                             </div>
                             <div class="card-table table-responsive">
                                 <table class="table table-vcenter">
                                     <thead>
                                         <tr>
-                                            <th>Course</th>
-                                            <th>Status</th>
+                                            <th>Khóa học</th>
+                                            <th>Trạng thái</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -261,7 +261,7 @@
                                                 <td>
 
                                                     <a href="#" class="ms-1"
-                                                        aria-label="Open website"><!-- Download SVG icon from http://tabler-icons.io/i/link -->
+                                                        aria-label="Mở trang web"><!-- Download SVG icon from http://tabler-icons.io/i/link -->
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                             height="24" viewBox="0 0 24 24" fill="none"
                                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -279,11 +279,11 @@
                                                 </td>
                                                 <td class="text-secondary">
                                                     @if ($course->is_approved == 'approved')
-                                                        <span class="badge bg-success text-white">Approved</span>
+                                                        <span class="badge bg-success text-white">Đã duyệt</span>
                                                     @elseif($course->is_approved == 'pending')
-                                                        <span class="badge bg-warning text-white">Pending</span>
+                                                        <span class="badge bg-warning text-white">Chờ duyệt</span>
                                                     @elseif($course->is_approved == 'rejected')
-                                                        <span class="badge bg-danger text-white">Rejected</span>
+                                                        <span class="badge bg-danger text-white">Bị từ chối</span>
                                                     @endif
 
                                                 </td>
@@ -300,14 +300,14 @@
                     <div class="col-4">
                       <div class="card">
                           <div class="card-header">
-                              <h3 class="card-title">Recent Blogs</h3>
+                              <h3 class="card-title">Blog gần đây</h3>
                           </div>
                           <div class="card-table table-responsive">
                               <table class="table table-vcenter">
                                   <thead>
                                       <tr>
-                                          <th>Title</th>
-                                          <th>Status</th>
+                                          <th>Tiêu đề</th>
+                                          <th>Trạng thái</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -316,7 +316,7 @@
                                               <td>
 
                                                   <a href="{{ route('admin.blogs.edit', $blog->id) }}" class="ms-1"
-                                                      aria-label="Open website"><!-- Download SVG icon from http://tabler-icons.io/i/link -->
+                                                      aria-label="Mở trang web"><!-- Download SVG icon from http://tabler-icons.io/i/link -->
                                                       <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                           height="24" viewBox="0 0 24 24" fill="none"
                                                           stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -334,9 +334,9 @@
                                               </td>
                                               <td class="text-secondary">
                                                   @if ($blog->status == 1)
-                                                      <span class="badge bg-success text-white">Active</span>
+                                                      <span class="badge bg-success text-white">Hoạt động</span>
                                                   @else
-                                                      <span class="badge bg-danger text-white">Inactive</span>
+                                                      <span class="badge bg-danger text-white">Không hoạt động</span>
                                                   @endif
 
                                               </td>
@@ -353,15 +353,15 @@
                     <div class="col-4">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Recent Orders</h3>
+                                <h3 class="card-title">Đơn hàng gần đây</h3>
                             </div>
                             <div class="card-table table-responsive">
                                 <table class="table table-vcenter">
                                     <thead>
                                         <tr>
-                                            <th>Invoice</th>
-                                            <th>User</th>
-                                            <th>Amount</th>
+                                            <th>Hóa đơn</th>
+                                            <th>Người dùng</th>
+                                            <th>Số tiền</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -404,9 +404,9 @@
         const orderChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
                 datasets: [{
-                        label: 'Order Amount ({{ config('settings.currency_icon') }})',
+                        label: 'Số tiền đơn hàng ({{ config('settings.currency_icon') }})',
                         data: @json($monthlyOrderSums),
                         backgroundColor: 'rgba(0, 84, 166, 0.7)',
                         borderColor: 'rgb(0, 84, 166)',
@@ -414,7 +414,7 @@
                         yAxisID: 'y'
                     },
                     {
-                        label: 'Order Count',
+                        label: 'Số lượng đơn hàng',
                         data: @json($monthlyOrderCounts),
                         backgroundColor: 'rgba(255, 99, 132, 0.6)',
                         borderColor: 'rgba(255, 99, 132, 1)',
@@ -431,7 +431,7 @@
                         begainAtZero: true,
                         title: {
                             display: true,
-                            text: 'Order Amount ({{ config('settings.currency_icon') }})'
+                            text: 'Số tiền đơn hàng ({{ config('settings.currency_icon') }})'
                         },
                         position: 'left'
                     },
@@ -439,7 +439,7 @@
                         begainAtZero: true,
                         title: {
                             display: true,
-                            text: 'Order Count'
+                            text: 'Số lượng đơn hàng'
                         },
                         position: 'right',
                         grid: {

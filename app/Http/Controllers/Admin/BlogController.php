@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
@@ -51,7 +52,7 @@ class BlogController extends Controller
         $blog = new Blog();
         $blog->image = $image;
         $blog->title = $request->title;
-        $blog->slug = \Str::slug($request->title);
+        $blog->slug = Str::slug($request->title);
         $blog->description = $request->description;
         $blog->blog_category_id = $request->category;
         $blog->user_id = adminUser()->id;
@@ -97,7 +98,7 @@ class BlogController extends Controller
         }
 
         $blog->title = $request->title;
-        $blog->slug = \Str::slug($request->title);
+        $blog->slug = Str::slug($request->title);
         $blog->description = $request->description;
         $blog->blog_category_id = $request->category;
         $blog->status = $request->status ?? 0;

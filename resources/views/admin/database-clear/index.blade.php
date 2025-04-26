@@ -20,7 +20,6 @@
                                 Clear Database
                             </button>
                         </div>
-                    
                 </div>
             </div>
         </div>
