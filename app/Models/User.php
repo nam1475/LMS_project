@@ -25,7 +25,8 @@ class User extends Authenticatable
         'password',
         'role',
         'approve_status',
-        'document'
+        'document',
+        'enmail_verified_at',
     ];
 
     /**
@@ -58,7 +59,7 @@ class User extends Authenticatable
 
 
     function gatewayInfo() : HasOne {
-       return $this->hasOne(InstructorPayoutInformation::class, 'instructor_id', 'id'); 
+       return $this->hasOne(InstructorPayoutInformation::class, 'instructor_id', 'id');
     }
 
 
@@ -67,10 +68,10 @@ class User extends Authenticatable
     }
 
     function reviews() : HasMany {
-       return $this->hasMany(Review::class, 'instructor_id', 'id'); 
+       return $this->hasMany(Review::class, 'instructor_id', 'id');
     }
 
     function enrollments() : HasMany{
-       return $this->hasMany(Enrollment::class, 'user_id', 'id'); 
+       return $this->hasMany(Enrollment::class, 'user_id', 'id');
     }
 }
