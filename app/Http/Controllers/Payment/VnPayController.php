@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Payment;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class VnPayController extends \App\Http\Controllers\Controller
 {
@@ -26,7 +27,7 @@ class VnPayController extends \App\Http\Controllers\Controller
         $vnp_Url = env('VNP_URL');
         $vnp_Returnurl = env('VNP_RETURN_URL');
 
-        $vnp_TxnRef = uniqid(); // Order ID
+        $vnp_TxnRef = rand(1,100000); // Order ID
         $vnp_OrderInfo = 'Thanh toán đơn hàng cho ' . $user->email . ' | Số lượng: ' . $cartItems->count();
         $vnp_OrderType = 'billpayment';
         $vnp_Amount = $cartTotal * 100; // Amount in VND * 100
@@ -81,18 +82,31 @@ class VnPayController extends \App\Http\Controllers\Controller
         $vnp_SecureHash = $inputData['vnp_SecureHash'] ?? '';
 
         unset($inputData['vnp_SecureHash']);
-        unset($inputData['vnp_SecureHashType']);
+        unset($inputData['vnp_SecureHash']);
         ksort($inputData);
-        $hashData = '';
+        $i = 0;
+        $hashData = "";
         foreach ($inputData as $key => $value) {
-            $hashData .= $key . "=" . $value . "&";
+            if ($i == 1) {
+                $hashData = $hashData . '&' . urlencode($key) . "=" . urlencode($value);
+            } else {
+                $hashData = $hashData . urlencode($key) . "=" . urlencode($value);
+                $i = 1;
+            }
         }
-        $hashData = rtrim($hashData, "&");
+
         $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
 
-        if ($secureHash === $vnp_SecureHash && $request->vnp_ResponseCode == '00') {
+        // Debug log
+        Log::info('VNPay Return', [
+        'input' => $inputData,
+        'vnp_SecureHash' => $vnp_SecureHash,
+        'calculated_hash' => $secureHash,
+        'response_code' => $request->vnp_ResponseCode,
+        ]);
+
+        if (strtoupper($secureHash) === strtoupper($vnp_SecureHash) && $request->vnp_ResponseCode == '00') {
             // Payment successful
-            // TODO: Store order, mark as paid, etc.
             return redirect()->route('order.success')->with('success', 'Thanh toán thành công!');
         } else {
             // Payment failed
