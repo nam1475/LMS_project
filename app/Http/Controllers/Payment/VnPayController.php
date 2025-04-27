@@ -107,7 +107,31 @@ class VnPayController extends \App\Http\Controllers\Controller
 
         if (strtoupper($secureHash) === strtoupper($vnp_SecureHash) && $request->vnp_ResponseCode == '00') {
             // Payment successful
-            return redirect()->route('order.success')->with('success', 'Thanh toán thành công!');
+
+            // Enroll user in courses
+            $user = \Illuminate\Support\Facades\Auth::user();
+            $cartItems = \App\Models\Cart::with('course')->where('user_id', $user->id)->get();
+
+            foreach ($cartItems as $item) {
+                // Avoid duplicate enrollments
+                $alreadyEnrolled = \App\Models\Enrollment::where('user_id', $user->id)
+                    ->where('course_id', $item->course->id)
+                    ->exists();
+
+                if (!$alreadyEnrolled) {
+                    \App\Models\Enrollment::create([
+                        'user_id' => $user->id,
+                        'course_id' => $item->course->id,
+                        'instructor_id' => $item->course->instructor_id,
+                        'have_access' => true,
+                    ]);
+                }
+            }
+
+            // Clear the cart after enrollment
+            \App\Models\Cart::where('user_id', $user->id)->delete();
+
+            return redirect()->route('order.success')->with('success', 'Thanh toán thành công! Bạn đã được ghi danh vào khóa học.');
         } else {
             // Payment failed
             return redirect()->route('order.failed')->with('error', 'Thanh toán thất bại!');
