@@ -10,13 +10,13 @@
       margin-bottom: 15px;
       position: relative;
     }
-    
+
     .payment-option img, .payment-option svg {
       width: 40px;
       height: 40px;
       margin-bottom: 8px;
     }
-    
+
     .form-check-input {
       position: absolute;
       top: 20px;
@@ -24,24 +24,24 @@
       width: 20px;
       height: 20px;
     }
-    
+
     .course-image {
       width: 80px;
       height: 80px;
       border-radius: 8px;
     }
-    
+
     .payment-title {
       font-size: 16px;
       color: #495057;
       margin-top: 5px;
     }
-    
+
     .discount-price {
       color: blue;
       font-weight: bold;
     }
-    
+
     .original-price {
       text-decoration: line-through;
       color: #6c757d;
@@ -70,7 +70,7 @@
 <section class="payment pt_95 xs_pt_75 pb_120 xs_pb_100">
     <div class="container">
         <div class="row">
-            <div class="col-xl-8 col-lg-7 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;"> 
+            <div class="col-xl-8 col-lg-7 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
                 {{-- <h2 class="mb-3">Checkout course</h2>
                 <p class="text-muted mb-4">We are committed to protecting your payment information.</p>
                 <h5 class="mb-3">Select a payment methods</h5> --}}
@@ -116,10 +116,10 @@
                 <div class="container py-4">
                     <h1 class="mb-2">Checkout course</h1>
                     <p class="text-muted mb-4">We are committed to protecting your payment information.</p>
-                    
+
                     <h4 class="mb-3">Select a payment methods</h4>
-                    
-                    <div class="payment_area">
+
+                    {{--<div class="payment_area">
                         <div class="row">
                             <div class="col-xl-3 col-6 col-md-4 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
                                 <a href="{{ route('paypal.payment') }}" class="payment_mathod">
@@ -136,12 +136,12 @@
                                     <img src="{{ asset('default-files/razorpay-logo.png') }}" alt="payment" class="img-fluid w-100">
                                 </a>
                             </div>
-    
+
                         </div>
-                    </div>
-                    
+                    </div>--}}
+
                     <h4 class="mt-4 mb-3">Order details</h4>
-                    
+
                     <div class="card mb-3">
                         @foreach ($cart as $item)
                             <div class="card-body">
@@ -160,6 +160,7 @@
                                                 <span class="discount-price">đ{{ number_format($item->course->price) }}</span>
                                             @endif
                                         </div>
+                                        <a href="{{ route('payment.create') }}" class="btn btn-primary">Thanh toán qua VNPay</a>
                                     </div>
                                 </div>
                             </div>
@@ -228,6 +229,6 @@
             </div>
         </div>
     </div>
-    
+
 </section>
 @endsection

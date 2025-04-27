@@ -20,6 +20,13 @@ use App\Http\Controllers\Frontend\StudentOrderController;
 use App\Http\Controllers\Frontend\WithdrawController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\Payment\VnPayController;
+
+
+//VNPay
+
+Route::get('/payment', [VnPayController::class, 'createPayment'])->name('payment.create');
+Route::get('/vnpay-return', [VnPayController::class, 'vnpayReturn'])->name('vnpay.return');
 
 // Route to redirect to Google's OAuth page
 Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
@@ -42,14 +49,14 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
  Route::get('cart', [CartController::class, 'index'])->name('cart.index')->middleware('auth');
  Route::post('add-to-cart/{course}', [CartController::class, 'addToCart'])->name('add-to-cart')->middleware('auth');
  Route::get('remove-from-cart/{id}', [CartController::class, 'removeFromCart'])->name('remove-from-cart')->middleware('auth');
- Route::post('cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-coupon')->middleware('auth');  
+ Route::post('cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-coupon')->middleware('auth');
 
  /** Payment Routes */
  Route::get('checkout', CheckoutController::class)->name('checkout.index');
 
- Route::get('paypal/payment', [PaymentController::class, 'payWithPaypal'])->name('paypal.payment');
- Route::get('paypal/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
- Route::get('paypal/cancel', [PaymentController::class, 'paypalCancel'])->name('paypal.cancel');
+ //Route::get('paypal/payment', [PaymentController::class, 'payWithPaypal'])->name('paypal.payment');
+ //Route::get('paypal/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
+ //Route::get('paypal/cancel', [PaymentController::class, 'paypalCancel'])->name('paypal.cancel');
 
  /** Stripe Routes */
  Route::get('stripe/payment', [PaymentController::class, 'payWithStripe'])->name('stripe.payment');
