@@ -45,20 +45,6 @@
                                 </div>
                             </div> 
 
-                            {{-- <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="" >Student</label>
-                                    <select class="select2" name="student_id[]" multiple>
-                                        @foreach($students as $student)
-                                            <option value="{{ $student->id }}" {{ in_array($student->id, old('student_id', [])) ? 'selected' : '' }}> 
-                                                {{ $student->name }} - {{ $student->email }} 
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <x-input-error :messages="$errors->get('student_id')" class="mt-2" />
-                                </div>
-                            </div> --}}
-
                             <div class="col-md-12 mt-3">
                                 <div class="form-group">
                                     <label for="" >Course Categories</label>

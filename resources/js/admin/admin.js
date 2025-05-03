@@ -95,6 +95,37 @@ $('.delete-confirm').on('click', function(e) {
     })
 });
 
+/** Update approval */
+function updateApproveStatus(status, route) {
+    console.log(123);
+    $.ajax({
+        method: 'PUT',
+        url: route,
+        data: {
+            _token: csrf_token,
+            status: status
+        },
+        success: function (data) {
+            location.reload();
+        },
+        error: function (xhr, status, error) {
+            let errorMessage = xhr.responseJSON;
+            notyf.error(errorMessage.message);
+        }
+
+    })
+}
+
+$(function () {
+    $('.update-approval-status').on('change', function () {
+        let status = $(this).val();
+        let route = $(this).data('route');
+
+        updateApproveStatus(status, route);
+    });
+    
+});
+
 
 /** Database Clear with confirmation */
 

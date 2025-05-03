@@ -196,4 +196,15 @@ class CourseController extends Controller
                 break;
         }
     }
+
+    public function destroy(Request $request)
+    {
+        $course = Course::findOrFail($request->id);
+        $course->delete();
+        return response([
+            'status' => 'success',
+            'message' => 'Deleted successfully.',
+            'redirect' => route('instructor.courses.index')
+        ]);
+    }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
+use App\Http\Controllers\Frontend\CouponController;
 use App\Http\Controllers\Frontend\CourseContentController;
 use App\Http\Controllers\Frontend\CourseController;
 use App\Http\Controllers\Frontend\CoursePageController;
@@ -143,9 +144,11 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       /** Course Routes */
       Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
       Route::get('courses/create', [CourseController::class, 'create'])->name('courses.create');
-      Route::post('courses/create', [CourseController::class, 'storeBasicInfo'])->name('courses.sore-basic-info');
+      Route::post('courses/create', [CourseController::class, 'storeBasicInfo'])->name('courses.store-basic-info');
       Route::get('courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
       Route::post('courses/update', [CourseController::class, 'update'])->name('courses.update');
+      Route::delete('courses/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
+      
 
       Route::get('course-content/{course}/create-chapter', [CourseContentController::class, 'createChapterModal'])->name('course-content.create-chapter');
       Route::post('course-content/{course}/create-chapter', [CourseContentController::class, 'storeChapter'])->name('course-content.store-chapter');
@@ -173,6 +176,8 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       Route::get('withdrawals/request-payout', [WithdrawController::class, 'requestPayoutIndex'])->name('withdraw.request-payout');
       Route::post('withdrawals/request-payout', [WithdrawController::class, 'requestPayout'])->name('withdraw.request-payout.create');
 
+      /** Coupons Routes */
+      Route::resource('coupons', CouponController::class);
    });
 
 

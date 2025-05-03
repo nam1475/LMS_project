@@ -21,6 +21,7 @@ class Coupon extends Model
         'expire_date',
         'student_id',
         'instructor_id',
+        'is_approved',
         'status',
     ];
 
@@ -40,6 +41,9 @@ class Coupon extends Model
             // else{
             //     $coupon->update(['status' => true]);
             // }
+            if($coupon->is_approved == 'pending' || $coupon->is_approved == 'rejected') {
+                $coupon->update(['status' => false]);
+            }
         }); 
     }
 
@@ -86,10 +90,10 @@ class Coupon extends Model
     //     return $this->belongsToMany(User::class, 'course_students', 'student_id', 'student_id');
     // }
 
-    // public function instructor()
-    // {
-    //     return $this->belongsTo(User::class, 'instructor_id', 'instructor_id');
-    // }
+    public function instructor()
+    {
+        return $this->belongsTo(User::class, 'instructor_id', 'id');
+    }
 
     public function courseCategories()
     {

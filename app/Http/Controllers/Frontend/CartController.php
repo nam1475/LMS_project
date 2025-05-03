@@ -47,7 +47,7 @@ class CartController extends Controller
       $cart = Cart::with(['course'])->where('user_id', user()->id)->get();
       $courseCategoryIds = collect($cart)->pluck('course.category_id')->unique()->toArray();      
       // Kiểm tra tất cả category_id đều hợp lệ với coupon
-      $courseCategoriesMatched = collect($courseCategoryIds)->diff(
+      $isCourseCategoriesMatched = collect($courseCategoryIds)->diff(
         $coupon->courseCategories()->pluck('course_categories.id')
       )->isEmpty();
       if(!$coupon){
@@ -59,7 +59,7 @@ class CartController extends Controller
           notyf()->error('Your order amount is less than ' . number_format($coupon->minimum_order_amount) . '!');
           return redirect()->route('cart.index');
         }
-        else if(!$courseCategoriesMatched){
+        else if(!$isCourseCategoriesMatched){
           notyf()->error('Coupon Code does not match one of your course categories!');
           return redirect()->route('cart.index');
         }

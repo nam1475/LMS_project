@@ -27,6 +27,15 @@ class Course extends Model
         'instructor_id',
     ];
 
+    protected static function booted()
+    {
+        static::retrieved(function ($course) {
+            if($course->is_approved == 'pending' || $course->is_approved == 'rejected') {
+                $course->update(['status' => 'inactive']);
+            }
+        }); 
+    }
+
     // Automatic retrieve coupon code
     public function getCouponCodeAutoOption()
     {

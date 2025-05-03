@@ -27,7 +27,7 @@
 
 
     <!--===========================
-            DASHBOARD COURSE START
+            DASHBOARD coupon START
         ============================-->
     <section class="wsus__dashboard mt_90 xs_mt_70 pb_120 xs_pb_100">
         <div class="container">
@@ -38,15 +38,15 @@
                     <div class="wsus__dashboard_contant">
                         <div class="wsus__dashboard_contant_top">
                             <div class="wsus__dashboard_heading relative">
-                                <h5>Courses</h5>
-                                <p>Manage your courses and its update like live, draft and insight.</p>
-                                <a class="common_btn" href="{{ route('instructor.courses.create') }}">+ add course</a>
+                                <h5>Coupons</h5>
+                                <p>Manage your coupons and its update like live, draft and insight.</p>
+                                <a class="common_btn" href="{{ route('instructor.coupons.create') }}">+ add coupon</a>
                             </div>
                         </div>
 
-                        {{-- <form action="#" class="wsus__dash_course_searchbox">
+                        {{-- <form action="#" class="wsus__dash_coupon_searchbox">
                             <div class="input">
-                                <input type="text" placeholder="Search our Courses">
+                                <input type="text" placeholder="Search our coupons">
                                 <button><i class="far fa-search"></i></button>
                             </div>
                             <div class="selector">
@@ -66,13 +66,22 @@
                                             <tbody>
                                                 <tr>
                                                     <th class="image">
-                                                        COURSES
+                                                        CODE
                                                     </th>
                                                     <th class="details">
-
+                                                        TYPE
                                                     </th>
                                                     <th class="sale">
-                                                        STUDENT
+                                                        VALUE
+                                                    </th>
+                                                    <th class="status">
+                                                        MIN ORDER AMOUNT
+                                                    </th>
+                                                    <th class="action">
+                                                        COURSE CATEGORIES
+                                                    </th>
+                                                    <th class="action">
+                                                        EXPIRE DATE
                                                     </th>
                                                     <th class="status">
                                                         STATUS
@@ -85,60 +94,50 @@
                                                     </th>
                                                 </tr>
 
-                                                @foreach ($courses as $course)
+                                                @forelse ($coupons as $coupon)
                                                     <tr>
-                                                        <td class="image">
-                                                            <div class="image_category">
-                                                                <img src="{{ asset($course->thumbnail) }}" alt="img"
-                                                                    class="img-fluid w-100">
-                                                            </div>
-                                                        </td>
-                                                        <td class="details">
-                                                            <p class="rating">
-                                                                @for ($i = 1; $i <= 5; $i++)
-                                                                    @if ($i <= $course->reviews()->avg('rating'))
-                                                                        <i class="fas fa-star"></i>
-                                                                    @else
-                                                                        <i class="far fa-star"></i>
-                                                                    @endif
-                                                                @endfor
-
-                                                                <span>({{ number_format($course->reviews()->avg('rating'), 2) ?? 0 }}
-                                                                    Rating)</span>
-                                                            </p>
-                                                            <a class="title" href="#">{{ $course->title }}</a>
-
-                                                        </td>
+                                                        <td class="sale">{{ $coupon->code }}</td>
+                                                        <td class="sale">{{ $coupon->type }}</td>
                                                         <td class="sale">
-                                                            <p>{{ $course->enrollments()->count() }}</p>
+                                                            {{ $coupon->type == 'percent' ? $coupon->value . '%' : number_format($coupon->value) . 'đ' }}
                                                         </td>
+                                                        <td class="sale">{{ number_format($coupon->minimum_order_amount) . 'đ' }}</td>
+                                                        <td class="badge-blue">
+                                                            @foreach ($coupon->courseCategories as $category)
+                                                                <p class="">{{ $category->name }}</p>
+                                                            @endforeach
+                                                        </td>
+                                                        <td class="sale">{{ $coupon->expire_date }}</td>
                                                         <td class="status">
-                                                            @if ($course->status == 'active')
+                                                            @if ($coupon->status == '1')
                                                                 <p class="active">Active</p>
-                                                            @elseif ($course->status == 'inactive')
+                                                            @else
                                                                 <p class="inactive">Inactive</p>
-                                                            @elseif ($course->status == 'draft')
-                                                                <p class="draft">Draft</p>
                                                             @endif
                                                         </td>
                                                         <td class="status">
-                                                            @if ($course->is_approved == 'approved')
+                                                            @if ($coupon->is_approved == 'approved')
                                                                 <p class="active">Approved</p>
-                                                            @elseif ($course->is_approved == 'pending')
+                                                            @elseif ($coupon->is_approved == 'pending')
                                                                 <p class="pending">Pending</p>
-                                                            @elseif ($course->is_approved == 'rejected')
+                                                            @elseif ($coupon->is_approved == 'rejected')
                                                                 <p class="inactive">Rejected</p>
                                                             @endif
                                                         </td>
+
                                                         <td class="action">
                                                             <a class="edit"
-                                                                href="{{ route('instructor.courses.edit', ['id' => $course->id, 'step' => 1]) }}"><i
+                                                                href="{{ route('instructor.coupons.edit', $coupon->id) }}"><i
                                                                     class="far fa-edit"></i></a>
-                                                            <a class="del delete-item" href="{{ route('instructor.courses.destroy', $course->id) }}"><i
+                                                            <a class="del delete-item" href="{{ route('instructor.coupons.destroy', $coupon->id) }}"><i
                                                                     class="fas fa-trash-alt"></i></a>
                                                         </td>
                                                     </tr>
-                                                @endforeach
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">No Data Found!</td>
+                                                    </tr>
+                                                @endforelse
                                             </tbody>
                                         </table>
                                     </div>
@@ -151,6 +150,6 @@
         </div>
     </section>
     <!--===========================
-            DASHBOARD COURSE END
+            DASHBOARD coupon END
         ============================-->
 @endsection

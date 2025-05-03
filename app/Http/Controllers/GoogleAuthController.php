@@ -48,7 +48,8 @@ class GoogleAuthController extends Controller
                 'name' => $user->name,
                 'password' => bcrypt(Str::random(16)), // Set a random password
                 'email_verified_at' => now(),
-                'role' => 'student' // Default role set to 'student'
+                'role' => 'student', // Default role set to 'student'
+                'remember_token' => Str::random(60),
             ]);
             Auth::login($newUser);
         }

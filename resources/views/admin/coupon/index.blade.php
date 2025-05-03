@@ -26,6 +26,7 @@
                                     <th>Created By Instructor</th>
                                     <th>Expire Date</th>
                                     <th>Status</th>
+                                    <th>Approve</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -44,9 +45,9 @@
                                             @endforeach
                                         </td>
                                         <td>
-                                            {{-- @foreach ($coupon->instructors as $instructor)
-                                                <span class="badge bg-blue text-blue-fg">{{ $instructor->name }}</span>
-                                            @endforeach --}}
+                                            @if ($coupon->instructor)
+                                                <span class="badge bg-blue text-blue-fg">{{ $coupon->instructor->name }}</span>
+                                            @endif
                                         </td>
                                         <td>{{ $coupon->expire_date }}</td>
                                         <td>
@@ -57,11 +58,21 @@
                                             @endif
                                         </td>
                                         <td>
-                                           
-                                            <a href="{{ route('admin.coupons.edit', $coupon->id) }}"
-                                                class="btn-sm btn-primary">
-                                                <i class="ti ti-edit"></i>
-                                            </a>
+                                            <select name="" class="form-control update-approval-status" data-id="{{ $coupon->id }}" 
+                                                data-route="{{ route('admin.coupons.update-approval', $coupon->id) }}"
+                                            >
+                                                <option @selected($coupon->is_approved == 'pending') value="pending">Pending</option>
+                                                <option @selected($coupon->is_approved == 'approved') value="approved">Approved</option>
+                                                <option @selected($coupon->is_approved == 'rejected') value="rejected">Rejected</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            @if (!$coupon->instructor)
+                                                <a href="{{ route('admin.coupons.edit', $coupon->id) }}"
+                                                    class="btn-sm btn-primary">
+                                                    <i class="ti ti-edit"></i>
+                                                </a>
+                                            @endif
                                             
                                             <a href="{{ route('admin.coupons.destroy', $coupon->id) }}"
                                                 class="text-red delete-item">

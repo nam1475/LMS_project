@@ -271,7 +271,7 @@
                             <i class="ti ti-discount"></i>
                         </span>
                         <span class="nav-link-title">
-                            Coupon
+                            Mã khuyến mại
                         </span>
                     </a>
                 </li>

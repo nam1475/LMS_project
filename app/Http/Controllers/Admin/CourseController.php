@@ -32,6 +32,7 @@ class CourseController extends Controller
     /** change approve status */
     function updateApproval(Request $request, Course $course) : Response{
         $course->is_approved = $request->status;
+        $course->status = 'active';
         $course->save();
 
         return response(['status' => 'success', 'message' => 'Updated successfully.']);

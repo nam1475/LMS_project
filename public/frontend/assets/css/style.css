@@ -14100,6 +14100,7 @@ footer {
     color: var(--colorBlack);
 }
 
+
 /* dashboard overview end */
 
 
@@ -14218,7 +14219,11 @@ footer {
     background: #159F46;
 }
 
-.wsus__dash_course_table .status .Pending {
+.wsus__dash_course_table .status .inactive {
+    background: #E53935;
+}
+
+.wsus__dash_course_table .status .pending {
     background: #E79520;
 }
 
@@ -14343,6 +14348,16 @@ footer {
     font-weight: 500;
     color: var(--colorBlack);
     text-transform: capitalize;
+}
+
+.wsus__dash_course_table .badge-blue p{
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #007bff; /* Màu xanh Bootstrap blue */
+    border-radius: 0.5rem;
 }
 
 .wsus__dash_order_table .icon a {

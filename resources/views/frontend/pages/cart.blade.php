@@ -140,7 +140,7 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title fw-bold" id="couponModalLabel">Your promotion code</h5>
+                                            <h5 class="modal-title fw-bold" id="couponModalLabel">Your coupon code</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -148,12 +148,12 @@
                                             <form method="POST" action="{{ route('apply-coupon') }}" class="d-flex mb-4">
                                             {{-- <form method="POST" data-route="{{ route('apply-coupon') }}" data-total-price="{{ $totalPrice }}" class="d-flex mb-4"> --}}
                                                 @csrf
-                                                <input type="text" name="coupon_code" id="coupon_code_input" class="form-control me-2" placeholder="Enter your promotion code" value="{{ request('coupon_code') }}">
+                                                <input type="text" name="coupon_code" id="coupon_code_input" class="form-control me-2" placeholder="Enter your coupon code" value="{{ request('coupon_code') }}">
                                                 <input type="hidden" name="original_price" value="{{ $originalPrice }}">
                                                 <x-input-error :messages="$errors->get('coupon_code')" class="mt-2" />
                                                 <button type="submit" class="btn btn-primary">Apply</button>
                                             </form>
-                                            <h6 class="fw-bold mb-3">Promotion code can be applied</h6>
+                                            <h6 class="fw-bold mb-3">Coupon code can be applied</h6>
                                             @foreach ($coupons as $c)
                                                 <div class="row p-3 border rounded coupon_code_card">
                                                     <div class="col-5">
@@ -162,6 +162,7 @@
                                                     <div class="col-7">
                                                         <h6 id="coupon_code" data-code="{{ $c->code }}">{{ $c->code }}</h6>
                                                         <p class="mb-1 fw-bold">Discount {{ $c->type == 'percent' ? $c->value . '%' : 'đ' . number_format($c->value) }}</p>
+                                                        <p class="mb-1 text-muted">Valid course categories: {{ $c->courseCategories()->pluck('name')->implode(', ') }}</p>
                                                         <p class="mb-1 text-muted">Min order's value {{ 'đ' . number_format($c->minimum_order_amount) }}</p>
                                                         <p class="mb-0 text-muted">Expire date: {{ $c->expire_date }} - 23:59</p>
                                                     </div>
