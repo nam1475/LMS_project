@@ -10,6 +10,12 @@ class Enrollment extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'course_id',
+        'instructor_id',
+        'have_access'
+    ];
 
     function course() : BelongsTo {
        return $this->belongsTo(Course::class, 'course_id', 'id'); 

@@ -39,9 +39,8 @@ if(!function_exists('cartCount')) {
 
 /** calculate cart total */
 if(!function_exists('cartTotal')) {
-    function cartTotal($couponCode = '') {
+    function cartTotal($couponCode = null) {
         $total = 0;
-
         $cart = Cart::where('user_id', user()->id)->get();
 
         foreach($cart as $item) {
@@ -52,15 +51,9 @@ if(!function_exists('cartTotal')) {
             }
         }
 
-        if($couponCode != '') {
-            $coupon = Coupon::where('code', $couponCode)->first();
-            if($coupon) {
-                if($coupon->type == 'fixed') {
-                    $total -= $coupon->value;
-                }else if($coupon->type == 'percent') {
-                    $total -= ($total * $coupon->value) / 100;
-                }
-            }
+        $couponObject = new Coupon();
+        if($couponCode) {
+            $total = $couponObject->checkCouponType($couponCode, $total);
         }
 
         return $total;

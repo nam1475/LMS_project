@@ -196,12 +196,15 @@
                                 <div class="wsus__single_courses_3_footer">
                                     <a class="common_btn add_to_cart" href="#" data-course-id="{{ $course->id }}">Add to Cart<i class="far fa-arrow-right"></i></a>
                                     <p>
+                                        @php
+                                            $coursePrice = $course->price;
+                                        @endphp
                                         @if($course->discount > 0)
-                                        <del>đ{{ number_format($course->price) }}</del> đ{{ number_format($course->discount) }}
-                                        @else
-                                        đ{{ number_format($course->price) }}
+                                            <del>{{ config('settings.currency_icon') }}{{ number_format($course->price) }}</del> {{ config('settings.currency_icon') }}{{ number_format($course->discount) }}
+                                        @else   
+                                            {{ config('settings.currency_icon') }}{{ number_format($coursePrice) }}
                                         @endif
-                                    </p>
+                                    </>
                                 </div>
                             </div>
                         </div>

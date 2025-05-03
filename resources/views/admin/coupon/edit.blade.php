@@ -18,8 +18,8 @@
                         @csrf
                         @method('PUT')
                         <div class="row">
-
-                            <div class="col-md-12">
+                            
+                            <div class="col-md-12 mt-3">
                                 <x-input-block name="code" placeholder="Enter code" :value="$coupon->code" />
                             </div>  
 
@@ -38,8 +38,36 @@
                             <div class="col-md-12 mt-3">
                                 <x-input-block name="value" placeholder="Enter value" :value="$coupon->value" />
                             </div>  
-                            
+
+                            <div class="col-md-12 mt-3">
+                                <div class="mb-3">
+                                    <label class="form-label text-capitalize" >Mnimum Order Amount</label>
+                                    <input type="number" value="{{ $coupon->minimum_order_amount }}" id="minimum_order_amount" name="minimum_order_amount" class="form-control">
+                                    <x-input-error :messages="$errors->get('minimum_order_amount')" class="mt-2" />
+                                </div>
+                            </div> 
+
                             <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="" >Course Categories</label>
+                                    <select class="select2" name="course_category_id[]" multiple>
+                                        @foreach($courseCategories as $category)
+                                            @if($category->subCategories->isNotEmpty())
+                                                <optgroup label="{{ $category->name }}">
+                                                @foreach($category->subCategories as $subCategory)
+                                                    <option value="{{ $subCategory->id }}" {{ in_array($subCategory->id, $courseCategoryIds) ? 'selected' : '' }}>
+                                                        {{ $subCategory->name }}
+                                                    </option>
+                                                @endforeach
+                                                </optgroup>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    <x-input-error :messages="$errors->get('course_category_id')" class="mt-2" />
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12 mt-3">
                                 <label for="" class="mb-2">Expire Date</label>
                                 <input type="date" name="expire_date" class="form-control" value="{{ $coupon->expire_date }}">
                                 <x-input-error :messages="$errors->get('expire_date')" class="mt-2" />

@@ -187,3 +187,25 @@ $(function() {
         })
     });
 });
+
+/** Minimum order amount */
+$(function() {
+    // $('#minimum_order_amount').on('input', function() {
+    //     if ($(this).val() === '') {
+    //         $(this).val(0);
+    //     }
+    // });
+
+    $('#minimum_order_amount').on('blur', function() {
+        if ($(this).val() === '') {
+            $(this).val(0);            
+        }
+    });
+
+    // $('#minimum_order_amount').on('keydown', function(e) {
+    //     if ((e.key === "Backspace" || e.key === "Delete") && $(this).val().length <= 1) {
+    //         e.preventDefault();
+    //         $(this).val(0);
+    //     }
+    // });
+});

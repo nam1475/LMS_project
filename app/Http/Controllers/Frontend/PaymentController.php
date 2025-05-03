@@ -98,7 +98,7 @@ class PaymentController extends Controller
             try {
                 OrderService::storeOrder(
                     $transactionId,
-                    auth()->user()->id,
+                    auth('web')->user()->id,
                     'approved',
                     $mainAmount,
                     $paidAmount,
@@ -157,7 +157,7 @@ class PaymentController extends Controller
             try {
                 OrderService::storeOrder(
                     $transactionId,
-                    auth()->user()->id,
+                    auth('web')->user()->id,
                     'approved',
                     $mainAmount,
                     $paidAmount,
@@ -199,7 +199,7 @@ class PaymentController extends Controller
         if($response['status'] === 'captured') {
              OrderService::storeOrder(
                     $transactionId,
-                    auth()->user()->id,
+                    auth('web')->user()->id,
                     'approved',
                     $mainAmount,
                     $paidAmount,

@@ -21,6 +21,9 @@
                                     <th>Code</th>
                                     <th>Type</th>
                                     <th>Value</th>
+                                    <th>Minimum Order Amount</th>
+                                    <th>Course Categories</th>
+                                    <th>Created By Instructor</th>
                                     <th>Expire Date</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -30,8 +33,21 @@
                                 @forelse ($coupons as $coupon)
                                     <tr>
                                         <td>{{ $coupon->code }}</td>
-                                        <td>{{ $coupon->type}}</td>
-                                        <td>{{ $coupon->value }}</td>
+                                        <td>{{ $coupon->type }}</td>
+                                        <td>
+                                            {{ $coupon->type == 'percent' ? $coupon->value . '%' : number_format($coupon->value) . 'đ' }}
+                                        </td>
+                                        <td>{{ number_format($coupon->minimum_order_amount) . 'đ' }}</td>
+                                        <td>
+                                            @foreach ($coupon->courseCategories as $category)
+                                                <span class="badge bg-blue text-blue-fg">{{ $category->name }}</span>
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            {{-- @foreach ($coupon->instructors as $instructor)
+                                                <span class="badge bg-blue text-blue-fg">{{ $instructor->name }}</span>
+                                            @endforeach --}}
+                                        </td>
                                         <td>{{ $coupon->expire_date }}</td>
                                         <td>
                                             @if ($coupon->status == 1)

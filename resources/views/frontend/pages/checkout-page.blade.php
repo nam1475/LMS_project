@@ -181,9 +181,23 @@
                 <div class="total_payment_price">
                     <h4>Total Cart <span>(0{{ cartCount() }} {{ cartCount() > 1 ? 'courses' : 'course' }})</span></h4>
                     <ul>
-                        <li>Subtotal :<span>{{ number_format(cartTotal($couponCode)) }}đ</span></li>
+                        @php
+                            $originalPrice = cartTotal();
+                        @endphp
+                        <li>Original Price :<span>{{ number_format($originalPrice) }}đ</span></li>
+                        @if($couponCode) 
+                            @php
+                                $totalPriceWithCoupon = cartTotal($couponCode);
+                                $discountAmount = $originalPrice - $totalPriceWithCoupon;
+                                
+                            @endphp
+                            <li>Coupon Code :<span>{{ $couponCode }}</span></li>
+                            <li>Discount Amount :<span>-{{ number_format($discountAmount) }}đ</span></li>
+                        @endif
+                        <hr>
+                        <li class="fw-bold fs-5">Subtotal :<span class="fw-bold fs-5">{{ number_format(cartTotal($couponCode)) }}đ</span></li>
                     </ul>
-                    <a href="#" class="common_btn">Now payment</a>
+                    {{-- <a href="#" class="common_btn">Now payment</a>  --}}
                 </div>
             </div>
         </div>
