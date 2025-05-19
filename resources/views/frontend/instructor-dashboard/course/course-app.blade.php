@@ -58,7 +58,7 @@
                                     <a href="" class="nav-link course-tab {{ request('step') == 4 ? 'active' : '' }}" data-step="4" >Finish</a>
                                 </li>
                             </ul>
-                            <div class="tab-content" id="pills-tabContent">
+                                
                                @yield('course_content') 
                             </div>
                         </div>

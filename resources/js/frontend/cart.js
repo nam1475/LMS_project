@@ -39,40 +39,150 @@ $(function() {
        addToCart(courseId);
    })
 
-   /** Notify when apply wrong coupon */
-   $('.apply_coupon').on('submit', function (e) {
-       e.preventDefault();
-       var form = $(this)[0];
-       var data = new FormData(form);
-       console.log(data);
-       console.log(123);
-       
-       
+   /** Aplly coupon */
+   $('.apply_coupon_form').on('submit', function (e) {
+        e.preventDefault();
+    //    var form = $(this)[0];
+    //    var data = new FormData(form);
+    //    console.log(data);
+    //    console.log(123);
 
-    //    let couponCode = $('#coupon_code').val();
-    //    $.ajax({
-    //        method: "POST",
-    //        url: base_url + "/apply-coupon",
-    //        data: {
-    //            _token: csrf_token,
-    //            coupon_code: couponCode
-    //        },
-    //        beforeSend: function() {
-    //            $('.apply_coupon').text('Applying...');
-    //        },
-    //        success: function(data) {
-    //            notyf.success(data.message);
-    //            $('.apply_coupon').text('Apply');
-    //        },
-    //        error: function(xhr, status, error) {
-    //            console.log(xhr);
-    //            let errorMessage = xhr.responseJSON.message;
-    //            notyf.error(errorMessage);
+        var routeName = $(this).data('route');
+        var totalPrice = $(this).data('total-price');
+        let couponCode = $('#coupon_code').val();
+        $.ajax({
+            method: "POST",
+            url: routeName,
+            data: {
+                _token: csrf_token,
+                coupon_code: couponCode,
+                total_price: totalPrice
+            },
+            beforeSend: function() {
+                // $('.apply_coupon_form').text('Applying...');
+            },
+            success: function(data) {
+                notyf.success(data.message);
+            //    $('.apply_coupon_form').text('Apply');
+                // window.href = data.redirect;
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr);
+                let errorMessage = xhr.responseJSON.message;
+                notyf.error(errorMessage);
 
-    //            $('.apply_coupon').text('Apply');
-    //        }
-    //    });
+            //    $('.apply_coupon_form').text('Apply');
+            }
+       });
    });
+});
+
+$(function() {
+    /** Show modal coupon code */
+    $('#show_coupon_modal').on('click', function (e) {
+        e.preventDefault();
+        $('#coupon_modal').modal('show');
+    });
+
+    /** Click coupon code */
+    $('.coupon_code_card').on('click', function (e) {
+        e.preventDefault();
+        let couponCode = $(this).find('#coupon_code').data('code');
+        $('#coupon_code_input').val(couponCode);
+    }); 
+
+    /** Apply coupon code */
+    // $('.apply_coupon').on('click', function (e) {
+    //     e.preventDefault();
+    //     let couponCode = $('#coupon_code_input').val();
+    //     $.ajax({
+    //         method: "POST",
+    //         url: base_url + "/apply-coupon",
+    //         data: {
+    //             _token: csrf_token,
+    //             coupon_code: couponCode
+    //         },
+    //         beforeSend: function() {
+    //             $('.apply_coupon').text('Applying...');
+    //         },
+    //         success: function(data) {
+    //             notyf.success(data.message);
+    //             $('.apply_coupon').text('Apply');
+    //         },
+    //         error: function(xhr, status, error) {
+    //             console.log(xhr);
+    //             let errorMessage = xhr.responseJSON.message;
+    //             notyf.error(errorMessage);
+
+    //             $('.apply_coupon').text('Apply');
+    //         }
+    //     })
+    // });
+});
+
+$(function() {
+    var itemsPerPage = 2;
+    var items = $('.coupon_code_card');
+    var totalItems = items.length;
+    var totalPages = Math.ceil(totalItems / itemsPerPage);
+    // var pageItem = $('.page-item');
+    var currentPage = 1;
+
+    function renderPagination() {
+        $('.pagination').empty();
+
+        // $('.pagination').append(`
+        //     <li class="page-item">
+        //         <a class="page-link" id="prev">&lt;</a>
+        //     </li>
+        // `);
+        
+        // Tạo nút phân trang
+        for (let i = 1; i <= totalPages; i++) {
+            $('.pagination').append(`
+                <li class="page-item">
+                    <a class="page-link ${i == currentPage ? 'active' : ''}">${i}</a> 
+                </li>
+            `);
+        }
+
+        // $('.pagination').append(`
+        //     <li class="page-item">
+        //         <a class="page-link" id="next">&gt;</a> 
+        //     </li>
+        // `);
+    }
+
+    function showPage(page) {
+        currentPage = page;
+        var start = (page - 1) * itemsPerPage;
+        var end = start + itemsPerPage;
+        console.log(page, start, end, currentPage);
+        
+        items.hide();
+        items.slice(start, end).show();
+        renderPagination();
+    }
+    
+    showPage(1);
+
+    // Sự kiện khi click nút phân trang
+    $('.pagination').on('click', '.page-link', function(){
+        var page = parseInt($(this).text());
+        showPage(page);
+    });
+
+    // $('.pagination').on('click', '#prev', function(){
+    //     if (currentPage > 1) {
+    //         showPage(currentPage - 1);
+    //     }
+    // });
+
+    // $('.pagination').on('click', '#next', function(){        
+    //     if (currentPage < totalPages) {
+    //         showPage(currentPage + 1);
+    //     }
+    // });
 
 });
 

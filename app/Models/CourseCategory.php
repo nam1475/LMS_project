@@ -19,9 +19,12 @@ class CourseCategory extends Model
         return $this->belongsTo(CourseCategory::class, 'parent_id');
     }
 
-
-
     function courses() : HasMany {
        return $this->hasMany(Course::class, 'category_id'); 
     }
+
+    function coupons(){
+        return $this->belongsToMany(Coupon::class, 'coupon_course_category', 'course_category_id', 'coupon_id');
+    }
+
 }

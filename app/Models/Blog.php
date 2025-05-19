@@ -20,7 +20,6 @@ class Blog extends Model
         return $this->belongsTo(Admin::class, 'user_id', 'id');
     }
 
-
     function comments() : HasMany {
         return $this->hasMany(BlogComment::class, 'blog_id', 'id');
     }

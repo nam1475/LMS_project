@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Frontend;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
-use App\Models\CouponCourseCategory;
 use App\Models\CourseCategory;
-use App\Models\User;
 use App\Service\CouponService;
-use Barryvdh\Debugbar\Facades\Debugbar;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class CouponController extends Controller
 {
@@ -20,13 +16,14 @@ class CouponController extends Controller
         $this->couponService = $couponService;
     }
 
-    /**
+     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $coupons = Coupon::with('courseCategories', 'instructor')->paginate(25);
-        return view('admin.coupon.index', compact('coupons'));
+        $coupons = Coupon::where('instructor_id', auth('web')->user()->id)->with('courseCategories')->paginate(25);
+        // dd($coupons);
+        return view('frontend.instructor-dashboard.coupon.index', compact('coupons'));
     }
 
     /**
@@ -35,7 +32,7 @@ class CouponController extends Controller
     public function create()
     {
         $courseCategories = CourseCategory::where('status', 1)->get();
-        return view('admin.coupon.create', compact('courseCategories'));
+        return view('frontend.instructor-dashboard.coupon.create', compact('courseCategories'));
     }
 
     /**
@@ -46,11 +43,10 @@ class CouponController extends Controller
         $result = $this->couponService->store($request);
         if ($result) {
             notyf()->success('Created Successfully!');
-            return redirect()->route('admin.coupons.index');
+            return redirect()->route('instructor.coupons.index');
         }
         notyf()->error('Failed to create!');
         return back();
-
     }
 
     /**
@@ -61,7 +57,7 @@ class CouponController extends Controller
         $coupon = Coupon::findOrFail($id);
         $courseCategories = CourseCategory::where('status', 1)->get();
         $courseCategoryIds = $coupon->courseCategories->pluck('id')->toArray();
-        return view('admin.coupon.edit', compact('coupon', 'courseCategories', 'courseCategoryIds'));
+        return view('frontend.instructor-dashboard.coupon.edit', compact('coupon', 'courseCategories', 'courseCategoryIds'));
     }
 
     /**
@@ -72,19 +68,10 @@ class CouponController extends Controller
         $result = $this->couponService->update($request, $id);
         if ($result) {
             notyf()->success('Updated Successfully!');
-            return redirect()->route('admin.coupons.index');
+            return redirect()->route('instructor.coupons.index');
         }
         notyf()->error('Failed to update!');
         return back();
-
-    }
-
-    function updateApproval(Request $request, Coupon $coupon) {
-        $coupon->is_approved = $request->status;
-        $coupon->status = 1;
-        $coupon->save();
-
-        return response(['status' => 'success', 'message' => 'Updated successfully.']);
     }
 
     /**
@@ -93,8 +80,16 @@ class CouponController extends Controller
     public function destroy(string $id)
     {
         $coupon = Coupon::findOrFail($id);
-        $coupon->delete();
-        notyf()->success('Deleted Successfully!');
-        return response(['message' => 'Deleted Successfully!'], 200);
+        $result = $coupon->delete();
+        if($result){
+            notyf()->success('Deleted Successfully!');
+            return back();
+        }
+        notyf()->error('Failed to delete!');
+        return back();
     }
+
+
+
+    
 }

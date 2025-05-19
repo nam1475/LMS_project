@@ -17,11 +17,14 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('type'); 
             $table->integer('value'); 
+            $table->unsignedBigInteger('minimum_order_amount')->default(0);
             $table->date('start_date')->nullable();
             $table->date('expire_date')->nullable();
+            $table->enum('is_approved', ['pending', 'approved', 'rejected'])->default('pending');
+            // $table->foreignId('student_id')->nullable()->constrained('users')->onDelete('cascade');
+            // $table->foreignId('course_category_id')->nullable()->constrained('course_categories')->onDelete('cascade');
+            $table->foreignId('instructor_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->boolean('status')->default(1);
-            // $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            // $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

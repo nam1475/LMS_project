@@ -39,8 +39,8 @@ $(function () {
     // dynamic delete popup
     $(".delete-item").on('click', function (e) {
         e.preventDefault();
-        console.log(csrf_token);
         let url = $(this).attr('href');
+        console.log(url);
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -59,6 +59,7 @@ $(function () {
                     },
                     success: function (data) {
                         window.location.reload();
+                        notyf.success(data.message);
                     },
                     error: function (xhr, status, error) {
                         notyf.error(error);
@@ -100,3 +101,6 @@ $(function () {
         })
     })
 });
+
+
+

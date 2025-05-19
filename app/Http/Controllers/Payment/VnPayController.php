@@ -111,7 +111,7 @@ class VnPayController extends \App\Http\Controllers\Controller
             // Enroll user in courses
             $user = \Illuminate\Support\Facades\Auth::user();
             $cartItems = \App\Models\Cart::with('course')->where('user_id', $user->id)->get();
-
+            
             foreach ($cartItems as $item) {
                 // Avoid duplicate enrollments
                 $alreadyEnrolled = \App\Models\Enrollment::where('user_id', $user->id)

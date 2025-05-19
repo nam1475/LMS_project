@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Coupon;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\CourseLanguage;
@@ -12,6 +13,7 @@ use App\Models\Review;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CoursePageController extends Controller
 {
@@ -53,6 +55,7 @@ class CoursePageController extends Controller
         $categories = CourseCategory::where('status', 1)->whereNull('parent_id')->get();
         $levels = CourseLevel::all();
         $languages = CourseLanguage::all();
+
         return view('frontend.pages.course-page', compact('courses', 'categories', 'levels', 'languages'));
     }
 
@@ -62,9 +65,8 @@ class CoursePageController extends Controller
             ->where('is_approved', 'approved')
             ->where('status', 'active')
             ->firstOrFail();
-        $reviews = Review::where('course_id', $course->id)->where('status', 1)->paginate(10);
-        
 
+        $reviews = Review::where('course_id', $course->id)->where('status', 1)->paginate(10);
         return view('frontend.pages.course-details-page', compact('course', 'reviews'));
     }
 

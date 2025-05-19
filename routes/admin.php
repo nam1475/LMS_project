@@ -131,7 +131,7 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
     Route::put('courses/{course}/update-approval', [CourseController::class, 'updateApproval'])->name('courses.update-approval');
 
     Route::get('courses/create', [CourseController::class, 'create'])->name('courses.create');
-    Route::post('courses/create', [CourseController::class, 'storeBasicInfo'])->name('courses.sore-basic-info');
+    Route::post('courses/create', [CourseController::class, 'storeBasicInfo'])->name('courses.store-basic-info');
 
     Route::get('courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
     Route::post('courses/update', [CourseController::class, 'update'])->name('courses.update');
@@ -157,6 +157,7 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
 
     /** Coupon Routes */
     Route::resource('coupons', CouponController::class);
+    Route::put('coupons/{coupon}/update-approval', [CouponController::class, 'updateApproval'])->name('coupons.update-approval');
 
     /** Order Routes */
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');

@@ -4589,6 +4589,15 @@ footer {
     cursor: pointer;
 }
 
+.coupon_code_card {
+    transition: box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.coupon_code_card:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
 .main_menu_3 .right_menu ul li .menu_signin,
 .main_menu_4 .right_menu ul li .menu_signin {
     position: relative;
@@ -8391,7 +8400,7 @@ footer {
 .wsus__courses_sidebar_list_info .common_btn {
     display: block;
     text-align: center;
-    margin-top: 40px;
+    margin-top: 20px;
     background: var(--colorOrange);
     color: var(--colorBlack);
 }
@@ -14091,6 +14100,7 @@ footer {
     color: var(--colorBlack);
 }
 
+
 /* dashboard overview end */
 
 
@@ -14209,7 +14219,11 @@ footer {
     background: #159F46;
 }
 
-.wsus__dash_course_table .status .Pending {
+.wsus__dash_course_table .status .inactive {
+    background: #E53935;
+}
+
+.wsus__dash_course_table .status .pending {
     background: #E79520;
 }
 
@@ -14334,6 +14348,16 @@ footer {
     font-weight: 500;
     color: var(--colorBlack);
     text-transform: capitalize;
+}
+
+.wsus__dash_course_table .badge-blue p{
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #007bff; /* Màu xanh Bootstrap blue */
+    border-radius: 0.5rem;
 }
 
 .wsus__dash_order_table .icon a {

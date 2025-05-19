@@ -16,6 +16,7 @@ class Enrollment extends Model
         'course_id',
         'instructor_id',
         'have_access',
+        'have_access'
     ];
 
     function course() : BelongsTo {

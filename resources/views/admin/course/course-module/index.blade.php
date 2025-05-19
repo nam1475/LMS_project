@@ -40,16 +40,15 @@
                                 <td>{{ $course->price }}</td>
                                 <td>{{ $course->instructor->name }}</td>
                                 <td>
-                                    @if($course->is_approved == 'pending')
-                                        <span class="badge bg-yellow text-yellow-fg">Pending</span>
-                                    @elseif($course->is_approved == 'approved')
-                                    <span class="badge bg-green text-green-fg">Approved</span>
-                                    @elseif($course->is_approved == 'rejected')
-                                    <span class="badge bg-red text-red-fg">Rejected</span>
+                                    @if($course->status == 'active')
+                                        <span class="badge bg-green text-green-fg">Active</span>
+                                    @elseif($course->status == 'inactive')
+                                        <span class="badge bg-red text-red-fg">Inactive</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <select name="" class="form-control update-approval-status" data-id="{{ $course->id }}">
+                                    <select name="" class="form-control update-approval-status" data-id="{{ $course->id }}"
+                                        data-route="{{ route('admin.courses.update-approval', $course->id) }}">
                                         <option @selected($course->is_approved == 'pending') value="pending">Pending</option>
                                         <option @selected($course->is_approved == 'approved') value="approved">Approved</option>
                                         <option @selected($course->is_approved == 'rejected') value="rejected">Rejected</option>

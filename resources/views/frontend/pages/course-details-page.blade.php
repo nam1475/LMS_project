@@ -7,6 +7,34 @@
     <meta property="og:type" content="Course">
 @endpush
 @section('content')
+<style>
+    .coupon-applied {
+      border: 1px dashed #ccc;
+      border-radius: 4px;
+      padding: 10px 15px;
+    }
+    
+    .coupon-name {
+      color: #6c757d;
+      font-size: 14px;
+    }
+    
+    .coupon-text {
+      color: #6c757d;
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+    
+    .apply-btn {
+      background-color: #7e3ff2;
+      border-color: #7e3ff2;
+    }
+    
+    .apply-btn:hover {
+      background-color: #6e35d8;
+      border-color: #6e35d8;
+    }
+  </style>  
     <!--===========================
                 BREADCRUMB START
             ============================-->
@@ -340,12 +368,15 @@
                             @endif
                         </div>
                         <h3 class="wsus__courses_sidebar_price">
+                            @php
+                                $coursePrice = $course->price;
+                            @endphp
                             @if($course->discount > 0)
-                            Price: <del>{{ config('settings.currency_icon') }}{{ number_format($course->price) }}</del>${{ $course->discount }}
-                            @elseif($course->price <= 0)
+                                Price: <del>{{ config('settings.currency_icon') }}{{ number_format($coursePrice) }}</del>{{ $course->discount }}
+                            @elseif($coursePrice <= 0)
                                 FREE
                             @else
-                               Price: {{ config('settings.currency_icon') }}{{ number_format($course->price) }}
+                                Price: {{ config('settings.currency_icon') }}{{ number_format($coursePrice) }}
                             @endif
                         </h3>
                       
@@ -385,9 +416,9 @@
                                 </li>
                             </ul>
                             <a class="common_btn add_to_cart" data-course-id="{{ $course->id }}" href="" >Add to Cart <i class="far fa-arrow-right"></i></a>
-                            <a class="common_btn" href="{{ route('checkout.index') }}">
+                            {{-- <a class="common_btn" href="{{ route('checkout.index', array_filter(['coupon_code' => $couponCode])) }}">
                                 Buy now
-                            </a>
+                            </a> --}}
                         </div>
                         
                         <div class="wsus__courses_sidebar_share_area">
@@ -399,7 +430,7 @@
                                 <li class="ez-reddit"><a href="#"><i class="fab fa-reddit"></i></a></li>
                             </ul>
                         </div>
-                        <div class="wsus__courses_sidebar_info">
+                        <div class="wsus__courses_sidebar_info">    
                             <h3>This Course Includes</h3>
                             <ul>
                                 <li>
@@ -420,8 +451,9 @@
                                     Course Lifetime Access
                                 </li>
                             </ul>
-
+                            
                         </div>
+                        
                         <div class="wsus__courses_sidebar_instructor">
                             <div class="image_area d-flex flex-wrap align-items-center">
                                 <div class="img">

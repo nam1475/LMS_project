@@ -99,20 +99,13 @@
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-between mt-4">
-                <div class="col-xxl-7 col-md-5 col-lg-6 wow fadeInUp"
-                    style="visibility: visible; animation-name: fadeInUp;">
-                        <form action="{{ route('cart.index') }}" class="">  
-                            <input type="text" name="coupon_code" value="{{ request('coupon_code') }}" class="col-md-4 border border-2" style="text-transform: uppercase;" placeholder="Enter coupon code">
-                            <button type="submit" class="common_btn">Apply Code</button>
-                        </form>
-                </div>
+            <div class="row justify-content-end mt-4">
                 <div class="col-xxl-4 col-md-7 col-lg-6 wow fadeInUp"
                     style="visibility: visible; animation-name: fadeInUp;">
                         <?php
                             $originalPrice = cartTotal();
-                            $totalPrice = cartTotal($couponCode);
-                            $discountAmount = $originalPrice - $totalPrice;
+                            $totalPriceWithCoupon = 0;
+                            
                         ?>
                     <div class="card card-custom">
                         <h5 class="mb-4 fw-bold">Summary</h5>
@@ -124,9 +117,13 @@
                 
                         <hr>
                         
-                        @if($couponCode)
+                        @if($coupon)
+                            @php
+                                $totalPriceWithCoupon = cartTotal($coupon->code);
+                                $discountAmount = $originalPrice - $totalPriceWithCoupon;
+                            @endphp
                             <div class="d-flex justify-content-between mb-1">
-                                <span>Coupon code<br><small class="text-muted">({{ $couponCode }})</small></span>
+                                <span>Coupon code<br><small class="text-muted">({{ $coupon->code }})</small></span>
                                 <span class="discount">
                                     - đ{{ number_format($discountAmount) }}
                                     <span class="pro_icon ">
@@ -134,16 +131,73 @@
                                     </span>
                                 </span>
                             </div>
-                            <hr>
+                        @else
+                            <button type="button" id="show_coupon_modal" class="common_btn">
+                                Coupons
+                            </button>
+
+                            <div class="modal fade" id="coupon_modal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title fw-bold" id="couponModalLabel">Your coupon code</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {{-- <form action="{{ route('cart.index') }}" method="GET" class="d-flex mb-4"> --}}
+                                            <form method="POST" action="{{ route('apply-coupon') }}" class="d-flex mb-4">
+                                            {{-- <form method="POST" data-route="{{ route('apply-coupon') }}" data-total-price="{{ $totalPrice }}" class="d-flex mb-4"> --}}
+                                                @csrf
+                                                <input type="text" name="coupon_code" id="coupon_code_input" class="form-control me-2" placeholder="Enter your coupon code" value="{{ request('coupon_code') }}">
+                                                <input type="hidden" name="original_price" value="{{ $originalPrice }}">
+                                                <x-input-error :messages="$errors->get('coupon_code')" class="mt-2" />
+                                                <button type="submit" class="btn btn-primary">Apply</button>
+                                            </form>
+                                            <h6 class="fw-bold mb-3">Coupon code can be applied</h6>
+                                            @foreach ($coupons as $c)
+                                                <div class="row p-3 border rounded coupon_code_card">
+                                                    <div class="col-5">
+                                                        <img src="{{ asset(config('settings.site_logo')) }}" alt="EduCore" class="img-fluid">
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <h6 id="coupon_code" data-code="{{ $c->code }}">{{ $c->code }}</h6>
+                                                        <p class="mb-1 fw-bold">Discount {{ $c->type == 'percent' ? $c->value . '%' : 'đ' . number_format($c->value) }}</p>
+                                                        <p class="mb-1 text-muted">Valid course categories: {{ $c->courseCategories()->pluck('name')->implode(', ') }}</p>
+                                                        <p class="mb-1 text-muted">Min order's value {{ 'đ' . number_format($c->minimum_order_amount) }}</p>
+                                                        <p class="mb-0 text-muted">Expire date: {{ $c->expire_date }} - 23:59</p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div class="modal-footer justify-content-center">
+                                            <nav>
+                                                <ul class="pagination mb-0">
+                                                    {{-- <li class="page-item disabled">
+                                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&lt;</a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="#"></a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="#">&gt;</a>
+                                                    </li> --}}
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endif
-                
+                        
+                        <hr>
+                        
                         <div class="d-flex justify-content-between mb-4">
                             <span class="fw-bold">Total:</span>
-                            <span class="fw-bold fs-5">đ{{ number_format($totalPrice) }}</span>
+                            <span class="fw-bold fs-5">đ{{ number_format($totalPriceWithCoupon == 0 ? $originalPrice : $totalPriceWithCoupon) }}</span>
                         </div>
 
-                        {{-- Nếu $couponCode rỗng/null thì sẽ bị loại bỏ  --}}
-                        <a class="common_btn" href="{{ route('checkout.index', array_filter(['coupon_code' => $couponCode])) }}" >
+                        {{-- Nếu $coupon->code rỗng/null thì sẽ bị loại bỏ  --}}
+                        <a class="common_btn" href="{{ route('checkout.index', array_filter(['coupon_code' => $coupon ? $coupon->code : null])) }}" >
                             Buy now
                         </a>
                     </div>
@@ -161,4 +215,10 @@
     <!--===========================
         CART VIEW END
     ============================-->
+    
+
 @endsection
+
+{{-- @push('header_scripts')
+    @vite(['resources/js/frontend/cart.js'])
+@endpush --}}
