@@ -128,6 +128,24 @@ class VnPayController extends \App\Http\Controllers\Controller
                 }
             }
 
+            $mainAmount = 0;
+            foreach ($cartItems as $item) {
+                $mainAmount += $item->course->discount > 0 ? $item->course->discount : $item->course->price;
+            }
+            $paidAmount = $request->vnp_Amount / 100;
+            $currency = 'VND';
+
+            // Store order and enrollments using OrderService
+            \App\Service\OrderService::storeOrder(
+                $request->vnp_TransactionNo ?? $request->vnp_TxnRef,
+                $user->id,
+                'approved',
+                $mainAmount,
+                $paidAmount,
+                $currency,
+                'vnpay'
+            );
+
             // Clear the cart after enrollment
             \App\Models\Cart::where('user_id', $user->id)->delete();
 
