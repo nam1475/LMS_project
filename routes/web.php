@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CertificateController;
+use App\Http\Controllers\Frontend\ChatController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
@@ -22,7 +23,10 @@ use App\Http\Controllers\Frontend\WithdrawController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\Payment\VnPayController;
+use Illuminate\Support\Facades\Broadcast;
 
+// Broadcast
+Broadcast::routes(['middleware' => ['auth:web']]);
 
 //VNPay
 
@@ -90,6 +94,8 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
    Route::get('blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
    Route::post('blog/comment/{id}', [BlogController::class, 'storeComment'])->name('blog.comment.store');
 
+   
+
    /**
     * ------------------------------------------------------
     * Student Routes
@@ -124,6 +130,12 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       Route::get('orders', [StudentOrderController::class, 'index'])->name('orders.index');
       Route::get('orders/{order}', [StudentOrderController::class, 'show'])->name('orders.show');
 
+      /** Chat Routes */
+      Route::get('chats', [ChatController::class, 'index'])->name('chats.index');
+      // Route::post('/chats/mark-as-not-read', [ChatController::class, 'markAsNotRead']);
+      Route::get('chats/fetch-messages', [ChatController::class, 'fetchMessages'])->name('fetch.messages');
+      Route::post('chats/send-message', [ChatController::class, 'sendMessage'])->name('send.message');
+
    });
 
    /**
@@ -134,6 +146,11 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
    Route::group(['middleware' => ['auth:web', 'verified', 'check_role:instructor'], 'prefix' => 'instructor', 'as' => 'instructor.'], function() {
       Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('dashboard');
 
+      /** Chat Routes */
+      Route::get('chats', [ChatController::class, 'index'])->name('chats.index');
+      Route::get('chats/fetch-messages', [ChatController::class, 'fetchMessages'])->name('fetch.messages');
+      Route::post('chats/send-message', [ChatController::class, 'sendMessage'])->name('send.message');
+      
       /** Profile Routes */
       Route::get('profile', [ProfileController::class, 'instructorIndex'])->name('profile.index');
       Route::post('profile/update', [ProfileController::class, 'profileUpdate'])->name('profile.update');

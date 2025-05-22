@@ -146,7 +146,6 @@
                                         <div class="modal-body">
                                             {{-- <form action="{{ route('cart.index') }}" method="GET" class="d-flex mb-4"> --}}
                                             <form method="POST" action="{{ route('apply-coupon') }}" class="d-flex mb-4">
-                                            {{-- <form method="POST" data-route="{{ route('apply-coupon') }}" data-total-price="{{ $totalPrice }}" class="d-flex mb-4"> --}}
                                                 @csrf
                                                 <input type="text" name="coupon_code" id="coupon_code_input" class="form-control me-2" placeholder="Enter your coupon code" value="{{ request('coupon_code') }}">
                                                 <input type="hidden" name="original_price" value="{{ $originalPrice }}">

@@ -157,7 +157,6 @@ $(function() {
         currentPage = page;
         var start = (page - 1) * itemsPerPage;
         var end = start + itemsPerPage;
-        console.log(page, start, end, currentPage);
         
         items.hide();
         items.slice(start, end).show();

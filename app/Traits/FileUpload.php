@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Exception;
 use Illuminate\Http\UploadedFile;
-use File;
+use Illuminate\Support\Facades\File;
 
 trait FileUpload {
 

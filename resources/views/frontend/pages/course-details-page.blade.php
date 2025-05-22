@@ -8,6 +8,10 @@
 @endpush
 @section('content')
 <style>
+    .hidden{
+        display: none;
+    }
+
     .coupon-applied {
       border: 1px dashed #ccc;
       border-radius: 4px;
@@ -109,6 +113,7 @@
                                 <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
                                     data-bs-target="#pills-contact" type="button" role="tab"
                                     aria-controls="pills-contact" aria-selected="false">Instructor</button>
+                                
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pills-disabled-tab2" data-bs-toggle="pill"
@@ -177,6 +182,31 @@
                                         <div class="col-lg-8 col-md-6">
                                             <div class="wsus__courses_instructor_text">
                                                 <h4>{{ $course->instructor->name }}</h4>
+                                                @if (!$course->instructor)
+                                                    <button type="button" id="show-chat-modal" class="common_btn">
+                                                        Chat now
+                                                    </button>
+                                                @endif
+
+                                                <div class="modal fade" id="chat-modal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title fw-bold" id="chatModalLabel">Chat with {{ $course->instructor->name }}</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form method="POST" id="chat-form" data-route="{{ route('student.send.message') }}" class="d-flex mb-4">
+                                                                    @csrf
+                                                                    <input type="text" name="message" id="message-input" class="form-control me-2" placeholder="Enter your message" value="">
+                                                                    <input type="hidden" name="receiver_id" id="receiver-id" value="{{ $course->instructor->id }}">
+                                                                    <button type="submit" id="send-message-button" class="btn btn-primary">Send</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                                 <p class="designation">{{ $course->instructor->headline }}</p>
                                                 <ul class="list">
                                                     @php
@@ -471,6 +501,8 @@
             </div>
         </div>
     </section>
+
+   
     <!--===========================
                 COURSES DETAILS END
             ============================-->
@@ -481,11 +513,48 @@
 
 <script>
     $(function() {
-      $('#starRating li').on('click', function() {
-        var $starRating = $('#starRating').find('.active').length;
+        $('#starRating li').on('click', function() {
+            var $starRating = $('#starRating').find('.active').length;
 
-        $('#rating').val($starRating);
-      })
+            $('#rating').val($starRating);
+        })
+
+        $('#show-chat-modal').on('click', function (e) {
+            e.preventDefault();
+            $('#chat-modal').modal('show');
+        });
+
+        // Send message
+        $('#chat-form').on('submit', function (e) {
+            e.preventDefault();
+            var message = $('#message-input').val();
+            var receiverId = $('#receiver-id').val();
+            var route = $('#message-form').data('route');
+
+            $.ajax({
+                url: "{{ route('student.send.message') }}",
+                type: "POST",
+                data: {
+                    _token: $('input[name="_token"]').val(),
+                    receiver_id: receiverId,
+                    message: message
+                },
+                beforeSend: function() {
+                    $('#send-message-button').text('Sending...').attr('disabled', true);
+                },
+                success: function (response) {
+                    notyf.success(response.message);
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1000);
+                },
+                error: function (error) {
+                    notyf.error(error.responseJSON.message);
+                }
+            });
+
+        
+        });
     })
 </script>
 @endpush

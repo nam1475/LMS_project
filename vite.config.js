@@ -17,6 +17,7 @@ export default defineConfig({
                 'resources/js/frontend/frontend.js',
                 'resources/js/frontend/player.js',
 
+
             ],
             refresh: true,
         }),

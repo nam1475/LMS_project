@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'image',
         'approve_status',
         'document',
         'enmail_verified_at',
@@ -53,6 +54,8 @@ class User extends Authenticatable
     }
 
 
+
+
     function courses() : HasMany {
         return $this->hasMany(Course::class, 'instructor_id', 'id');
     }
@@ -74,4 +77,18 @@ class User extends Authenticatable
     function enrollments() : HasMany{
        return $this->hasMany(Enrollment::class, 'user_id', 'id');
     }
+
+
+    public function unreadMessages($senderId) {
+        return $this->hasMany(Chat::class, 'receiver_id', 'id')->where(['is_read' => false, 'sender_id' => $senderId]);
+    }
+
+    // public function readMessages($senderId) {
+    //     return $this->hasMany(Chat::class, 'receiver_id', 'id')->where('sender_id', $senderId)
+    //                 ->where('is_read', false)->update(['is_read' => true]);
+    // }
+
+    // public function messages($senderId) : HasMany {
+    //     return $this->hasMany(Chat::class, 'receiver_id', 'id')->where('sender_id', $senderId);
+    // }
 }
