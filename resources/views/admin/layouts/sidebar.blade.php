@@ -20,7 +20,7 @@
                             <path
                                 d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
                         </svg>
-                        Mã nguồn
+                        Source code
                     </a>
                     <a href="https://github.com/sponsors/codecalm" class="btn" target="_blank" rel="noreferrer">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon text-pink" width="24" height="24"
@@ -29,12 +29,12 @@
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
                         </svg>
-                        Tài trợ
+                        Sponsor
                     </a>
                 </div>
             </div>
             <div class="d-none d-lg-flex">
-                <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Bật chế độ tối"
+                <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode"
                     data-bs-toggle="tooltip" data-bs-placement="bottom">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
@@ -43,7 +43,7 @@
                         <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
                     </svg>
                 </a>
-                <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Bật chế độ sáng"
+                <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Enable light mode"
                     data-bs-toggle="tooltip" data-bs-placement="bottom">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
@@ -56,7 +56,7 @@
                 </a>
                 <div class="nav-item dropdown d-none d-md-flex me-3">
                     <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1"
-                        aria-label="Hiển thị thông báo">
+                        aria-label="Show notifications">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                             viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -70,7 +70,7 @@
                     <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Cập nhật gần đây</h3>
+                                <h3 class="card-title">Recent updates</h3>
                             </div>
                             <div class="list-group list-group-flush list-group-hoverable">
                                 <div class="list-group-item">
@@ -78,9 +78,9 @@
                                         <div class="col-auto"><span
                                                 class="status-dot status-dot-animated bg-red d-block"></span></div>
                                         <div class="col text-truncate">
-                                            <a href="#" class="text-body d-block">Ví dụ 1</a>
+                                            <a href="#" class="text-body d-block">Example 1</a>
                                             <div class="d-block text-secondary text-truncate mt-n1">
-                                                Thay đổi thẻ HTML lỗi thời thành các lớp trang trí văn bản (#29604)
+                                                Change deprecated HTML tags to text decoration classes (#29604)
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -101,7 +101,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-auto"><span class="status-dot d-block"></span></div>
                                         <div class="col text-truncate">
-                                            <a href="#" class="text-body d-block">Ví dụ 2</a>
+                                            <a href="#" class="text-body d-block">Example 2</a>
                                             <div class="d-block text-secondary text-truncate mt-n1">
                                                 justify-content:between ⇒ justify-content:space-between (#29734)
                                             </div>
@@ -124,9 +124,9 @@
                                     <div class="row align-items-center">
                                         <div class="col-auto"><span class="status-dot d-block"></span></div>
                                         <div class="col text-truncate">
-                                            <a href="#" class="text-body d-block">Ví dụ 3</a>
+                                            <a href="#" class="text-body d-block">Example 3</a>
                                             <div class="d-block text-secondary text-truncate mt-n1">
-                                                Cập nhật change-version.js (#29736)
+                                                Update change-version.js (#29736)
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -148,9 +148,9 @@
                                         <div class="col-auto"><span
                                                 class="status-dot status-dot-animated bg-green d-block"></span></div>
                                         <div class="col text-truncate">
-                                            <a href="#" class="text-body d-block">Ví dụ 4</a>
+                                            <a href="#" class="text-body d-block">Example 4</a>
                                             <div class="d-block text-secondary text-truncate mt-n1">
-                                                Tái tạo package-lock.json (#29730)
+                                                Regenerate package-lock.json (#29730)
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -174,18 +174,18 @@
             </div>
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
-                    aria-label="Mở menu người dùng">
+                    aria-label="Open user menu">
                     <span class="avatar avatar-sm" style="background-image: url(./static/avatars/000m.jpg)"></span>
                     <div class="d-none d-xl-block ps-2">
                         <div>Paweł Kuna</div>
-                        <div class="mt-1 small text-secondary">Nhà thiết kế giao diện</div>
+                        <div class="mt-1 small text-secondary">UI Designer</div>
                     </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <a href="{{ route('admin.profile.index') }}" class="dropdown-item">Hồ sơ</a>
+                    <a href="{{ route('admin.profile.index') }}" class="dropdown-item">Profile</a>
                     <div class="dropdown-divider"></div>
-                    <a href="./settings.html" class="dropdown-item">Cài đặt</a>
-                    <a href="./sign-in.html" class="dropdown-item">Đăng xuất</a>
+                    <a href="./settings.html" class="dropdown-item">Settings</a>
+                    <a href="./sign-in.html" class="dropdown-item">Logout</a>
                 </div>
             </div>
         </div>
@@ -198,7 +198,7 @@
                             <i class="ti ti-home"></i>
                         </span>
                         <span class="nav-link-title">
-                            Thống kê
+                            Dashboard
                         </span>
                     </a>
                 </li>
@@ -209,7 +209,7 @@
                         <i class="ti ti-help-hexagon"></i>
                         </span>
                         <span class="nav-link-title">
-                            Yêu cầu của giảng viên
+                            Instructor Requests
                         </span>
                     </a>
                 </li>
@@ -221,7 +221,7 @@
                             <i class="ti ti-book"></i>
                         </span>
                         <span class="nav-link-title">
-                            Quản lý khóa học
+                            Course Management
                         </span>
                     </a>
 
@@ -229,33 +229,33 @@
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.courses.*']) }}" href="{{ route('admin.courses.index') }}">
-                                    Khóa học
+                                    Courses
                                 </a>
 
                             </div>
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.course-categories.*']) }}" href="{{ route('admin.course-categories.index') }}">
-                                    Danh mục khóa học
+                                    Course Categories
                                 </a>
 
                             </div>
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.course-languages.*']) }}" href="{{ route('admin.course-languages.index') }}">
-                                    Ngôn ngữ khóa học
+                                    Course Languages
                                 </a>
 
                             </div>
 
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.course-levels.*']) }}" href="{{ route('admin.course-levels.index') }}">
-                                    Cấp độ khóa học
+                                    Course Levels
                                 </a>
 
                             </div>
 
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.reviews.*']) }}" href="{{ route('admin.reviews.index') }}">
-                                    Đánh giá khóa học
+                                    Course Reviews
                                 </a>
 
                             </div>
@@ -271,12 +271,12 @@
                             <i class="ti ti-discount"></i>
                         </span>
                         <span class="nav-link-title">
-                            Mã khuyến mại
+                            Coupons
                         </span>
                     </a>
                 </li>
 
-                <li class="nav-item {{ sidebarItemActive(['admin.certificate-builder.*']) }}">
+                {{-- <li class="nav-item {{ sidebarItemActive(['admin.certificate-builder.*']) }}">
                     <a class="nav-link" href="{{ route('admin.certificate-builder.index') }}">
 
                         <span
@@ -284,10 +284,10 @@
                             <i class="ti ti-certificate"></i>
                         </span>
                         <span class="nav-link-title">
-                            Trình tạo chứng chỉ
+                            Certificate Builder
                         </span>
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="nav-item {{ sidebarItemActive(['admin.orders.*']) }}">
                     <a class="nav-link" href="{{ route('admin.orders.index') }}">
@@ -297,7 +297,7 @@
                            <i class="ti ti-shopping-cart"></i>
                         </span>
                         <span class="nav-link-title">
-                            Đơn hàng
+                            Orders
                         </span>
                     </a>
                 </li>
@@ -309,7 +309,7 @@
                            <i class="ti ti-coins"></i>
                         </span>
                         <span class="nav-link-title">
-                            Yêu cầu thanh toán
+                            Withdrawal Requests
                         </span>
                     </a>
                 </li>
@@ -322,7 +322,7 @@
                             <i class="ti ti-brand-blogger"></i>
                         </span>
                         <span class="nav-link-title">
-                            Quản lý nội dung
+                            Content Management
                         </span>
                     </a>
 
@@ -330,17 +330,16 @@
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.blog-categories.*']) }}" href="{{ route('admin.blog-categories.index') }}">
-                                   Danh mục blog
+                                    Blog Categories
                                 </a>
 
                             </div>
-                           
                         </div>
 
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.blogs.*']) }}" href="{{ route('admin.blogs.index') }}">
-                                    Blog
+                                    Blogs
                                 </a>
                             </div>
                         </div>
@@ -355,7 +354,7 @@
                             <i class="ti ti-cash"></i>
                         </span>
                         <span class="nav-link-title">
-                            Cổng thanh toán
+                            Payment Gateways
                         </span>
                     </a>
                 </li>
@@ -368,7 +367,7 @@
                             <i class="ti ti-layout-grid"></i>
                         </span>
                         <span class="nav-link-title">
-                            Các phần
+                            Sections
                         </span>
                     </a>
 
@@ -377,31 +376,31 @@
                            
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.hero.*']) }}" href="{{ route('admin.hero.index') }}">
-                                    Phần giới thiệu
+                                    Hero Section
                                 </a>
 
                             </div>
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.feature.*']) }}" href="{{ route('admin.feature.index') }}">
-                                    Tính năng
+                                    Features
                                 </a>
 
                             </div>
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.about-section.*']) }}" href="{{ route('admin.about-section.index') }}">
-                                    Về chúng tôi
+                                    About Us
                                 </a>
 
                             </div>
                              <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.latest-courses-section.*']) }}" href="{{ route('admin.latest-courses-section.index') }}">
-                                    Khóa học mới nhất
+                                    Latest Courses
                                 </a>
                             </div>
                            
                              <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.become-instructor-section.*']) }}" href="{{ route('admin.become-instructor-section.index') }}">
-                                    Banner trở thành giảng viên
+                                    Become Instructor Banner
                                 </a>
                             </div>
 
@@ -412,24 +411,24 @@
                             </div>
                              <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.brand-section.*']) }}" href="{{ route('admin.brand-section.index') }}">
-                                    Thương hiệu
+                                    Brand
                                 </a>
                             </div>
 
                              <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.featured-instructor-section.*']) }}" href="{{ route('admin.featured-instructor-section.index') }}">
-                                   Giảng viên nổi bật
+                                   Featured Instructor
                                 </a>
                             </div>
 
                              <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.testimonial-section.*']) }}" href="{{ route('admin.testimonial-section.index') }}">
-                                    Lời chứng thực
+                                    Testimonials
                                 </a>
                             </div>
                              <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.counter-section.*']) }}" href="{{ route('admin.counter-section.index') }}">
-                                   Bộ đếm
+                                   Counter
                                 </a>
                             </div>
 
@@ -447,7 +446,7 @@
                             <i class="ti ti-address-book"></i>
                         </span>
                         <span class="nav-link-title">
-                            Liên hệ
+                            Contact
                         </span>
                     </a>
 
@@ -455,14 +454,14 @@
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.contact.*']) }}" href="{{ route('admin.contact.index') }}">
-                                   Thẻ liên hệ
+                                   Contact Cards
                                 </a>
 
                             </div>
                            
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.contact-setting.*']) }}" href="{{ route('admin.contact-setting.index') }}">
-                                   Cài đặt liên hệ
+                                   Contact Settings
                                 </a>
 
                             </div>
@@ -478,7 +477,7 @@
                             <i class="ti ti-layout-navbar"></i>
                         </span>
                         <span class="nav-link-title">
-                            Đầu trang / Chân trang
+                            Header / Footer
                         </span>
                     </a>
 
@@ -486,27 +485,27 @@
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.top-bar.*']) }}" href="{{ route('admin.top-bar.index') }}">
-                                   Thanh trên cùng
+                                   Top Bar
                                 </a>
                             </div>
                              <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.footer.*']) }}" href="{{ route('admin.footer.index') }}">
-                                  Nội dung chân trang
+                                  Footer Content
                                 </a>
                             </div>                          
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.footer-column-one.index']) }}" href="{{ route('admin.footer-column-one.index') }}">
-                                  Cột chân trang một
+                                  Footer Column One
                                 </a>
                             </div> 
                             <div class="dropdown-menu-column ">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.footer-column-two.*']) }}" href="{{ route('admin.footer-column-two.index') }}">
-                                  Cột chân trang hai
+                                  Footer Column Two
                                 </a>
                             </div> 
                             <div class="dropdown-menu-column ">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.social-links.*']) }}" href="{{ route('admin.social-links.index') }}">
-                                  Liên kết mạng xã hội
+                                  Social Links
                                 </a>
                             </div>  
                             
@@ -522,7 +521,7 @@
                             <i class="ti ti-app-window"></i>
                         </span>
                         <span class="nav-link-title">
-                            Trang tùy chỉnh
+                            Custom Pages
                         </span>
                     </a>
                 </li>
@@ -534,7 +533,7 @@
                            <i class="ti ti-adjustments"></i>
                         </span>
                         <span class="nav-link-title ">
-                            Cài đặt thanh toán
+                            Payment Settings
                         </span>
                     </a>
                 </li>
@@ -545,21 +544,21 @@
                             <i class="ti ti-settings"></i>
                         </span>
                         <span class="nav-link-title">
-                            Cài đặt
+                            Settings
                         </span>
                     </a>
                 </li>
-                <li class="nav-item ">
+                {{-- <li class="nav-item ">
                     <a class="nav-link {{ sidebarItemActive(['admin.database-clear.*']) }}" href="{{ route('admin.database-clear.index') }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block">
                             <i class="ti ti-skull"></i>
                         </span>
                         <span class="nav-link-title">
-                           Xóa cơ sở dữ liệu
+                            Clear Database
                         </span>
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </div>
     </div>

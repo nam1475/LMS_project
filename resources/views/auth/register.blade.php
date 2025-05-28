@@ -107,7 +107,7 @@
                                     <div class="col-xl-12">
                                         <div class="wsus__login_form_input">
                                             <label>Document (Education/Certificate)</label>
-                                            <input type="file" placeholder="Document" name="document" required>
+                                            <input type="file" placeholder="Document" name="document">
                                             <x-input-error :messages="$errors->get('document')" class="mt-2" />
 
                                         </div>

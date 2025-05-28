@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 
 class SettingService
 {
-        /** Get all payment gateway settings and store in cache */
+  /** Get all payment gateway settings and store in cache */
   function getSettings(): array {
     return Cache::rememberForever('settings', function() {
         return Setting::pluck('value', 'key')->toArray(); // ['KEY' => 'VALUE']

@@ -9,6 +9,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -30,47 +31,57 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+        try{
+            DB::beginTransaction();
 
-        if($request->type === 'student'){
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => 'student',
-                'approve_status' => 'approved'
-            ]);
-        }elseif($request->type === 'instructor') {
-            $request->validate(['document' => ['required', 'mimes:pdf,doc,docx,jpg,png', 'max:12000']]);
-            $filePath = $this->uploadFile($request->file('document'));
+            if($request->type === 'student'){
+                $user = User::create([
+                    'name' => $request->name,   
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'role' => 'student',
+                    'approve_status' => 'approved'
+                ]);
+            }elseif($request->type === 'instructor') {
+                if($request->hasFile('document')){
+                    $request->validate(['document' => ['mimes:pdf,doc,docx,jpg,png', 'max:12000']]);
+                    $filePath = $this->uploadFile($request->file('document'));
+                }
 
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'role' => 'student',
-                'approve_status' => 'pending',
-                'document' => $filePath
-            ]);
-        }else {
-            abort(404);
-        }
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'role' => 'student',
+                    'approve_status' => 'pending',
+                    'document' => $filePath ?? null
+                ]);
+            }else {
+                abort(404);
+            }
 
-        event(new Registered($user));
+            event(new Registered($user));
 
-        Auth::login($user);
+            Auth::guard('web')->login($user);
 
-        if($request->user()->role == 'student') {
-            return redirect()->intended(route('student.dashboard', absolute: false));
-        }elseif($request->user()->role == 'instructor') {
-            return redirect()->intended(route('instructor.dashboard', absolute: false));
+            DB::commit();
+
+            return redirect()->route('verification.notice');
+            // if($request->user()->role == 'student') {
+            //     return redirect()->intended(route('student.dashboard', absolute: false));
+            // }elseif($request->user()->role == 'instructor') {
+            //     return redirect()->intended(route('instructor.dashboard', absolute: false));
+            // }
+        }catch(\Exception $e){
+            DB::rollBack();
+            throw new \Exception($e->getMessage());
         }
     }
 }

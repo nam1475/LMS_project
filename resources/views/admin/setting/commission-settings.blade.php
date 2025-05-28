@@ -23,7 +23,7 @@
         <div class="btn-list justify-content-end">
 
             <button type="submit" class="btn btn-primary">
-                Submit
+                Save
             </button>
         </div>
     </div>
