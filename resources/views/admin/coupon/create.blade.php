@@ -40,8 +40,10 @@
 
                             <div class="col-md-12 mt-3">
                                 <div class="mb-3">
-                                    <label class="form-label text-capitalize" >Mnimum Order Amount</label>
-                                    <input type="number" value="0" id="minimum_order_amount" name="minimum_order_amount" class="form-control">
+                                    <label class="form-label text-capitalize" >Mnimum Order Amount (VND)</label>
+                                    <input type="text" id="minimum_order_amount" class="form-control number-display-input">
+                                    <input type="hidden" class="number-raw-input" name="minimum_order_amount" />
+                                    <x-input-error :messages="$errors->get('minimum_order_amount')" class="mt-2" />
                                 </div>
                             </div> 
 

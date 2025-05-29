@@ -12,7 +12,7 @@
                         <table class="table table-vcenter card-table">
                             <thead>
                                 <tr>
-                                    <th>No.</th>
+                                    <th>ID</th>
                                     <th>Name</th>
                                     <th>Amount</th>
                                     <th>Paid Amount</th>
@@ -25,7 +25,8 @@
                                 @forelse ($orders as $order)
                                 <tr>
                                     <td>
-                                        {{ $loop->iteration }}
+                                        {{-- {{ $loop->iteration }} --}}
+                                        {{ $order->id }}
                                     </td>
                                 <td>
                                     <div>

@@ -102,32 +102,27 @@
             <div class="row justify-content-end mt-4">
                 <div class="col-xxl-4 col-md-7 col-lg-6 wow fadeInUp"
                     style="visibility: visible; animation-name: fadeInUp;">
-                        <?php
-                            $originalPrice = cartTotal();
-                            $totalPriceWithCoupon = 0;
-                            
-                        ?>
                     <div class="card card-custom">
                         <h5 class="mb-4 fw-bold">Summary</h5>
                 
                         <div class="d-flex justify-content-between mb-2">
                             <span>Original Price</span>
-                            <span class="price text-muted">đ{{ number_format($originalPrice) }}</span>
+                            <span class="price text-muted">đ{{ number_format($originalAmount) }}</span>
                         </div>
                 
                         <hr>
-                        
+
                         @if($coupon)
                             @php
-                                $totalPriceWithCoupon = cartTotal($coupon->code);
-                                $discountAmount = $originalPrice - $totalPriceWithCoupon;
+                                // $totalPriceWithCoupon = cartTotal($coupon->code);
+                                $discountAmount = getDiscountAmount($originalAmount, $coupon->code);
                             @endphp
                             <div class="d-flex justify-content-between mb-1">
                                 <span>Coupon code<br><small class="text-muted">({{ $coupon->code }})</small></span>
                                 <span class="discount">
                                     - đ{{ number_format($discountAmount) }}
                                     <span class="pro_icon ">
-                                        <a href="{{ route('cart.index') }}"><i class="fal fa-times text-secondary" aria-hidden="true"></i></a>
+                                        <a href="{{ route('coupon.remove') }}"><i class="fal fa-times text-secondary" aria-hidden="true"></i></a>
                                     </span>
                                 </span>
                             </div>
@@ -147,26 +142,32 @@
                                             {{-- <form action="{{ route('cart.index') }}" method="GET" class="d-flex mb-4"> --}}
                                             <form method="POST" action="{{ route('apply-coupon') }}" class="d-flex mb-4">
                                                 @csrf
-                                                <input type="text" name="coupon_code" id="coupon_code_input" class="form-control me-2" placeholder="Enter your coupon code" value="{{ request('coupon_code') }}">
-                                                <input type="hidden" name="original_price" value="{{ $originalPrice }}">
+                                                <input type="text" name="coupon_code" id="coupon_code_input" class="form-control me-2" placeholder="Enter your coupon code" 
+                                                    value="{{ request('coupon_code') }}">
+                                                <input type="hidden" name="original_price" value="{{ $originalAmount }}">
+                                                {{-- <input type="hidden" name="discount_amount" value="{{ $discountAmount }}"> --}}
                                                 <x-input-error :messages="$errors->get('coupon_code')" class="mt-2" />
                                                 <button type="submit" class="btn btn-primary">Apply</button>
                                             </form>
                                             <h6 class="fw-bold mb-3">Coupon code can be applied</h6>
-                                            @foreach ($coupons as $c)
-                                                <div class="row p-3 border rounded coupon_code_card">
-                                                    <div class="col-5">
-                                                        <img src="{{ asset(config('settings.site_logo')) }}" alt="EduCore" class="img-fluid">
+                                            @if($coupons->count() != 0)
+                                                @foreach ($coupons as $c)
+                                                    <div class="row p-3 border rounded coupon_code_card">
+                                                        <div class="col-5">
+                                                            <img src="{{ asset(config('settings.site_logo')) }}" alt="EduCore" class="img-fluid">
+                                                        </div>
+                                                        <div class="col-7">
+                                                            <h6 id="coupon_code" data-code="{{ $c->code }}">{{ $c->code }}</h6>
+                                                            <p class="mb-1 fw-bold">Discount {{ $c->type == 'percent' ? $c->value . '%' : 'đ' . number_format($c->value) }}</p>
+                                                            <p class="mb-1 text-muted">Valid course categories: {{ $c->courseCategories()->pluck('name')->implode(', ') }}</p>
+                                                            <p class="mb-1 text-muted">Min order's value {{ 'đ' . number_format($c->minimum_order_amount) }}</p>
+                                                            <p class="mb-0 text-muted">Expire date: {{ $c->expire_date }} - 23:59</p>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-7">
-                                                        <h6 id="coupon_code" data-code="{{ $c->code }}">{{ $c->code }}</h6>
-                                                        <p class="mb-1 fw-bold">Discount {{ $c->type == 'percent' ? $c->value . '%' : 'đ' . number_format($c->value) }}</p>
-                                                        <p class="mb-1 text-muted">Valid course categories: {{ $c->courseCategories()->pluck('name')->implode(', ') }}</p>
-                                                        <p class="mb-1 text-muted">Min order's value {{ 'đ' . number_format($c->minimum_order_amount) }}</p>
-                                                        <p class="mb-0 text-muted">Expire date: {{ $c->expire_date }} - 23:59</p>
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                                                @endforeach
+                                            @else
+                                                <p class="text-center">No coupons found</p>
+                                            @endif
                                         </div>
                                         <div class="modal-footer justify-content-center">
                                             <nav>
@@ -192,12 +193,16 @@
                         
                         <div class="d-flex justify-content-between mb-4">
                             <span class="fw-bold">Total:</span>
-                            <span class="fw-bold fs-5">đ{{ number_format($totalPriceWithCoupon == 0 ? $originalPrice : $totalPriceWithCoupon) }}</span>
+                            {{-- <span class="fw-bold fs-5">đ{{ number_format($totalPriceWithCoupon == 0 ? $originalAmount : $totalPriceWithCoupon) }}</span> --}}
+                            @php
+                                $subtotalAmount = isset($discountAmount) ? $originalAmount - $discountAmount : $originalAmount;
+                            @endphp
+                            <span class="fw-bold fs-5">đ{{ number_format($subtotalAmount) }}</span>
                         </div>
 
-                        {{-- Nếu $coupon->code rỗng/null thì sẽ bị loại bỏ  --}}
-                        <a class="common_btn" href="{{ route('checkout.index', array_filter(['coupon_code' => $coupon ? $coupon->code : null])) }}" >
-                            Buy now
+                        {{-- <a class="common_btn" href="{{ route('checkout.index', array_filter(['coupon_code' => $coupon ? $coupon->code : null])) }}" > --}}
+                        <a class="common_btn" href="{{ route('checkout.index') }}" >
+                            Checkout now
                         </a>
                     </div>
                 </div>

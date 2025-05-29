@@ -46,8 +46,10 @@ $(function () {
             },
             success: function (data) {
                 if (data.status == 'success') {
-
-                    window.location.href = data.redirect
+                    notyf.success(data.message);
+                    setTimeout(function () {
+                        window.location.href = data.redirect;
+                    }, 1000);
                 }
             },
             error: function (xhr, status, error) {
@@ -78,7 +80,10 @@ $(function () {
             },
             success: function (data) {
                 if (data.status == 'success') {
-                    window.location.href = data.redirect
+                    notyf.success(data.message);
+                    setTimeout(function () {
+                        window.location.href = data.redirect;
+                    }, 1000);
                 }
             },
             error: function (xhr, status, error) {

@@ -125,6 +125,8 @@
     <!--main/custom js-->
     <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
 
+    @vite(['resources/js/global.js'])
+
     <!--dynamic js-->
     @stack('scripts')
 
@@ -134,12 +136,16 @@
             dismissible: true
         });
 
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                notyf.error("{{ $error }}");
-            @endforeach
-        @endif
+        // @if ($errors->any())
+        //     @foreach ($errors->all() as $error)
+        //         notyf.error("{{ $error }}");
+        //     @endforeach
+        // @endif
     </script>
+
+    {{-- @include('frontend.alert.alert') --}}
+
+    
 
 </body>
 

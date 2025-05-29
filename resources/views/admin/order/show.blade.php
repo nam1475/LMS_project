@@ -50,7 +50,8 @@
                                 <p class="h3">Client</p>
                                 <address>
                                     {{ $order->customer->name }}<br>
-                                    {{ $order->customer->email }}
+                                    {{ $order->customer->email }} <br>
+                                    Order Date: {{ $order->created_at }}
                                 </address>
                             </div>
                             <div class="col-12 my-5">
@@ -68,25 +69,40 @@
                             </thead>
                             <tbody>
                                 @foreach($order->orderItems as $item)
-                                <tr>
-                                    <td class="text-center">1</td>
-                                    <td>
-                                        <p class="strong mb-1">{{ $item->course->title }}</p>
-                                        <div class="text-secondary">By {{ $item->course->instructor->name }}</div>
-                                    </td>
-                                    <td class="text-center">
-                                        1
-                                    </td>
-                                    <td class="text-end">{{ $item->price }}</td>
-                                </tr>
+                                    <tr>
+                                        <td class="text-center">1</td>
+                                        <td>
+                                            <p class="strong mb-1">{{ $item->course->title }}</p>
+                                            <div class="text-secondary">By {{ $item->course->instructor->name }}</div>
+                                        </td>
+                                        <td class="text-center">
+                                            1
+                                        </td>
+                                        <td class="text-end">{{ number_format($item->price) }}{{ $order->currency }}</td>
+                                    </tr>
                                 @endforeach
                                 <tr>
+                                    <td colspan="3" class="strong text-end">Total</td>
+                                    <td class="text-end">{{ number_format($order->total_amount) }}{{ $order->currency }}</td>
+                                </tr>
+
+                                @if($order->coupon_code)
+                                    <tr>
+                                        <td colspan="3" class="strong text-end">Coupon code</td>
+                                        <td class="text-end">{{ $order->coupon_code }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" class="strong text-end">Discount amount</td>
+                                        <td class="text-end">-{{ number_format($order->coupon_amount) }}{{ $order->currency }}</td>
+                                    </tr>
+                                @endif
+                                <tr>
                                     <td colspan="3" class="strong text-end">Subtotal</td>
-                                    <td class="text-end">{{ $order->total_amount }}</td>
+                                    <td class="text-end">{{ number_format($order->subtotal_amount) }}{{ $order->currency }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="strong text-end">Paid Amount</td>
-                                    <td class="text-end">{{ $order->paid_amount }} {{ $order->currency }}</td>
+                                    <td class="text-end">{{ number_format($order->paid_amount) }}{{ $order->currency }}</td>
                                 </tr>
                                 
                             </tbody>

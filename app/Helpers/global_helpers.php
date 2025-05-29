@@ -53,10 +53,19 @@ if(!function_exists('cartTotal')) {
 
         $couponObject = new Coupon();
         if($couponCode) {
-            $total = $couponObject->checkCouponType($couponCode, $total);
+            $total = $couponObject->calculateTotalBasedOnType($couponCode, $total);
         }
 
         return $total;
+    }
+}
+
+
+if(!function_exists('getDiscountAmount')){
+    function getDiscountAmount($originalPrice, $couponCode) {
+        $totalPriceWithCoupon = cartTotal($couponCode);
+        $discountAmount = $originalPrice - $totalPriceWithCoupon;
+        return $discountAmount;
     }
 }
 

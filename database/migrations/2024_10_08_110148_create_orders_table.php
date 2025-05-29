@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('buyer_id')->constrained('users');
             $table->enum('status', ['pending', 'approved'])->default('pending');
             $table->double('total_amount');
+            $table->double('subtotal_amount');
             $table->double('paid_amount');
             $table->string('currency');
             $table->boolean('has_coupon')->default(false);

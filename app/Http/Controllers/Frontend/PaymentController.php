@@ -96,15 +96,15 @@ class PaymentController extends Controller
             $currency = $capture['amount']['currency_code'];
 
             try {
-                OrderService::storeOrder(
-                    $transactionId,
-                    auth('web')->user()->id,
-                    'approved',
-                    $mainAmount,
-                    $paidAmount,
-                    $currency,
-                    'paypal',
-                );
+                // OrderService::storeOrder(
+                //     $transactionId,
+                //     auth('web')->user()->id,
+                //     'approved',
+                //     $mainAmount,
+                //     $paidAmount,
+                //     $currency,
+                //     'paypal',
+                // );
 
                 return redirect()->route('order.success');
             } catch (\Throwable $th) {
@@ -155,15 +155,15 @@ class PaymentController extends Controller
             $currency = $response->currency;
 
             try {
-                OrderService::storeOrder(
-                    $transactionId,
-                    auth('web')->user()->id,
-                    'approved',
-                    $mainAmount,
-                    $paidAmount,
-                    $currency,
-                    'stripe',
-                );
+                // OrderService::storeOrder(
+                //     $transactionId,
+                //     auth('web')->user()->id,
+                //     'approved',
+                //     $mainAmount,
+                //     $paidAmount,
+                //     $currency,
+                //     'stripe',
+                // );
 
                 return redirect()->route('order.success');
             } catch (\Throwable $th) {
@@ -197,15 +197,15 @@ class PaymentController extends Controller
         $currency = $response->currency;
 
         if($response['status'] === 'captured') {
-             OrderService::storeOrder(
-                    $transactionId,
-                    auth('web')->user()->id,
-                    'approved',
-                    $mainAmount,
-                    $paidAmount,
-                    $currency,
-                    'razorpay',
-                );
+            //  OrderService::storeOrder(
+            //         $transactionId,
+            //         auth('web')->user()->id,
+            //         'approved',
+            //         $mainAmount,
+            //         $paidAmount,
+            //         $currency,
+            //         'razorpay',
+            //     );
                 return redirect()->route('order.success');
         }
         return redirect()->route('order.failed');

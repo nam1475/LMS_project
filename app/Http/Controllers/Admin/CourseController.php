@@ -25,7 +25,7 @@ class CourseController extends Controller
 
     function index(): View
     {
-        $courses = Course::with(['instructor'])->paginate(25);
+        $courses = Course::with(['instructor'])->orderBy('created_at', 'desc')->paginate(25);
         return view('admin.course.course-module.index', compact('courses'));
     }
 
@@ -67,7 +67,7 @@ class CourseController extends Controller
 
         return response([
             'status' => 'success',
-            'message' => 'Updated successfully.',
+            'message' => 'Create course successfully.',
             'redirect' => route('admin.courses.edit', ['id' => $course->id, 'step' => $request->next_step])
         ]);
     }

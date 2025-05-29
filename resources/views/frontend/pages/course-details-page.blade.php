@@ -8,36 +8,19 @@
 @endpush
 @section('content')
 <style>
-    .hidden{
-        display: none;
-    }
-
-    .coupon-applied {
-      border: 1px dashed #ccc;
-      border-radius: 4px;
-      padding: 10px 15px;
-    }
-    
-    .coupon-name {
-      color: #6c757d;
+    .icon-circle {
+      width: 24px;
+      height: 24px;
+      background-color: var(--colorPrimary); /* Màu primary */
+      color: #fff;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
       font-size: 14px;
     }
-    
-    .coupon-text {
-      color: #6c757d;
-      font-weight: 500;
-      margin-bottom: 0;
-    }
-    
-    .apply-btn {
-      background-color: #7e3ff2;
-      border-color: #7e3ff2;
-    }
-    
-    .apply-btn:hover {
-      background-color: #6e35d8;
-      border-color: #6e35d8;
-    }
+
   </style>  
     <!--===========================
                 BREADCRUMB START
@@ -182,7 +165,7 @@
                                         <div class="col-lg-8 col-md-6">
                                             <div class="wsus__courses_instructor_text">
                                                 <h4>{{ $course->instructor->name }}</h4>
-                                                @if (!$course->instructor)
+                                                @if ($user && $user->role == 'student')
                                                     <button type="button" id="show-chat-modal" class="common_btn">
                                                         Chat now
                                                     </button>
@@ -445,7 +428,23 @@
                                     {{ $course->language->name }}
                                 </li>
                             </ul>
-                            <a class="common_btn add_to_cart" data-course-id="{{ $course->id }}" href="" >Add to Cart <i class="far fa-arrow-right"></i></a>
+                            @if(!$courseEnrolled)
+                                <a class="common_btn add_to_cart" data-course-id="{{ $course->id }}" href="" >Add to Cart <i class="far fa-arrow-right"></i></a>
+                            @else
+                                <div class="mt-2">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <div class="icon-circle me-2">i</div>
+                                        <div class="">
+                                            <div class="fw-bold">You purchased this course on</div>
+                                            <div class="fw-bold">{{ $courseEnrolled->created_at->format('M d, Y') }}</div>
+                                        </div>
+                                    </div>
+
+                                    <a class="common_btn" href="{{ route('student.course-player.index', $course->slug) }}">Go to course</a>
+
+                                </div>
+                            @endif
+                            
                             {{-- <a class="common_btn" href="{{ route('checkout.index', array_filter(['coupon_code' => $couponCode])) }}">
                                 Buy now
                             </a> --}}

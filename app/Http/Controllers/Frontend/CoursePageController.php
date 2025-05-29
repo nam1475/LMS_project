@@ -65,10 +65,13 @@ class CoursePageController extends Controller
             ->where('is_approved', 'approved')
             ->where('status', 'active')
             ->firstOrFail();
-
         $reviews = Review::where('course_id', $course->id)->where('status', 1)->paginate(10);
-        return view('frontend.pages.course-details-page', compact('course', 'reviews'));
+        $user = auth('web')->user();
+        $courseEnrolled = $user ? Enrollment::where(['user_id' => $user->id, 'course_id' => $course->id])->first() : null;
+
+        return view('frontend.pages.course-details-page', compact('course', 'reviews', 'user', 'courseEnrolled'));
     }
+
 
     function storeReview(Request $request) : RedirectResponse
     {

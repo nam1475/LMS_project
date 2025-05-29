@@ -40,7 +40,7 @@ class CouponController extends Controller
      */
     public function store(Request $request)
     {
-        $result = $this->couponService->store($request);
+        $result = $this->couponService->storeForInstructor($request);
         if ($result) {
             notyf()->success('Created Successfully!');
             return redirect()->route('instructor.coupons.index');

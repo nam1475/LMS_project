@@ -71,79 +71,28 @@
     <div class="container">
         <div class="row">
             <div class="col-xl-8 col-lg-7 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
-                {{-- <h2 class="mb-3">Checkout course</h2>
-                <p class="text-muted mb-4">We are committed to protecting your payment information.</p>
-                <h5 class="mb-3">Select a payment methods</h5> --}}
-                {{-- <div class="payment_area">
-                    <div class="col-md-6">
-                        <div class="card border shadow-sm">
-                            <div class="card-body d-flex align-items-center">
-                                <img src="{{ asset('images/vnpay.png') }}" alt="VNPay" class="me-3" style="width: 40px;">
-                                <span>VNPay</span>
-                                <input type="radio" name="payment_method" value="vnpay" class="ms-auto form-check-input">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card border shadow-sm">
-                            <div class="card-body d-flex align-items-center">
-                                <img src="{{ asset('images/vietqr.png') }}" alt="Viet QR" class="me-3" style="width: 40px;">
-                                <span>Viet QR</span>
-                                <input type="radio" name="payment_method" value="vietqr" class="ms-auto form-check-input" checked>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card border shadow-sm">
-                            <div class="card-body d-flex align-items-center">
-                                <img src="{{ asset('images/international-card.png') }}" alt="International payment cards" class="me-3" style="width: 40px;">
-                                <span>International payment cards</span>
-                                <input type="radio" name="payment_method" value="international" class="ms-auto form-check-input">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card border shadow-sm">
-                            <div class="card-body d-flex align-items-center">
-                                <img src="{{ asset('images/domestic-card.png') }}" alt="Domestic payment card" class="me-3" style="width: 40px;">
-                                <span>Domestic payment card</span>
-                                <input type="radio" name="payment_method" value="domestic" class="ms-auto form-check-input">
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
-
                 <div class="container py-4">
                     <h1 class="mb-2">Checkout course</h1>
                     <p class="text-muted mb-4">We are committed to protecting your payment information.</p>
 
                     <h4 class="mb-3">Select a payment methods</h4>
 
-                    {{--<div class="payment_area">
+                    <div class="payment_area">
                         <div class="row">
-                            <div class="col-xl-3 col-6 col-md-4 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
-                                <a href="{{ route('paypal.payment') }}" class="payment_mathod">
-                                    <img style="max-width: 100% !important;" src="{{ asset('default-files/paypal-logo.png') }}" alt="payment" class="img-fluid w-100">
-                                </a>
-                            </div>
-                            <div class="col-xl-3 col-6 col-md-4 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
-                                <a href="{{ route('stripe.payment') }}" class="payment_mathod">
-                                    <img src="{{ asset('default-files/stripe-logo.png') }}" alt="payment" class="img-fluid w-100">
-                                </a>
-                            </div>
-                            <div class="col-xl-3 col-6 col-md-4 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
-                                <a href="{{ route('razorpay.redirect') }}" class="payment_mathod">
-                                    <img src="{{ asset('default-files/razorpay-logo.png') }}" alt="payment" class="img-fluid w-100">
+                            <div class="col-xl-3 col-12 col-md-4 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                                {{-- <a href="{{ route('payment.create', array_filter(['coupon_code' => $couponCode ?? null, 'discount_amount' => $discountAmount ?? null])) }}" class="payment_mathod"> --}}
+                                <a href="{{ route('payment.create') }}" class="payment_mathod">
+                                    <img style="max-width: 100% !important;" src="{{ asset('default-files/vnpay-logo.png') }}" alt="payment" class="img-fluid w-100">
                                 </a>
                             </div>
 
                         </div>
-                    </div>--}}
+                    </div>
 
                     <h4 class="mt-4 mb-3">Order details</h4>
 
                     <div class="card mb-3">
-                        @foreach ($cart as $item)
+                        @foreach ($cartItems as $item)
                             <div class="card-body">
                                 <div class="d-flex align-items-center">
                                     <div class="text-white course-image d-flex align-items-center justify-content-center">
@@ -160,48 +109,31 @@
                                                 <span class="discount-price">đ{{ number_format($item->course->price) }}</span>
                                             @endif
                                         </div>
-                                        <a href="{{ route('payment.create') }}" class="btn btn-primary">Thanh toán qua VNPay</a>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                   </div>
-
-                {{-- <h5 class="mt-4">Order details</h5>
-                <div class="d-flex align-items-center mt-3">
-                    <img src="{{ asset('images/python-course.png') }}" alt="Python Basics" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
-                    <div>
-                        <p class="mb-1">Python Basics - Python Cơ Bản</p>
-                        <p class="mb-0 text-primary">đ199,999 <del class="text-muted">399,999</del></p>
-                    </div>
-                </div> --}}
             </div>
             <div class="col-xl-4 col-lg-5 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
                 <div class="total_payment_price">
                     <h4>Total Cart <span>(0{{ cartCount() }} {{ cartCount() > 1 ? 'courses' : 'course' }})</span></h4>
                     <ul>
-                        @php
-                            $originalPrice = cartTotal();
-                        @endphp
-                        <li>Original Price :<span>{{ number_format($originalPrice) }}đ</span></li>
+                        <li>Original Price :<span>{{ number_format($originalAmount) }}đ</span></li>
                         @if($couponCode) 
-                            @php
-                                $totalPriceWithCoupon = cartTotal($couponCode);
-                                $discountAmount = $originalPrice - $totalPriceWithCoupon;
-                                
-                            @endphp
                             <li>Coupon Code :<span>{{ $couponCode }}</span></li>
                             <li>Discount Amount :<span>-{{ number_format($discountAmount) }}đ</span></li>
                         @endif
                         <hr>
-                        <li class="fw-bold fs-5">Subtotal :<span class="fw-bold fs-5">{{ number_format(cartTotal($couponCode)) }}đ</span></li>
+                        {{-- <li class="fw-bold fs-5">Subtotal :<span class="fw-bold fs-5">{{ number_format(cartTotal($couponCode)) }}đ</span></li> --}}
+                        <li class="fw-bold fs-5">Subtotal :<span class="fw-bold fs-5">{{ number_format($subtotalAmount ?? $originalAmount) }}đ</span></li>
                     </ul>
-                    {{-- <a href="#" class="common_btn">Now payment</a>  --}}
                 </div>
             </div>
         </div>
 
+        {{-- Modal --}}
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

@@ -8,11 +8,18 @@ use Illuminate\Validation\Rule;
 
 class CouponService
 {
-    public function store($request){
+    public function storeForInstructor($request){
         $request->validate([
             'code' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'type' => 'required|string|in:fixed,percent',
+            'instructor_id' => [
+                'required',
+                'integer',
+                Rule::exists('users', 'id')->where(function ($query) {
+                    $query->where('role', 'instructor');
+                }),
+            ],
             'value' => [
                 'required',
                 'integer',
@@ -20,7 +27,7 @@ class CouponService
                 Rule::when($request->type == 'percent', ['min:1', 'max:100']),
             ],
             'course_category_id' => 'required|array',
-            'minimum_order_amount' => 'required|integer|min:1000',
+            'minimum_order_amount' => 'required|integer|min:0',
             'expire_date' => 'required|date|after_or_equal:today',
             'status' => 'boolean'
         ]);
@@ -35,9 +42,50 @@ class CouponService
                 'type' => $request->type,
                 'value' => $request->value,
                 'minimum_order_amount' => $request->minimum_order_amount,
-                'instructor_id' => auth('web')->user()->id ?? null,
+                'instructor_id' => auth('web')->user()->id,
                 'expire_date' => $request->expire_date,
-                'status' => $request->status ?? 0
+                'status' => $request->status ?? 0,
+            ]);
+            
+            $courseCategoryIds = $request->course_category_id;
+            $coupon->courseCategories()->attach($courseCategoryIds);
+            DB::commit();
+            return true;
+        }catch(\Exception $e){
+            DB::rollBack();
+            throw new \Exception('Failed to create coupon: ' . $e->getMessage());
+        }
+    }
+
+    public function storeForAdmin($request){
+        $request->validate([
+            'code' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
+            'type' => 'required|string|in:fixed,percent',
+            'value' => [
+                'required',
+                'integer',
+                Rule::when($request->type == 'fixed', ['min:1000']),
+                Rule::when($request->type == 'percent', ['min:1', 'max:100']),
+            ],
+            'course_category_id' => 'required|array',
+            'minimum_order_amount' => 'required|integer|min:0',
+            'expire_date' => 'required|date|after_or_equal:today',
+            'status' => 'boolean'
+        ]);
+
+        try{
+
+            DB::beginTransaction();
+    
+            $coupon = Coupon::create([
+                'code' => strtoupper($request->code),
+                'description' => $request->description,
+                'type' => $request->type,
+                'value' => $request->value,
+                'minimum_order_amount' => $request->minimum_order_amount,
+                'expire_date' => $request->expire_date,
+                'status' => $request->status ?? 0,
             ]);
             
             $courseCategoryIds = $request->course_category_id;
@@ -72,7 +120,7 @@ class CouponService
                 },
             ],
             'course_category_id' => 'required|array',
-            'expire_date' => 'nullable|date|after_or_equal:today',
+            'expire_date' => 'required|date|after_or_equal:today',
             'status' => 'boolean'
         ]);
 

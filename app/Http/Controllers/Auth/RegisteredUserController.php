@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Pest\Support\Str;
 
 class RegisteredUserController extends Controller
 {
@@ -47,6 +48,7 @@ class RegisteredUserController extends Controller
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                     'role' => 'student',
+                    'remember_token' => Str::random(60),
                     'approve_status' => 'approved'
                 ]);
             }elseif($request->type === 'instructor') {
@@ -60,6 +62,7 @@ class RegisteredUserController extends Controller
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                     'role' => 'student',
+                    'remember_token' => Str::random(60),
                     'approve_status' => 'pending',
                     'document' => $filePath ?? null
                 ]);

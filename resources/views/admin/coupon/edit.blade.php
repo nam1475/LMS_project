@@ -18,7 +18,6 @@
                         @csrf
                         @method('PUT')
                         <div class="row">
-                            
                             <div class="col-md-12 mt-3">
                                 <x-input-block name="code" placeholder="Enter code" :value="$coupon->code" />
                             </div>  
@@ -41,8 +40,9 @@
 
                             <div class="col-md-12 mt-3">
                                 <div class="mb-3">
-                                    <label class="form-label text-capitalize" >Mnimum Order Amount</label>
-                                    <input type="number" value="{{ $coupon->minimum_order_amount }}" id="minimum_order_amount" name="minimum_order_amount" class="form-control">
+                                    <label class="form-label text-capitalize" >Mnimum Order Amount (VND - Default: 0)</label>
+                                    <input type="text" value="{{ $coupon->minimum_order_amount }}" id="minimum_order_amount" class="form-control number-display-input">
+                                    <input type="hidden" class="number-raw-input" name="minimum_order_amount" />
                                     <x-input-error :messages="$errors->get('minimum_order_amount')" class="mt-2" />
                                 </div>
                             </div> 

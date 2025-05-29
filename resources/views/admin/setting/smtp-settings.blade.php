@@ -64,8 +64,8 @@
                     <div class="col-md-12">
                         <div class="form-label">Mail Queue</div>
                         <select name="mail_queue" id="" class="form-control">
-                            <option value="1">On</option>
-                            <option value="0">Off</option>
+                            <option value="1" @selected(config('settings.mail_queue') == 1)>On</option>
+                            <option value="0" @selected(config('settings.mail_queue') == 0)>Off</option>
                         </select>
                         <x-input-error :messages="$errors->get('mail_queue')" class="mt-2" />
                     </div>

@@ -37,17 +37,17 @@ return [
 
     'mailers' => [
 
-        // 'smtp' => [
-        //     'transport' => 'smtp',
-        //     'url' => env('MAIL_URL'),
-        //     'host' => env('MAIL_HOST'),
-        //     'port' => env('MAIL_PORT'),
-        //     'encryption' => env('MAIL_ENCRYPTION'),
-        //     'username' => env('MAIL_USERNAME'),
-        //     'password' => env('MAIL_PASSWORD'),
-        //     'timeout' => null,
-        //     'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
-        // ],
+        'smtp' => [
+            'transport' => 'smtp',
+            'url' => env('MAIL_URL'),
+            'host' => env('MAIL_HOST'),
+            'port' => env('MAIL_PORT'),
+            'encryption' => env('MAIL_ENCRYPTION'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+        ],
 
         'ses' => [
             'transport' => 'ses',
@@ -108,9 +108,9 @@ return [
     |
     */
 
-    // 'from' => [
-    //     'address' => env('MAIL_FROM_ADDRESS'),
-    //     'name' => env('MAIL_FROM_NAME'),
-    // ],
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS'),
+        'name' => env('MAIL_FROM_NAME'),
+    ],
 
 ];

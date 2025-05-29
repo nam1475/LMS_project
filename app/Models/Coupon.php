@@ -60,7 +60,7 @@ class Coupon extends Model
         return $coupon ?? '';
     }
 
-    public function checkCouponType($couponCode, $total) {
+    public function calculateTotalBasedOnType($couponCode, $total) {
         if($couponCode) {
             $coupon = Coupon::where([
                 'code' => $couponCode, 
@@ -98,5 +98,10 @@ class Coupon extends Model
     public function courseCategories()
     {
         return $this->belongsToMany(CourseCategory::class, 'coupon_course_category', 'coupon_id', 'course_category_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'coupon_code', 'code');
     }
 }

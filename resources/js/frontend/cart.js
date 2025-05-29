@@ -40,41 +40,39 @@ $(function() {
    })
 
    /** Aplly coupon */
-   $('.apply_coupon_form').on('submit', function (e) {
-        e.preventDefault();
-    //    var form = $(this)[0];
-    //    var data = new FormData(form);
-    //    console.log(data);
-    //    console.log(123);
+//    $('.apply_coupon_form').on('submit', function (e) {
+//         e.preventDefault();
+//         var routeName = $(this).data('route');
+//         var totalPrice = $(this).data('total-price');
+//         let couponCode = $('#coupon_code').val();
+//         let discountAmount = $('#discount_amount').val();
+//         console.log(discountAmount);
+        
+//         $.ajax({
+//             method: "POST",
+//             url: routeName,
+//             data: {
+//                 _token: csrf_token,
+//                 coupon_code: couponCode,
+//                 total_price: totalPrice
+//             },
+//             beforeSend: function() {
+//                 // $('.apply_coupon_form').text('Applying...');
+//             },
+//             success: function(data) {
+//                 notyf.success(data.message);
+//             //    $('.apply_coupon_form').text('Apply');
+//                 // window.href = data.redirect;
+//             },
+//             error: function(xhr, status, error) {
+//                 console.log(xhr);
+//                 let errorMessage = xhr.responseJSON.message;
+//                 notyf.error(errorMessage);
 
-        var routeName = $(this).data('route');
-        var totalPrice = $(this).data('total-price');
-        let couponCode = $('#coupon_code').val();
-        $.ajax({
-            method: "POST",
-            url: routeName,
-            data: {
-                _token: csrf_token,
-                coupon_code: couponCode,
-                total_price: totalPrice
-            },
-            beforeSend: function() {
-                // $('.apply_coupon_form').text('Applying...');
-            },
-            success: function(data) {
-                notyf.success(data.message);
-            //    $('.apply_coupon_form').text('Apply');
-                // window.href = data.redirect;
-            },
-            error: function(xhr, status, error) {
-                console.log(xhr);
-                let errorMessage = xhr.responseJSON.message;
-                notyf.error(errorMessage);
-
-            //    $('.apply_coupon_form').text('Apply');
-            }
-       });
-   });
+//             //    $('.apply_coupon_form').text('Apply');
+//             }
+//        });
+//    });
 });
 
 $(function() {
@@ -90,34 +88,6 @@ $(function() {
         let couponCode = $(this).find('#coupon_code').data('code');
         $('#coupon_code_input').val(couponCode);
     }); 
-
-    /** Apply coupon code */
-    // $('.apply_coupon').on('click', function (e) {
-    //     e.preventDefault();
-    //     let couponCode = $('#coupon_code_input').val();
-    //     $.ajax({
-    //         method: "POST",
-    //         url: base_url + "/apply-coupon",
-    //         data: {
-    //             _token: csrf_token,
-    //             coupon_code: couponCode
-    //         },
-    //         beforeSend: function() {
-    //             $('.apply_coupon').text('Applying...');
-    //         },
-    //         success: function(data) {
-    //             notyf.success(data.message);
-    //             $('.apply_coupon').text('Apply');
-    //         },
-    //         error: function(xhr, status, error) {
-    //             console.log(xhr);
-    //             let errorMessage = xhr.responseJSON.message;
-    //             notyf.error(errorMessage);
-
-    //             $('.apply_coupon').text('Apply');
-    //         }
-    //     })
-    // });
 });
 
 $(function() {

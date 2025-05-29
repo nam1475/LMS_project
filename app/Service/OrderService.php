@@ -25,14 +25,18 @@ class OrderService
             $order->buyer_id = $buyer_id;
             $order->status = $status;
             $order->total_amount = $total_amount;
+            $order->subtotal_amount = session('subtotal_amount') ?? $total_amount;
             $order->paid_amount = $paid_amount;
             $order->currency = $currency;
             $order->payment_method = $payment_method;
             $order->transaction_id = $transaction_id;
+            $order->has_coupon = session()->has('coupon_code') ? 1 : 0;
+            $order->coupon_code = session('coupon_code') ?? null;
+            $order->coupon_amount = session('discount_amount') ?? null;
             $order->save();
 
             /** store order items */
-            $cart = Cart::where('user_id', $buyer_id);
+            $cart = Cart::with('course')->where('user_id', $buyer_id);
             $cartItems = $cart->get();
             foreach ($cartItems as $item) {
                 $orderItem = new OrderItem();

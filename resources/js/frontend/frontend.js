@@ -99,7 +99,10 @@ $(function () {
                 $('.newsletter-btn').prop('disabled', false);
             }
         })
-    })
+    });
+
+    
+
 });
 
 
