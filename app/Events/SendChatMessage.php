@@ -11,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SentChatMessage implements ShouldBroadcastNow
+class SendChatMessage implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -32,7 +32,7 @@ class SentChatMessage implements ShouldBroadcastNow
         $this->receiver_id = $receiver_id;
         $this->sender_name = $sender_name;
         $this->sender_image = $sender_image ?? '/default-files/avatar.png'; 
-        $this->time = now()->timezone('Asia/Ho_Chi_Minh')->format('H:i');
+        $this->time = now()->timezone('Asia/Ho_Chi_Minh')->format('H:i d/m/Y'); //Format date time
     }
 
     /**
@@ -47,7 +47,7 @@ class SentChatMessage implements ShouldBroadcastNow
 
     public function broadcastAs()
     {
-        return 'student-instructor-message';
+        return 'student.instructor.message';
     }
 
     public function broadcastWith()

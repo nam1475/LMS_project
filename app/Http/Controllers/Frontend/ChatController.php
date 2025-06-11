@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Events\SentChatMessage;
+use App\Events\SendChatMessage;
+use App\Models\Cart;
 use App\Models\Chat;
 use App\Models\User;
+use App\Notifications\StudentEnrolledCourse;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
@@ -50,6 +52,14 @@ class ChatController extends Controller
         
         $isRead = $user->unreadMessages($receiverId)->update(['is_read' => true]);
 
+        // $cartItems = Cart::with('course.instructor')->where('user_id', $user->id)->get();
+        // // foreach($cartItems as $item) {
+        // //     $instructor = $item->course->instructor;
+        // //     $instructor->notify(new StudentEnrolledCourse($item->course, $user, $instructor));
+        // // }
+        // $instructor = $cartItems[0]->course->instructor;
+        // $instructor->notify(new StudentEnrolledCourse($cartItems[0]->course, $user, $instructor));
+
         return response()->json(['messages' => $messages, 'isRead' => $isRead, 'receiverId' => $receiverId]);
     }
 
@@ -63,7 +73,7 @@ class ChatController extends Controller
         $message = $request->input('message');
         $user = auth('web')->user();
 
-        Chat::create([
+        $chat = Chat::create([
             'sender_id' => $user->id,
             'receiver_id' => $receiverId,
             'message' => $message,
@@ -71,8 +81,8 @@ class ChatController extends Controller
 
         $isRead = $user->unreadMessages($receiverId)->update(['is_read' => true]);
 
-        broadcast(new SentChatMessage($message, $user->id, $receiverId, $user->name, $user->image))->toOthers();
+        event(new SendChatMessage($message, $user->id, $receiverId, $user->name, $user->image));
         
-        return response()->json(['message' => 'Message sent successfully', 'success' => true, 'isRead' => $isRead]);
+        return response()->json(['chat' => $chat, 'success' => true, 'isRead' => $isRead]);
     }
 }

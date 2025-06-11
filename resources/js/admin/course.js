@@ -28,7 +28,9 @@ $(function () {
         e.preventDefault();
         let step = $(this).data('step');
         $('.course-form').find('input[name=next_step]').val(step);
-        $('.course-form').trigger('submit');
+        let courseId = $('.course-form').find('input[name=id]').val();
+        window.location.href = base_url + '/admin/courses/' + courseId + '/edit?step=' + step;
+        // $('.course-form').trigger('submit');
     });
 
     $('.basic_info_form').on('submit', function (e) {

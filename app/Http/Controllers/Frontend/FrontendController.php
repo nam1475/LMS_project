@@ -40,10 +40,11 @@ class FrontendController extends Controller
       $video = VideoSection::first();
       $brands = Brand::where('status', 1)->get();
       $featuredInstructor = FeaturedInstructor::first();
-      $featuredInstructorCourses = Course::whereIn('id', json_decode($featuredInstructor?->featured_courses ?? '[]'))->get();
+      $featuredInstructorCourses = Course::withoutGlobalScopes()->with('reviews')->whereIn('id', json_decode($featuredInstructor?->featured_courses ?? '[]'))->get();
       $testimonials = Testimonial::all();
       $blogs = Blog::where('status', 1)->latest()->limit(3)->get();
-     
+      
+      
       return view('frontend.pages.home.index', compact(
          'hero',
          'feature',

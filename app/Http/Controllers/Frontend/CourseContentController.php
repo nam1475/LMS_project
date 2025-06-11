@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use App\Models\CourseChapter;
 use App\Models\CourseChapterLession;
 use Exception;
@@ -11,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class CourseContentController extends Controller
 {
@@ -25,22 +27,39 @@ class CourseContentController extends Controller
         $request->validate([
             'title' => ['required', 'max:255'],
         ]);
+        
+        // $chapter = new CourseChapter();
+        // $chapter->title = $request->title;
+        // $chapter->course_id = $courseId;
+        // $chapter->instructor_id = Auth::user()->id;
+        // $chapter->order = CourseChapter::where('course_id', $courseId)->count() + 1;
+        // $chapter->is_published = false;
+        // $chapter->save();
+        
+        $course = Course::currentWithoutRevision($courseId);
+        $course->chapters()->create([
+            'title' => $request->title,
+            'instructor_id' => auth('web')->user()->id,
+            'order' => CourseChapter::where('course_id', $courseId)->count() + 1,
+            'is_published' => false,
+            'course_id' => $courseId
+        ]);
 
-        $chapter = new CourseChapter();
-        $chapter->title = $request->title;
-        $chapter->course_id = $courseId;
-        $chapter->instructor_id = Auth::user()->id;
-        $chapter->order = CourseChapter::where('course_id', $courseId)->count() + 1;
-        $chapter->save();
+        notyf()->success('Created Success fully');
 
         return redirect()->back();
     }
 
     function createLesson(Request $request): String
     {
-        $courseId = $request->course_id;
+        $course = Course::withoutGlobalScopes()->find($request->course_id);
         $chapterId = $request->chapter_id;
-        return view('frontend.instructor-dashboard.course.partials.chapter-lesson-modal', compact('courseId', 'chapterId'))->render();
+        return view('frontend.instructor-dashboard.course.partials.chapter-lesson-modal', [
+            'course' => $course,
+            'chapterId' => $chapterId,
+            'isCreateDraft' => $request->is_create_draft,
+            'diff' => null
+        ])->render();
     }
 
     function storeLesson(Request $request): RedirectResponse
@@ -49,7 +68,6 @@ class CourseContentController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'source' => ['required', 'string'],
             'file_type' => ['required', 'in:video,audio,file,pdf,doc'],
-            'duration' => ['required'],
             'is_preview' => ['nullable', 'boolean'],
             'downloadable' => ['nullable', 'boolean'],
             'description' => ['required']
@@ -61,21 +79,23 @@ class CourseContentController extends Controller
         }
         $request->validate($rules);
 
-        $lesson = new CourseChapterLession();
-        $lesson->title = $request->title;
-        $lesson->slug = \Str::slug($request->title);
-        $lesson->storage = $request->source;
-        $lesson->file_path = $request->filled('file') ? $request->file : $request->url;
-        $lesson->file_type = $request->file_type;
-        $lesson->duration = $request->duration;
-        $lesson->is_preview = $request->filled('is_preview') ? 1 : 0;
-        $lesson->downloadable = $request->filled('downloadable') ? 1 : 0;
-        $lesson->description = $request->description;
-        $lesson->instructor_id = Auth::user()->id;
-        $lesson->course_id = $request->course_id;
-        $lesson->chapter_id = $request->chapter_id;
-        $lesson->order = CourseChapterLession::where('chapter_id', $request->chapter_id)->count() + 1;
-        $lesson->save();
+        $chapter = CourseChapter::currentWithoutRevision($request->chapter_id);
+        $chapter->lessons()->create([
+            'title' => $request->title,
+            'slug' => Str::slug($request->title),
+            'storage' => $request->source,
+            'file_path' => $request->filled('file') ? $request->file : $request->url,
+            'file_type' => $request->file_type,
+            'duration' => $request->duration,
+            'is_preview' => $request->filled('is_preview') ? 1 : 0,
+            'downloadable' => $request->filled('downloadable') ? 1 : 0,
+            'description' => $request->description,
+            'instructor_id' => Auth::user()->id,
+            'course_id' => $request->course_id,
+            'chapter_id' => $request->chapter_id,
+            'order' => CourseChapterLession::where('chapter_id', $request->chapter_id)->count() + 1,
+            'is_published' => false
+        ]);
 
         notyf()->success('Created Success fully');
 
@@ -85,7 +105,7 @@ class CourseContentController extends Controller
     function editChapterModal(string $id): String
     {
         $editMode = true;
-        $chapter = CourseChapter::where(['id' => $id, 'instructor_id' => Auth::user()->id])->firstOrFail();
+        $chapter = CourseChapter::currentWithoutRevision($id);
 
         return view('frontend.instructor-dashboard.course.partials.course-chapter-modal', compact('chapter', 'editMode'))->render();
     }
@@ -96,9 +116,10 @@ class CourseContentController extends Controller
             'title' => ['required', 'max:255'],
         ]);
 
-        $chapter = CourseChapter::findOrFail($id);
+        $chapter = CourseChapter::currentWithoutRevision($id);
         $chapter->title = $request->title;
         $chapter->save();
+        
         notyf()->success('Updated Susccessfully!');
         return redirect()->back();
     }
@@ -107,7 +128,7 @@ class CourseContentController extends Controller
     {
         try {
             // delete chapter
-            $chapter = CourseChapter::findOrFail($id);
+            $chapter = CourseChapter::currentWithoutRevision($id);
             $chapter->delete();
             notyf()->success('Deleted Successfully!');
             return response(['message' => 'Deleted Successfully!'], 200);
@@ -120,19 +141,29 @@ class CourseContentController extends Controller
     function editLesson(Request $request): String
     {
         $editMode = true;
-        $courseId = $request->course_id;
+        $course = Course::withoutGlobalScopes()->find($request->course_id);
         $chapterId = $request->chapter_id;
         $lessonId = $request->lesson_id;
-        $lesson = CourseChapterLession::where(
-            [
-                'id' => $lessonId,
-                'chapter_id' => $chapterId,
-                'course_id' => $courseId,
-                'instructor_id' => Auth::user()->id
-            ]
-        )->first();
+        $lesson = CourseChapterLession::withoutGlobalScopes()->find($lessonId);
+        $isNewLesson = CourseChapterLession::withoutGlobalScopes()->where('uuid', $lesson->uuid)->count();
+        if($isNewLesson > 1){
+            $originalLesson = CourseChapterLession::withoutGlobalScopes()->where('uuid', $lesson->uuid)
+                ->where('is_published', true)
+                ->first();
+            $diff = diffModels($lesson, $originalLesson);
+        }
+        // dd($diff);
+
         return view('frontend.instructor-dashboard.course.partials.chapter-lesson-modal',
-            compact('courseId', 'chapterId', 'lesson', 'editMode')
+            [
+                'editMode' => $editMode,
+                'course' => $course,
+                'chapterId' => $chapterId,
+                'lesson' => $lesson,
+                'isCreateDraft' => $request->is_create_draft,
+                'diff' => $diff ?? null
+
+            ]
         )->render();
     }
 
@@ -140,12 +171,11 @@ class CourseContentController extends Controller
     {
         $rules = [
             'title' => ['required', 'string', 'max:255'],
-            'source' => ['required', 'string'],
-            'file_type' => ['required', 'in:video,audio,file,pdf,doc'],
-            'duration' => ['required'],
-            'is_preview' => ['nullable', 'boolean'],
-            'downloadable' => ['nullable', 'boolean'],
-            'description' => ['required']
+            // 'source' => ['required', 'string'],
+            // 'file_type' => ['required', 'in:video,audio,file,pdf,doc'],
+            // 'is_preview' => ['nullable', 'boolean'],
+            // 'downloadable' => ['nullable', 'boolean'],
+            // 'description' => ['required']
         ];
         if ($request->filled('file')) {
             $rules['file'] = ['required'];
@@ -154,20 +184,36 @@ class CourseContentController extends Controller
         }
         $request->validate($rules);
 
-        $lesson = CourseChapterLession::findOrFail($id);
-        $lesson->title = $request->title;
-        $lesson->slug = \Str::slug($request->title);
-        $lesson->storage = $request->source;
-        $lesson->file_path = $request->filled('file') ? $request->file : $request->url;
-        $lesson->file_type = $request->file_type;
-        $lesson->duration = $request->duration;
-        $lesson->is_preview = $request->filled('is_preview') ? 1 : 0;
-        $lesson->downloadable = $request->filled('downloadable') ? 1 : 0;
-        $lesson->description = $request->description;
-        $lesson->instructor_id = Auth::user()->id;
-        $lesson->course_id = $request->course_id;
-        $lesson->chapter_id = $request->chapter_id;
-        $lesson->save();
+        // $lesson = CourseChapterLession::findOrFail($id);
+        // $lesson->title = $request->title;
+        // $lesson->slug = Str::slug($request->title);
+        // $lesson->storage = $request->source;
+        // $lesson->file_path = $request->filled('file') ? $request->file : $request->url;
+        // $lesson->file_type = $request->file_type;
+        // $lesson->duration = $request->duration;
+        // $lesson->is_preview = $request->filled('is_preview') ? 1 : 0;
+        // $lesson->downloadable = $request->filled('downloadable') ? 1 : 0;
+        // $lesson->description = $request->description;
+        // $lesson->instructor_id = Auth::user()->id;
+        // $lesson->course_id = $request->course_id;
+        // $lesson->chapter_id = $request->chapter_id;
+        // $lesson->save();
+
+        $lesson = CourseChapterLession::currentWithoutRevision($id);
+        $lesson->update([
+            'title' => $request->title,
+            'slug' => Str::slug($request->title),
+            'storage' => $request->source,
+            'file_path' => $request->filled('file') ? $request->file : $request->url,
+            'file_type' => $request->file_type,
+            'duration' => $request->duration,
+            'is_preview' => $request->filled('is_preview') ? 1 : 0,
+            'downloadable' => $request->filled('downloadable') ? 1 : 0,
+            'description' => $request->description,
+            'instructor_id' => Auth::user()->id,
+            'course_id' => $request->course_id,
+            'chapter_id' => $request->chapter_id
+        ]);
 
         notyf()->success('Updated Success fully!');
 
@@ -177,7 +223,7 @@ class CourseContentController extends Controller
     function destroyLesson(string $id): Response
     {
         try {
-            $lesson =  CourseChapterLession::findOrFail($id);
+            $lesson =  CourseChapterLession::currentWithoutRevision($id);
             $lesson->delete();
             notyf()->success('Deleted Successfully!');
             return response(['message' => 'Deleted Successfully!'], 200);
@@ -187,12 +233,12 @@ class CourseContentController extends Controller
         }
     }
 
-
     /** Sort chapter lessons */
-    function sortLesson(Request $request, string $id) {
+    function sortLesson(Request $request, string $chapterId) {
         $newOrders = $request->order_ids;
         foreach($newOrders as $key => $itemId) {
-            $lesson = CourseChapterLession::where(['chapter_id' => $id, 'id' => $itemId])->first();
+            $lesson = CourseChapterLession::where(['chapter_id' => $chapterId, 'id' => $itemId])
+                ->current()->first()->withoutRevision();
             $lesson->order = $key + 1;
             $lesson->save();
         }
@@ -202,7 +248,8 @@ class CourseContentController extends Controller
 
     /** return sort chapter list */
     function sortChapter(string $id) : string {
-        $chapters = CourseChapter::where('course_id', $id)->orderBy('order')->get();
+        $chapters = CourseChapter::where('course_id', $id)->orderBy('order')
+            ->current()->get();
 
         return view('frontend.instructor-dashboard.course.partials.course-chapter-sort-modal', compact('chapters'))->render();
     }
@@ -210,7 +257,8 @@ class CourseContentController extends Controller
     function updateSortChapter(Request $request, string $id) {
         $newOrders = $request->order_ids;
         foreach($newOrders as $key => $itemId) {
-            $lesson = CourseChapter::where(['course_id' => $id, 'id' => $itemId])->first();
+            $lesson = CourseChapter::where(['course_id' => $id, 'id' => $itemId])
+                ->current()->first()->withoutRevision();
             $lesson->order = $key + 1;
             $lesson->save();
         }

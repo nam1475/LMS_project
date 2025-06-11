@@ -53,6 +53,9 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    // public function receivesBroadcastNotificationsOn(): string {
+    //     return "notification.{$this->id}";
+    // }
 
     function orders() : HasMany {
         return $this->hasMany(Order::class, 'buyer_id', 'id');

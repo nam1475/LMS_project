@@ -168,16 +168,24 @@
                                     <div class="rating_area">
                                         <!-- <a href="#" class="category">Design</a> -->
                                         <p class="rating">
-                                            @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= $course->reviews()->avg('rating'))
+                                            @php
+                                            $avgRating = round($course->reviews()->avg('rating'), 2);
+                                            $fullStars = floor($avgRating);       // Số sao đầy
+                                            $halfStar = ($avgRating - $fullStars) >= 0.5 ? 1 : 0; // Có nửa sao không
+                                            $emptyStars = 5 - $fullStars - $halfStar; // Số sao rỗng
+                                            @endphp
+
+                                            @for($i = 1; $i <= $fullStars; $i++)
                                             <i class="fas fa-star"></i>
-                                            @else
+                                            @endfor
+                                            @if($halfStar)
+                                            <i class="fas fa-star-half-alt"></i>
+                                            @endif
+                                            @for($i = 1; $i <= $emptyStars; $i++)
                                             <i class="far fa-star"></i>
-                                            @endif  
-                                               
                                             @endfor
                                             
-                                            <span>({{ number_format($course->reviews()->avg('rating'), 2) ?? 0 }} Rating)</span>
+                                            <span>({{ number_format($avgRating, 1) }} Rating)</span>
                                         </p>
                                     </div>
     

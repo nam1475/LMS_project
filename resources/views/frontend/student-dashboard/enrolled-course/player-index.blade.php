@@ -51,7 +51,8 @@
     <section class="wsus__course_video">
         <div class="col-12">
             <div class="wsus__course_header">
-                <a href="{{ route('student.dashboard') }}"><i class="fas fa-angle-left"></i> Go Back</a>
+                <a href="{{ route('student.enrolled-courses.index') }}"><i class="fas fa-angle-left"></i> Go Back</a>
+                <a class="title" href="{{ route('courses.show', $course->slug) }}">{{ $course->title }}</a>
                 <p>Your Progress: {{ $lessonCount }} of {{ count($watchedLessonIds) }} ({{ round((count($watchedLessonIds) / $lessonCount) * 100) }}%)</p>
             </div>
         </div>
@@ -982,7 +983,8 @@
                             <div class="accordion-body">
                                 @foreach ($chapter->lessons as $lesson)
                                     <div class="form-check" >
-                                        <input @checked(in_array($lesson->id, $watchedLessonIds)) class="form-check-input make_completed" data-course-id="{{ $course->id }}" data-lesson-id="{{ $lesson->id }}" data-chapter-id="{{ $chapter->id }}" name="" type="checkbox" value="">
+                                        <input @checked(in_array($lesson->id, $watchedLessonIds)) class="form-check-input make_completed" 
+                                            data-course-id="{{ $course->id }}" data-lesson-id="{{ $lesson->id }}" data-chapter-id="{{ $chapter->id }}" name="" type="checkbox" value="">
                                         <label class="form-check-label lesson" data-course-id="{{ $course->id }}"
                                         data-lesson-id="{{ $lesson->id }}" data-chapter-id="{{ $chapter->id }}">
                                             {{ $lesson->title }}

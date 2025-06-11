@@ -5,8 +5,8 @@
         <div class="container-xl">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Course Levels</h3>
-                    <div class="card-actions">
+                    <h3 class="card-title">Courses</h3>
+                    {{-- <div class="card-actions">
                         <a href="{{ route('admin.courses.create') }}" class="btn btn-primary">
                             <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
@@ -18,7 +18,7 @@
                             </svg>
                             Add new
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -26,8 +26,9 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Price</th>
+                                    <th>Price (VND)</th>
                                     <th>Instructor</th>
+                                    <th>Message For Rejection</th>
                                     <th>Status</th>
                                     <th>Approve</th>
                                     <th>Action</th>
@@ -37,24 +38,33 @@
                                 @forelse ($courses as $course)
                                 <tr>
                                 <td>{{ $course->title }}</td>
-                                <td>{{ $course->price }}</td>
+                                <td>{{ number_format($course->price) }}</td>
                                 <td>{{ $course->instructor->name }}</td>
+                                <td>{{ $course->message_for_rejection }}</td>
                                 <td>
-                                    @if($course->status == 'active')
-                                        <span class="badge bg-green text-green-fg">Active</span>
-                                    @elseif($course->status == 'inactive')
-                                        <span class="badge bg-red text-red-fg">Inactive</span>
+                                    @if($course->is_published)
+                                        <span class="badge bg-green text-green-fg">Publish</span>
+                                    @elseif(!$course->is_published && $course->is_current)
+                                        <span class="badge bg-secondary text-secondary-fg">Draft</span>
                                     @endif
                                 </td>
                                 <td>
+                                @if(($course->is_approved == 'approved' && !$course->is_current) || ($course->is_published && $course->is_current))
+                                    <span class="badge bg-green text-green-fg">Approved</span>
+                                @else
                                     <select name="" class="form-control update-approval-status" data-id="{{ $course->id }}"
                                         data-route="{{ route('admin.courses.update-approval', $course->id) }}">
                                         <option @selected($course->is_approved == 'pending') value="pending">Pending</option>
-                                        <option @selected($course->is_approved == 'approved') value="approved">Approved</option>
-                                        <option @selected($course->is_approved == 'rejected') value="rejected">Rejected</option>
+                                            <option @selected($course->is_approved == 'approved') value="approved">Approved</option>
+                                            <option @selected($course->is_approved == 'rejected') value="rejected">Rejected</option>
                                     </select>
+                                @endif
                                 </td>
                                 <td>
+                                    
+                                    <a href="{{ route('admin.courses.commits', $course->id) }}" class="btn-sm btn-primary">
+                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-git-merge"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M7 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M7 8l0 8" /><path d="M7 8a4 4 0 0 0 4 4h4" /></svg>
+                                    </a>
                                     <a href="{{ route('admin.courses.edit', ['id' => $course->id, 'step' => 1]) }}" class="btn-sm btn-primary">
                                         <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                     </a>

@@ -6,9 +6,13 @@
 
 use App\Models\Cart;
 use App\Models\Coupon;
+use Illuminate\Database\Eloquent\Model;
 
 if(!function_exists('convertMinutesToHours')) {
-    function convertMinutesToHours(int $minutes) : string {
+    function convertMinutesToHours($minutes) {
+        if($minutes == null){
+            return 0;
+        }
         $hours = floor($minutes / 60);
         $minutes = $minutes % 60;
         return sprintf('%dh %02dm', $hours, $minutes); // Returns format : 1h 30m
@@ -79,7 +83,7 @@ if(!function_exists('calculateCommission')) {
 /** Sidebar Item Active */
 if(!function_exists('sidebarItemActive')) {
     function sidebarItemActive(array $routes) {
-
+        
         foreach($routes as $route) {
             if(request()->routeIs($route)) {
                 return 'active';
@@ -87,4 +91,145 @@ if(!function_exists('sidebarItemActive')) {
         }
     }
 }
+
+// if(!function_exists('diffModels')) {
+//     function diffModels(Model $old, Model $new): array
+//     {
+//         $changes = [];
+//         foreach ($old->getAttributes() as $key => $oldValue) {
+//             if (!in_array($key, ['id', 'updated_at', 'created_at']) && array_key_exists($key, $new->getAttributes())) {
+//                 $newValue = $new->{$key};
+//                 if ($oldValue != $newValue) {
+//                     $changes[$key] = [
+//                         'from' => $oldValue,
+//                         'to' => $newValue,
+//                     ];
+//                 }
+//             }
+//         }
+//         return $changes;
+//     }
+// }
+
+// if (! function_exists('diffModels')) {
+//     function diffModels(Model $draft, Model $original): array
+//     {
+//         $diff = [];
+
+//         foreach ($draft->getAttributes() as $key => $draftValue) {
+//             // Bỏ qua các trường không cần so sánh
+//             if (in_array($key, ['created_at', 'updated_at', 'is_current', 'is_published', 'published_at'])) {
+//                 continue;
+//             }
+            
+//             $originalValue = $original->{$key} ?? null;
+
+//             // if ($draftValue != $originalValue) {
+//             //     $diff[$key] = [
+//             //         'original' => $originalValue,
+//             //         'draft' => $draftValue,
+//             //     ];
+//             // }
+
+//             // Nếu khác thì đưa vào diff
+//             if ($draftValue !== $originalValue) {
+//                 $diff[$key] = $originalValue;
+//             } 
+//             else {
+//                 $diff[$key] = null; // ✅ Trường không đổi
+//             }
+//         }
+
+//         return $diff;
+//     }
+// }
+
+if (! function_exists('diffModels')) {
+    function diffModels(?Model $draft, ?Model $original): array
+    {
+        if (!$draft && !$original) {
+            return []; // cả hai đều null, không có gì để so sánh
+        }
+
+        $attributes = collect($draft?->getAttributes() ?? [])
+            ->keys()
+            ->merge(collect($original?->getAttributes() ?? [])->keys())
+            ->unique();
+
+        $diff = [];
+
+        foreach ($attributes as $key) {
+            // Bỏ qua các trường không cần so sánh
+            if (in_array($key, ['created_at', 'updated_at', 'is_current', 'is_published', 'published_at'])) {
+                continue;
+            }
+
+            $draftValue = $draft?->$key;
+            $originalValue = $original?->$key;
+
+            if ($draftValue !== $originalValue) {
+                $diff[$key] = $originalValue;
+            } else {
+                $diff[$key] = null; // không thay đổi
+            }
+        }
+
+        return $diff;
+    }
+}
+
+if (! function_exists('compareChaptersWithNestedLessons')) {
+    function compareChaptersWithNestedLessons($draftCourse, $mainCourse)
+    {
+        $results = [];
+
+        // if($draftCourse->chapters->empty() || $mainCourse->chapters->empty()) {
+        //     return [];
+        // }
+        
+        // Tổng hợp tất cả các chapter uuid từ bản chính và bản nháp
+        $chapterUuids = $draftCourse->chapters->pluck('uuid')
+            ->merge($mainCourse?->chapters->pluck('uuid'))
+            ->unique();
+
+        foreach ($chapterUuids as $uuid) {
+            $draftChapter = $draftCourse?->chapters->firstWhere('uuid', $uuid);
+            $mainChapter = $mainCourse?->chapters->firstWhere('uuid', $uuid);
+
+            $chapterDiff = [
+                'chapter_draft' => $draftChapter?->only([
+                    'id', 'title', 'uuid', 'title', 'description', 'course_id',
+                ]),
+                'diff' => diffModels($draftChapter, $mainChapter),
+                'lessons' => []
+            ];
+
+            // Tổng hợp tất cả lesson uuid từ bản chính và nháp
+            $lessonUuids = collect([
+                $draftChapter?->lessons,
+                $mainChapter?->lessons
+            ])
+                ->filter()
+                ->flatMap(fn ($col) => $col->pluck('uuid'))
+                ->unique();
+
+            foreach ($lessonUuids as $lessonUuid) {
+                $draftLesson = $draftChapter?->lessons->firstWhere('uuid', $lessonUuid);
+                $mainLesson = $mainChapter?->lessons->firstWhere('uuid', $lessonUuid);
+
+                $chapterDiff['lessons'][] = [
+                    'lesson_draft' => $draftLesson?->only([
+                        'id', 'title', 'uuid', 'chapter_id', 'course_id',
+                    ]),
+                    'diff' => diffModels($draftLesson, $mainLesson),
+                ];
+            }
+
+            $results[] = $chapterDiff;
+        }
+
+        return $results;
+    }
+}
+
 

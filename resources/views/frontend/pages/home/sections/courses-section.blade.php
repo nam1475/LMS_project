@@ -91,18 +91,31 @@
                                 <div class="rating_area">
                                     <!-- <a href="#" class="category">Design</a> -->
                                     <p class="rating">
-                                        @for($i = 1; $i <= $course->reviews()->avg('rating'); $i++)
+                                        @php
+                                            $avgRating = round($course->reviews()->avg('rating'), 2);
+                                            $fullStars = floor($avgRating);       // Số sao đầy
+                                            $halfStar = ($avgRating - $fullStars) >= 0.5 ? 1 : 0; // Có nửa sao không
+                                            $emptyStars = 5 - $fullStars - $halfStar; // Số sao rỗng
+                                        @endphp
+
+                                        @for($i = 1; $i <= $fullStars; $i++)
                                         <i class="fas fa-star"></i>
                                         @endfor
+                                        @if($halfStar)
+                                        <i class="fas fa-star-half-alt"></i>
+                                        @endif
+                                        @for($i = 1; $i <= $emptyStars; $i++)
+                                        <i class="far fa-star"></i>
+                                        @endfor
                                         
-                                        <span>({{ $course->reviews()->avg('rating') }} Rating)</span>
+                                        <span>({{ number_format($avgRating, 1) }} Rating)</span>
                                     </p>
                                 </div>
 
                                 <a class="title" href="{{ route('courses.show', $course->slug) }}">{{ $course->title }}</a>
                                 <ul>
-                                    <li>24 Lessons</li>
-                                    <li>38 Student</li>
+                                    <li>{{ $course->lessons()->count() }} Lessons</li>
+                                    <li>{{ $course->enrollments()->count() }} Student</li>
                                 </ul>
                                 <a class="author" href="#">
                                     <div class="img">
@@ -115,9 +128,9 @@
                                 <a class="common_btn add_to_cart" href="#" data-course-id="{{ $course->id }}">Add to Cart<i class="far fa-arrow-right"></i></a>
                                 <p>
                                     @if($course->discount > 0)
-                                    <del>${{ $course->discount }}</del> ${{ $course->price }}
+                                    <del>{{ config('settings.currency_icon') }}{{ $course->discount }}</del> {{ config('settings.currency_icon') }}{{ number_format($course->price) }}
                                     @else
-                                    ${{ $course->price }}
+                                    {{ config('settings.currency_icon') }}{{ number_format($course->price) }}
                                     @endif
                                 </p>
                             </div>
@@ -150,16 +163,24 @@
                                 <div class="rating_area">
                                     <!-- <a href="#" class="category">Design</a> -->
                                     <p class="rating">
-                                        @for($i = 1; $i <= 5; $i++)
-                                        @if($i <= $course->reviews()->avg('rating'))
+                                        @php
+                                            $avgRating = round($course->reviews()->avg('rating'), 2);
+                                            $fullStars = floor($avgRating);       // Số sao đầy
+                                            $halfStar = ($avgRating - $fullStars) >= 0.5 ? 1 : 0; // Có nửa sao không
+                                            $emptyStars = 5 - $fullStars - $halfStar; // Số sao rỗng
+                                        @endphp
+
+                                        @for($i = 1; $i <= $fullStars; $i++)
                                         <i class="fas fa-star"></i>
-                                        @else
+                                        @endfor
+                                        @if($halfStar)
+                                        <i class="fas fa-star-half-alt"></i>
+                                        @endif
+                                        @for($i = 1; $i <= $emptyStars; $i++)
                                         <i class="far fa-star"></i>
-                                        @endif  
-                                           
                                         @endfor
                                         
-                                        <span>({{ number_format($course->reviews()->avg('rating'), 2) ?? 0 }} Rating)</span>
+                                        <span>({{ number_format($avgRating, 1) }} Rating)</span>
                                     </p>
                                 </div>
 
@@ -179,9 +200,9 @@
                                 <a class="common_btn add_to_cart" href="#" data-course-id="{{ $course->id }}">Add to Cart<i class="far fa-arrow-right"></i></a>
                                 <p>
                                     @if($course->discount > 0)
-                                    <del>${{ $course->price }}</del> ${{ $course->discount }}
+                                    <del>{{ config('settings.currency_icon') }}{{ number_format($course->price) }}</del> {{ config('settings.currency_icon') }}{{ $course->discount }}
                                     @else
-                                    ${{ $course->price }}
+                                    {{ config('settings.currency_icon') }}{{ number_format($course->price) }}
                                     @endif
                                 </p>
                             </div>
@@ -214,19 +235,31 @@
                                 <div class="rating_area">
                                     <!-- <a href="#" class="category">Design</a> -->
                                     <p class="rating">
+                                        @php
+                                            $avgRating = round($course->reviews()->avg('rating'), 2);
+                                            $fullStars = floor($avgRating);       // Số sao đầy
+                                            $halfStar = ($avgRating - $fullStars) >= 0.5 ? 1 : 0; // Có nửa sao không
+                                            $emptyStars = 5 - $fullStars - $halfStar; // Số sao rỗng
+                                        @endphp
+
+                                        @for($i = 1; $i <= $fullStars; $i++)
                                         <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <span>(4.8 Rating)</span>
+                                        @endfor
+                                        @if($halfStar)
+                                        <i class="fas fa-star-half-alt"></i>
+                                        @endif
+                                        @for($i = 1; $i <= $emptyStars; $i++)
+                                        <i class="far fa-star"></i>
+                                        @endfor
+                                        
+                                        <span>({{ number_format($avgRating, 1) }} Rating)</span>
                                     </p>
                                 </div>
 
                                 <a class="title" href="{{ route('courses.show', $course->slug) }}">{{ $course->title }}</a>
                                 <ul>
-                                    <li>24 Lessons</li>
-                                    <li>38 Student</li>
+                                    <li>{{ $course->lessons()->count() }} Lessons</li>
+                                    <li>{{ $course->enrollments()->count() }} Student</li>
                                 </ul>
                                 <a class="author" href="#">
                                     <div class="img">
@@ -239,9 +272,9 @@
                                 <a class="common_btn add_to_cart" href="#" data-course-id="{{ $course->id }}">Add to Cart<i class="far fa-arrow-right"></i></a>
                                 <p>
                                     @if($course->discount > 0)
-                                    <del>${{ $course->discount }}</del> ${{ $course->price }}
+                                    <del>{{ config('settings.currency_icon') }}{{ $course->discount }}</del> {{ config('settings.currency_icon') }}{{ number_format($course->price) }}
                                     @else
-                                    ${{ $course->price }}
+                                    {{ config('settings.currency_icon') }}{{ number_format($course->price) }}
                                     @endif
                                 </p>
                             </div>
@@ -274,19 +307,31 @@
                                 <div class="rating_area">
                                     <!-- <a href="#" class="category">Design</a> -->
                                     <p class="rating">
+                                        @php
+                                            $avgRating = round($course->reviews()->avg('rating'), 2);
+                                            $fullStars = floor($avgRating);       // Số sao đầy
+                                            $halfStar = ($avgRating - $fullStars) >= 0.5 ? 1 : 0; // Có nửa sao không
+                                            $emptyStars = 5 - $fullStars - $halfStar; // Số sao rỗng
+                                        @endphp
+
+                                        @for($i = 1; $i <= $fullStars; $i++)
                                         <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <span>(4.8 Rating)</span>
+                                        @endfor
+                                        @if($halfStar)
+                                        <i class="fas fa-star-half-alt"></i>
+                                        @endif
+                                        @for($i = 1; $i <= $emptyStars; $i++)
+                                        <i class="far fa-star"></i>
+                                        @endfor
+                                        
+                                        <span>({{ number_format($avgRating, 1) }} Rating)</span>
                                     </p>
                                 </div>
 
                                 <a class="title" href="{{ route('courses.show', $course->slug) }}">{{ $course->title }}</a>
                                 <ul>
-                                    <li>24 Lessons</li>
-                                    <li>38 Student</li>
+                                    <li>{{ $course->lessons()->count() }} Lessons</li>
+                                    <li>{{ $course->enrollments()->count() }} Student</li>
                                 </ul>
                                 <a class="author" href="#">
                                     <div class="img">
@@ -299,9 +344,9 @@
                                 <a class="common_btn add_to_cart" href="#" data-course-id="{{ $course->id }}">Add to Cart<i class="far fa-arrow-right"></i></a>
                                 <p>
                                     @if($course->discount > 0)
-                                    <del>${{ $course->discount }}</del> ${{ $course->price }}
+                                    <del>{{ config('settings.currency_icon') }}{{ $course->discount }}</del> {{ config('settings.currency_icon') }}{{ number_format($course->price) }}
                                     @else
-                                    ${{ $course->price }}
+                                    {{ config('settings.currency_icon') }}{{ number_format($course->price) }}
                                     @endif
                                 </p>
                             </div>

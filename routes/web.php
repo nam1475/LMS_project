@@ -22,6 +22,7 @@ use App\Http\Controllers\Frontend\StudentOrderController;
 use App\Http\Controllers\Frontend\WithdrawController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Payment\VnPayController;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -49,6 +50,7 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
    Route::get('/', [FrontendController::class, 'index'])->name('home');
    Route::get('/courses', [CoursePageController::class, 'index'])->name('courses.index');
    Route::get('/courses/{slug}', [CoursePageController::class, 'show'])->name('courses.show');
+   Route::get('/courses/{id}/reviews', [CoursePageController::class, 'getReviews'])->name('courses.reviews');
 
 
    /** Cart routes */
@@ -115,7 +117,7 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
 
       /** Enroll Courses Routes */
       Route::get('enrolled-courses', [EnrolledCourseController::class, 'index'])->name('enrolled-courses.index');
-      Route::get('course-player/{slug}', [EnrolledCourseController::class, 'payerIndex'])->name('course-player.index');
+      Route::get('course-player/{slug}', [EnrolledCourseController::class, 'playerIndex'])->name('course-player.index');
       Route::get('get-lesson-content', [EnrolledCourseController::class, 'getLessonContent'])->name('get-lesson-content');
       Route::post('update-watch-history', [EnrolledCourseController::class, 'updateWatchHistory'])->name('update-watch-history');
       Route::post('update-lesson-completion', [EnrolledCourseController::class, 'updateLessonCompletion'])->name('update-lesson-completion');
@@ -137,8 +139,21 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       Route::get('chats/fetch-messages', [ChatController::class, 'fetchMessages'])->name('fetch.messages');
       Route::post('chats/send-message', [ChatController::class, 'sendMessage'])->name('send.message');
 
+      /** Notification Routes */
+      Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+      Route::get('notifications/fetch-messages', [NotificationController::class, 'fetchMessages'])->name('notifications.fetch.messages');
+      Route::post('notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+      Route::delete('notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');  
+      
    });
-
+   
+   // Route::middleware(['auth:web'])->group(function () {
+      //    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+      //    Route::get('notifications/fetch-messages', [NotificationController::class, 'fetchMessages'])->name('notifications.fetch.messages');
+      //    Route::post('notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+      //    Route::delete('notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');  
+      // });
+      
    /**
     * ------------------------------------------------------
     * Instructor Routes
@@ -146,7 +161,13 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
     */
    Route::group(['middleware' => ['auth:web', 'verified', 'check_role:instructor'], 'prefix' => 'instructor', 'as' => 'instructor.'], function() {
       Route::get('/dashboard', [InstructorDashboardController::class, 'index'])->name('dashboard');
-
+      
+      /** Notification Routes */
+      Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+      Route::get('notifications/fetch-messages', [NotificationController::class, 'fetchMessages'])->name('notifications.fetch.messages');
+      Route::post('notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+      Route::delete('notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');  
+      
       /** Chat Routes */
       Route::get('chats', [ChatController::class, 'index'])->name('chats.index');
       Route::get('chats/fetch-messages', [ChatController::class, 'fetchMessages'])->name('fetch.messages');
@@ -159,21 +180,26 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       Route::post('profile/update-social', [ProfileController::class, 'updateSocial'])->name('profile.update-social');
       Route::post('profile/update-gateway-info', [ProfileController::class, 'updateGatewayInfo'])->name('profile.update-gateway-info');
 
+      /** Notification Routes */
+      // Route::get('notifications/fetch-messages', [NotificationController::class, 'fetchMessages'])->name('notifications.fetch.messages')->middleware('auth:web');
+      // Route::post('notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+
+
       /** Course Routes */
       Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
-      Route::get('courses/create', [CourseController::class, 'create'])->name('courses.create');
+      Route::get('courses/create-basic-info', [CourseController::class, 'create'])->name('courses.create');
       Route::post('courses/create', [CourseController::class, 'storeBasicInfo'])->name('courses.store-basic-info');
       Route::get('courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
       Route::post('courses/update', [CourseController::class, 'update'])->name('courses.update');
       Route::delete('courses/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
+      Route::get('courses/{id}/create-content', [CourseController::class, 'createContent'])->name('course-content.create');
       
-
       Route::get('course-content/{course}/create-chapter', [CourseContentController::class, 'createChapterModal'])->name('course-content.create-chapter');
       Route::post('course-content/{course}/create-chapter', [CourseContentController::class, 'storeChapter'])->name('course-content.store-chapter');
       Route::get('course-content/{chapter}/edit-chapter', [CourseContentController::class, 'editChapterModal'])->name('course-content.edit-chapter');
       Route::post('course-content/{chapter}/edit-chapter', [CourseContentController::class, 'updateChapterModal'])->name('course-content.update-chapter');
       Route::delete('course-content/{chapter}/chapter', [CourseContentController::class, 'destroyChapter'])->name('course-content.destory-chapter');
-
+   
       Route::get('course-content/create-lesson', [CourseContentController::class, 'createLesson'])->name('course-content.create-lesson');
       Route::post('course-content/create-lesson', [CourseContentController::class, 'storeLesson'])->name('course-content.store-lesson');
 
@@ -185,7 +211,11 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       Route::get('course-content/{course}/sort-chapter', [CourseContentController::class, 'sortChapter'])->name('course-content.sort-chpater');
       Route::post('course-content/{course}/sort-chapter', [CourseContentController::class, 'updateSortChapter'])->name('course-content.update-sort-chpater');
 
+      Route::get('courses/{id}/commits', [CourseController::class, 'showCommits'])->name('courses.commits');
 
+      /** Enrolled Students */
+      Route::get('courses/{id}/enrolled-students', [CourseController::class, 'enrolledStudents'])->name('courses.enrolled-students');
+      
       /** Orders Routes */
       Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
 

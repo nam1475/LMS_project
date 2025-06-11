@@ -23,9 +23,16 @@
                                 @csrf
                                 <h2>Log in<span>!</span></h2>
                                 <p class="new_user">Welcome Back, please provide your cradentials for login</p>
-                                <a href="{{ route('auth.google.redirect') }}" class="btn bg-blue-100 p-3 shadow-sm border rounded-md text-blue-900">
-                                    Login with Google
+                                
+                                <a href="{{ route('auth.google.redirect') }}" data-mdb-ripple-init class="btn btn-primary btn-lg btn-block" style="background-color: #3b5998" href="#!"
+                                    role="button">
+                                    <i class="fab fa-google me-2"></i>Continue with Google
                                 </a>
+                            
+                                <div class="divider d-flex align-items-center my-4">
+                                    <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-xl-12">
                                         <div class="wsus__login_form_input">

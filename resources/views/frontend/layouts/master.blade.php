@@ -35,6 +35,7 @@
     <link rel=" stylesheet" href="{{ asset('frontend/assets/css/spacing.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/assets/css/responsive.css') }}">
+    
     @vite(['resources/css/frontend.css', 'resources/js/frontend/frontend.js'])
     <!--dynamic js-->
     @stack('header_scripts')
@@ -56,7 +57,7 @@
     <!-- Modal -->
     <div class="modal fade" id="dynamic-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog  modal-dialog-centered modal-lg dynamic-modal-content">
-
+            
         </div>
     </div>
 
@@ -125,7 +126,7 @@
     <!--main/custom js-->
     <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
 
-    @vite(['resources/js/global.js'])
+    {{-- @vite(['resources/js/global.js']) --}}
 
     <!--dynamic js-->
     @stack('scripts')

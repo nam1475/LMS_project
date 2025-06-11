@@ -31,6 +31,51 @@
     ============================-->
 
 
+    <style>
+    .dropdown-menu-custom {
+      width: 400px;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .icon-success, .icon-error {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .icon-success {
+      background-color: #d4edda;
+      color: #28a745;
+    }
+
+    .icon-error {
+      background-color: #f8d7da;
+      color: #dc3545;
+    }
+
+    .notification-text a {
+      text-decoration: none;
+    }
+
+    .notification-text a:hover {
+      text-decoration: underline;
+    }
+    </style>
    <!--===========================
         MAIN MENU 3 START
     ============================-->
@@ -100,6 +145,26 @@
                <div class="menu_search_btn">
                    <img src="{{ asset('frontend/assets/images/search_icon.png') }}" alt="Search" class="img-fluid">
                </div>
+               <div class="nav-item dropdown">
+                    {{-- Notification --}}
+                    <a href="javascript:;" id="notification123" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" 
+                        aria-label="Open user menu" data-bs-auto-close="outside">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bell"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+                        </svg>
+                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                            <span class="visually-hidden">New alerts</span>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-custom p-0" aria-labelledby="dropdownMenuButton">
+                        <div id="notification-container">
+                            
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                </div>
+
+                <input type="hidden" id="current_user" value="{{ auth('web')->user() }}">
+                
                <ul>
                    <li>
                        <a class="menu_signin" href="{{ route('cart.index') }}">
@@ -266,3 +331,7 @@
    <!--============================
         MOBILE MENU END
     ==============================-->
+
+@push('scripts')
+    @vite(['resources/js/frontend/notification.js'])
+@endpush

@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class CourseContentController extends Controller
 {
@@ -68,7 +69,7 @@ class CourseContentController extends Controller
 
         $lesson = new CourseChapterLession();
         $lesson->title = $request->title;
-        $lesson->slug = \Str::slug($request->title);
+        $lesson->slug = Str::slug($request->title);
         $lesson->storage = $request->source;
         $lesson->file_path = $request->filled('file') ? $request->file : $request->url;
         $lesson->file_type = $request->file_type;
@@ -90,7 +91,7 @@ class CourseContentController extends Controller
     function editChapterModal(string $id): String
     {
         $editMode = true;
-        $chapter = CourseChapter::where(['id' => $id])->firstOrFail();
+        $chapter = CourseChapter::withoutGlobalScopes()->find($id);
 
         return view('admin.course.course-module.partials.course-chapter-modal', compact('chapter', 'editMode'))->render();
     }
@@ -125,20 +126,18 @@ class CourseContentController extends Controller
     function editLesson(Request $request): String
     {
         $editMode = true;
-        $courseId = $request->course_id;
+        $course = Course::withoutGlobalScopes()->find($request->course_id);
         $chapterId = $request->chapter_id;
         $lessonId = $request->lesson_id;
-        $lesson = CourseChapterLession::where(
-            [
-                'id' => $lessonId,
-                'chapter_id' => $chapterId,
-                'course_id' => $courseId,
-                'instructor_id' => Auth::user()->id
-            ]
-        )->first();
+        $lesson = CourseChapterLession::withoutGlobalScopes()->find($lessonId);
+        $originalLesson = CourseChapterLession::withoutGlobalScopes()->where('uuid', $lesson->uuid)
+                    ->where('is_published', true)
+                    ->first();
+        $diff = diffModels($lesson, $originalLesson);
+
         return view(
             'admin.course.course-module.partials.chapter-lesson-modal',
-            compact('courseId', 'chapterId', 'lesson', 'editMode')
+            compact('course', 'chapterId', 'lesson', 'editMode', 'diff')
         )->render();
     }
 
@@ -162,7 +161,7 @@ class CourseContentController extends Controller
 
         $lesson = CourseChapterLession::findOrFail($id);
         $lesson->title = $request->title;
-        $lesson->slug = \Str::slug($request->title);
+        $lesson->slug = Str::slug($request->title);
         $lesson->storage = $request->source;
         $lesson->file_path = $request->filled('file') ? $request->file : $request->url;
         $lesson->file_type = $request->file_type;

@@ -105,5 +105,14 @@ $(function () {
 
 });
 
+// $(document).ready(function() {
+//     $("#avatar").fileinput({
+//         showUpload: false,
+//         dropZoneEnabled: false,
+//         maxFileCount: 10,
+//         inputGroupClass: "input-group-sm"
+//     });
+// });
+
 
 

@@ -231,8 +231,12 @@
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.courses.*']) }}" href="{{ route('admin.courses.index') }}">
                                     Courses
                                 </a>
-
                             </div>
+                            {{-- <div class="dropdown-menu-column">
+                                <a class="dropdown-item {{ sidebarItemActive(['admin.courses.draft.*']) }}" href="{{ route('admin.courses.index') }}">
+                                    Courses Draft
+                                </a>
+                            </div> --}}
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ sidebarItemActive(['admin.course-categories.*']) }}" href="{{ route('admin.course-categories.index') }}">
                                     Course Categories
@@ -272,6 +276,18 @@
                         </span>
                         <span class="nav-link-title">
                             Coupons
+                        </span>
+                    </a>
+                </li>
+
+                <li class="nav-item {{ sidebarItemActive(['admin.notifications.*']) }}">
+                    <a class="nav-link" href="{{ route('admin.notifications.index') }}">
+                        <span
+                            class="nav-link-icon d-md-none d-lg-inline-block">
+                            <i class="ti ti-bell"></i>
+                        </span>
+                        <span class="nav-link-title">
+                            Notifications
                         </span>
                     </a>
                 </li>

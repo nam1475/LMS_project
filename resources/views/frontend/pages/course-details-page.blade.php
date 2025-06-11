@@ -101,7 +101,7 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pills-disabled-tab2" data-bs-toggle="pill"
                                     data-bs-target="#pills-disabled2" type="button" role="tab"
-                                    aria-controls="pills-disabled2" aria-selected="false">Review</button>
+                                    aria-controls="pills-disabled2" aria-selected="false">Reviews</button>
                             </li>
                         </ul>
 
@@ -242,13 +242,13 @@
                             <div class="tab-pane fade" id="pills-disabled2" role="tabpanel"
                                 aria-labelledby="pills-disabled-tab2" tabindex="0">
                                 <div class="wsus__courses_review box_area">
-                                    <h3>Customer Reviews</h3>
+                                    {{-- <h3>Reviews</h3> --}}
                                     <div class="row align-items-center mb_50">
                                         <div class="col-xl-4 col-md-6">
                                             <div class="total_review">
-                                                <h2>{{ number_format($course->reviews()->avg('rating'), 2) ?? 0 }}</h2>
+                                                <h2>{{ number_format($course->reviews()->avg('rating'), 1) ?? 0 }}</h2>
                                                 <p>
-                                                   @for($i = 1; $i <= number_format($course->reviews()->avg('rating'), 2) ?? 0; $i++)
+                                                   @for($i = 1; $i <= number_format($course->reviews()->avg('rating'), 1) ?? 0; $i++)
                                                     <i class="fas fa-star"></i>
                                                    @endfor
                                                    
@@ -258,112 +258,101 @@
                                         </div>
                                         <div class="col-xl-8 col-md-6">
                                             <div class="review_bar">
-                                                <div class="review_bar_single">
-                                                    <p>5 <i class="fas fa-star"></i></p>
-                                                    <div id="bar1" class="barfiller">
-                                                        <div class="tipWrap">
-                                                            <span class="tip"></span>
+                                                @foreach ($ratingPercentages as $rating => $percentage)
+                                                    <div class="review_bar_single">
+                                                        <p>{{ $rating }} <i class="fas fa-star"></i></p>
+                                                        <div id="bar{{ $rating }}" class="barfiller">
+                                                            <div class="tipWrap">
+                                                                <span class="tip"></span>
+                                                            </div>
+                                                            <span class="fill" data-percentage="{{ $percentage }}"></span>
                                                         </div>
-                                                        <span class="fill" data-percentage="85"></span>
+                                                        {{-- <span class="qnty">{{ $course->reviews()->where('rating', $rating)->count() }}</span> --}}
+                                                        <span class="qnty">{{ $percentage }}%</span>
                                                     </div>
-                                                    <span class="qnty">{{ $course->reviews()->where('rating', 5)->count() }}</span>
-                                                </div>
-                                                <div class="review_bar_single">
-                                                    <p>4 <i class="fas fa-star"></i></p>
-                                                    <div id="bar2" class="barfiller">
-                                                        <div class="tipWrap">
-                                                            <span class="tip"></span>
-                                                        </div>
-                                                        <span class="fill" data-percentage="70"></span>
-                                                    </div>
-                                                    <span class="qnty">{{ $course->reviews()->where('rating', 4)->count() }}</span>
-                                                </div>
-                                                <div class="review_bar_single">
-                                                    <p>3 <i class="fas fa-star"></i></p>
-                                                    <div id="bar3" class="barfiller">
-                                                        <div class="tipWrap">
-                                                            <span class="tip"></span>
-                                                        </div>
-                                                        <span class="fill" data-percentage="50"></span>
-                                                    </div>
-                                                    <span class="qnty">{{ $course->reviews()->where('rating', 3)->count() }}</span>
-                                                </div>
-                                                <div class="review_bar_single">
-                                                    <p>2 <i class="fas fa-star"></i></p>
-                                                    <div id="bar4" class="barfiller">
-                                                        <div class="tipWrap">
-                                                            <span class="tip"></span>
-                                                        </div>
-                                                        <span class="fill" data-percentage="30"></span>
-                                                    </div>
-                                                    <span class="qnty">{{ $course->reviews()->where('rating', 2)->count() }}</span>
-                                                </div>
-                                                <div class="review_bar_single">
-                                                    <p>1 <i class="fas fa-star"></i></p>
-                                                    <div id="bar5" class="barfiller">
-                                                        <div class="tipWrap">
-                                                            <span class="tip"></span>
-                                                        </div>
-                                                        <span class="fill" data-percentage="10"></span>
-                                                    </div>
-                                                    <span class="qnty">{{ $course->reviews()->where('rating', 1)->count() }}</span>
-                                                </div>
-
+                                                @endforeach
+                                               
                                             </div>
                                         </div>
                                     </div>
-                                    <h3>Reviews</h3>
 
-                                    @foreach($reviews as $review)
-                                    <div class="wsus__course_single_reviews">
-                                        <div class="wsus__single_review_img">
-                                            <img src="{{ asset($review->user->image) }}" alt="user" class="img-fluid">
+                                    <div class="reviews">
+                                        <h3>Reviews</h3>
+                                        <div>
+                                            {{-- <select data-course-id="{{ $course->id }}" class="select_2" id="filter-rating">
+                                                <option value="">Rating</option>
+                                                @foreach($ratingPercentages as $rating => $percentage)
+                                                <option value="{{ $rating }}">{{ $rating }}</option>
+                                                @endforeach
+                                            </select> --}}
+
+                                            <input type="radio" data-course-id="{{ $course->id }}" class="btn-check filter-rating" value="all" name="options-base" id="all-reviews" autocomplete="off" checked>
+                                            <label class="btn" for="all-reviews">All <i class="fas fa-star"></i></label> 
+                                            @foreach($ratingPercentages as $rating => $percentage)
+                                                <input type="radio" data-course-id="{{ $course->id }}" class="btn-check filter-rating" value="{{ $rating }}" name="options-base" id="{{ $rating }}-star" autocomplete="off">
+                                                <label class="btn" for="{{ $rating }}-star">{{ $rating }} <i class="fas fa-star"></i></label>
+                                            @endforeach
+
                                         </div>
-                                        <div class="wsus__single_review_text">
-                                            <h4>{{ $review->user->name }}</h4>
-                                            <h6> {{ date('d M Y', strtotime($review->created_at)) }}
-                                                <span>
-                                                    @for($i = 1; $i <= $review->rating; $i++)
-                                                    <i class="fas fa-star"></i>
-                                                    @endfor
-                                                    
-                                                </span>
-                                            </h6>
-                                            <p>{{ $review->review }}</p>
-                                        </div>
+
                                     </div>
-                                    @endforeach
 
-                                    <div>
+                                    <div class="reviews-containter">
+                                        @foreach($reviews as $review)
+                                            <div class="wsus__course_single_reviews">
+                                                <div class="wsus__single_review_img">
+                                                    <img src="{{ asset($review->user->image) }}" alt="user" class="img-fluid">
+                                                </div>
+                                                <div class="wsus__single_review_text">
+                                                    <h4>{{ $review->user->name }}</h4>
+                                                    <h6> {{ $review->created_at->format('d/m/Y') }}
+                                                        <span>
+                                                            @for($i = 1; $i <= $review->rating; $i++)
+                                                            <i class="fas fa-star"></i>
+                                                            @endfor
+                                                            
+                                                        </span>
+                                                    </h6>
+                                                    <p>{{ $review->review }}</p>
+                                                </div>
+                                            </div>
+                                        @endforeach
+
+                                    </div>
+
+                                    {{-- <div>
                                         {{ $reviews->links() }}
-                                    </div>
+                                    </div> --}}
                                 
                                 </div>
-                                @auth
-                                <div class="wsus__courses_review_input box_area mt_40">
-                                    <h3>Write a Review</h3>
-                                    <p class="short_text">Your email address will not be published. Required fields are
-                                        marked *</p>
-                                    <div class="select_rating d-flex flex-wrap">Your Rating:
-                                        <ul id="starRating" data-stars="5"></ul>
-                                    </div>
-                                    <form action="{{ route('review.store') }}" method="POST">
-                                        @csrf
-                                        <div class="row">
-                                            <input type="hidden" name="rating" value="" id="rating">
-                                            <input type="hidden" name="course" value="{{ $course->id }}">
-                                            <div class="col-xl-12">
-                                                <textarea rows="7" placeholder="Review" name="review"></textarea>
-                                            </div>
-                                            <div class="col-12 mt-3">
-                                                <button type="submit" class="common_btn">Submit Now</button>    
-                                            </div>
+
+                                @if($courseEnrolled && !$isReviewed)
+                                    <div class="wsus__courses_review_input box_area mt_40">
+                                        <h3>Write a Review</h3>
+                                        <p class="short_text">Your email address will not be published. Required fields are
+                                            marked *</p>
+                                        <div class="select_rating d-flex flex-wrap">Your Rating:
+                                            <ul id="starRating" data-stars="5"></ul>
                                         </div>
-                                    </form>
-                                </div>
-                                @else
-                                <div class="alert alert-info mt-3 text-center" role="alert">Please <a href="{{ route('login') }}">Login</a> First To Write A Review</div>
-                                @endauth
+                                        <form action="{{ route('review.store') }}" method="POST">
+                                            @csrf
+                                            <div class="row">
+                                                <input type="hidden" name="rating" value="" id="rating">
+                                                <input type="hidden" name="course" value="{{ $course->id }}">
+                                                <div class="col-xl-12">
+                                                    <textarea rows="7" placeholder="Review" name="review"></textarea>
+                                                </div>
+                                                <div class="col-12 mt-3">
+                                                    <button type="submit" class="common_btn">Submit</button>    
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @elseif($isReviewed)
+                                    <div class="alert alert-info mt-3 text-center" role="alert">You already reviewed this course</div>
+                                @elseif(!$courseEnrolled)
+                                    <div class="alert alert-info mt-3 text-center" role="alert">You have to enroll this course to write a review</div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -428,7 +417,9 @@
                                     {{ $course->language->name }}
                                 </li>
                             </ul>
-                            @if(!$courseEnrolled)
+                            @if ($isCourseAddedToCart)
+                                <a class="common_btn" href="{{ route('cart.index') }}" >Go to cart <i class="far fa-arrow-right"></i></a>
+                            @elseif(!$courseEnrolled)
                                 <a class="common_btn add_to_cart" data-course-id="{{ $course->id }}" href="" >Add to Cart <i class="far fa-arrow-right"></i></a>
                             @else
                                 <div class="mt-2">
@@ -509,14 +500,29 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/gh/shakilahmed0369/ez-share/dist/ez-share.min.js"></script>
-
+@vite(['resources/js/frontend/review.js'])
 <script>
     $(function() {
+        // Khi tab được kích hoạt (đã mở)
+        $('button[data-bs-toggle="pill"]').on('shown.bs.tab', function (e) {
+            const target = $(e.target).data('bs-target'); // lấy id tab content hiện tại
+
+            if (target === '#pills-disabled2') {
+                // Khởi tạo lại barfiller cho các thanh trong tab Reviews
+                $('#bar1').barfiller({});
+                $('#bar2').barfiller({});
+                $('#bar3').barfiller({});
+                $('#bar4').barfiller({});
+                $('#bar5').barfiller({});
+            }
+        });
+
+
         $('#starRating li').on('click', function() {
             var $starRating = $('#starRating').find('.active').length;
 
             $('#rating').val($starRating);
-        })
+        });
 
         $('#show-chat-modal').on('click', function (e) {
             e.preventDefault();

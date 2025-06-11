@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Notifications\StudentEnrolledCourse;
 
 class OrderService
 {
@@ -57,8 +58,10 @@ class OrderService
                 $instructorWallet = $item->course->instructor;
                 $instructorWallet->wallet += calculateCommission($item->course->discount > 0 ? $item->course->discount : $item->course->price, config('settings.commission_rate'));
                 $instructorWallet->save();
-            }
 
+                // Notify instructor that a student has enrolled a course
+                $item->course->instructor->notify(new StudentEnrolledCourse($item->course, $item->user, $item->course->instructor));
+            }
 
             /** delete cart items */
             $cart->delete();

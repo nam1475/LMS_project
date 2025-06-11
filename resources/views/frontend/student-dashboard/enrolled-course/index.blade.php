@@ -70,12 +70,24 @@
                                                     </td>
                                                     <td class="details">
                                                         <p class="rating">
-                                                            <i class="fas fa-star" aria-hidden="true"></i>
-                                                            <i class="fas fa-star" aria-hidden="true"></i>
-                                                            <i class="fas fa-star" aria-hidden="true"></i>
-                                                            <i class="fas fa-star-half-alt" aria-hidden="true"></i>
-                                                            <i class="far fa-star" aria-hidden="true"></i>
-                                                            <span>(5.0)</span>
+                                                            @php
+                                                                $avgRating = round($enrollment->course->reviews()->avg('rating'), 2);
+                                                                $fullStars = floor($avgRating);       // Số sao đầy
+                                                                $halfStar = ($avgRating - $fullStars) >= 0.5 ? 1 : 0; // Có nửa sao không
+                                                                $emptyStars = 5 - $fullStars - $halfStar; // Số sao rỗng
+                                                            @endphp
+
+                                                            @for($i = 1; $i <= $fullStars; $i++)
+                                                            <i class="fas fa-star"></i>
+                                                            @endfor
+                                                            @if($halfStar)
+                                                            <i class="fas fa-star-half-alt"></i>
+                                                            @endif
+                                                            @for($i = 1; $i <= $emptyStars; $i++)
+                                                            <i class="far fa-star"></i>
+                                                            @endfor
+                                                            
+                                                            <span>({{ number_format($avgRating, 1) }} Rating)</span>
                                                         </p>
                                                         <a class="title" href="{{ route("student.course-player.index", $enrollment->course->slug) }}">
                                                             {{ $enrollment->course->title }}
@@ -84,13 +96,25 @@
                                                         <div class="text-muted">By {{ $enrollment->course->instructor->name }}</div>
 
                                                         @php
+                                                            $lessonCount = \App\Models\CourseChapterLession::withoutGlobalScopes()->where('course_id', $enrollment->course->id)->count();
+                                                            $watchedLessonIds = \App\Models\WatchHistory::where(['user_id' => user()->id, 'course_id' => $enrollment->course->id, 'is_completed' => 1])
+                                                                ->pluck('lesson_id')->toArray();
+                                                            $progress = $lessonCount ? round((count($watchedLessonIds) / $lessonCount) * 100) : 0;
+                                                        @endphp
+                                                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="" aria-valuemin="0" aria-valuemax="100">
+                                                            <div class="progress-bar" style="width: {{ $progress }}%">{{ $progress }}%</div>
+                                                        </div>
+
+                                                        {{-- @php
                                                             $watchedLessonCount = \App\Models\WatchHistory::where(['user_id' => user()->id, 'course_id' => $enrollment->course->id, 'is_completed' => 1])->count();
                                                             $lessonCount = $enrollment->course->lessons()->count();
-                                                        @endphp
-                                                        
-                                                        @if($lessonCount == $watchedLessonCount)
-                                                        <a target="_blank" href="{{ route('student.certificate.download', $enrollment->course->id) }}" class="btn btn-sm btn-warning">Download Certificate</a>
-                                                        @endif
+                                                        @endphp --}}
+                                                        {{-- Certificate --}}
+                                                        {{-- @if($lessonCount == $watchedLessonCount)
+                                                            <a target="_blank" href="{{ route('student.certificate.download', $enrollment->course->id) }}" class="btn btn-sm btn-warning">
+                                                                Download Certificate
+                                                            </a>
+                                                        @endif --}}
                                                     </td>
                                                     
                                                     

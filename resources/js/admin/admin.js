@@ -11,6 +11,14 @@ var notyf = new Notyf({
 const csrf_token = $(`meta[name="csrf_token"]`).attr('content');
 const base_url = $(`meta[name="base_url"]`).attr('content');
 
+var loader = `
+<div class="modal-content text-center p-3" style="display:inline">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+`;
+
 document.addEventListener("DOMContentLoaded", function () {
     var el;
     window.TomSelect && (new TomSelect(el = document.getElementById('select-users'), {
@@ -96,21 +104,26 @@ $('.delete-confirm').on('click', function(e) {
 });
 
 /** Update approval */
-function updateApproveStatus(status, route) {
-    console.log(123);
+function updateApproveStatus(status, route, message) {
     $.ajax({
         method: 'PUT',
         url: route,
         data: {
             _token: csrf_token,
-            status: status
+            status: status,
+            message: message
         },
         success: function (data) {
-            location.reload();
+            notyf.success(data.message);
+            setTimeout(function () {
+                location.reload(); 
+            }, 1000);
         },
         error: function (xhr, status, error) {
             let errorMessage = xhr.responseJSON;
-            notyf.error(errorMessage.message);
+            // notyf.error(errorMessage.message);
+            console.log(errorMessage.message);
+            
         }
 
     })
@@ -119,13 +132,42 @@ function updateApproveStatus(status, route) {
 $(function () {
     $('.update-approval-status').on('change', function () {
         let status = $(this).val();
-        let route = $(this).data('route');
+        if(status == 'rejected') {
+            $('#dynamic-modal').modal("show");
+            let courseId = $(this).data('id');
 
-        updateApproveStatus(status, route);
+            $.ajax({
+                method: 'GET',
+                url: base_url + '/admin/courses/'  + courseId + '/reject-approval',
+                data: {},
+                beforeSend: function () {
+                    $('.dynamic-modal-content').html(loader);
+                },
+                success: function (data) {
+                    $('.dynamic-modal-content').html(data);
+                },
+                error: function (xhr, status, error) {
+
+                }
+            })
+        }
+        else{
+            let route = $(this).data('route');
+            updateApproveStatus(status, route);
+        }
     });
+
     
 });
 
+// $('.reject-approval-status').on('submit', function (e) {
+//     e.preventDefault();
+//     let route = $(this).data('route');
+//     console.log(route);
+//     let message = $('#message').val();
+//     console.log(message, route);
+//     updateApproveStatus('rejected', route, message);
+// });
 
 /** Database Clear with confirmation */
 

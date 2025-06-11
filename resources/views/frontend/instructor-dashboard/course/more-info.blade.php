@@ -1,7 +1,7 @@
 @extends('frontend.instructor-dashboard.course.course-app')
 
 @section('course_content')
-<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+{{-- <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
     <div class="add_course_basic_info">
         <form action="" class="more_info_form course-form" > 
             @csrf
@@ -15,12 +15,6 @@
                         <label for="#">Capacity</label>
                         <input type="text" placeholder="Capacity" name="capacity" value="{{ $course?->capacity }}">
                         <p>leave blank for unlimited</p>
-                    </div>
-                </div>
-                <div class="col-xl-6">
-                    <div class="add_course_more_info_input">
-                        <label for="#">Course Duration (Minutes)*</label>
-                        <input type="text" placeholder="300" name="duration" value="{{ $course->duration }}">
                     </div>
                 </div>
                 <div class="col-xl-6">
@@ -59,7 +53,7 @@
                         <h3>Level</h3>
                         @foreach($levels as $level)
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" @checked($level->id == $course->course_level_id) value="{{ $level->id }}" name="level" id="id-{{ $level->id }}">
+                            <input class="form-check-input" type="radio" @checked($level->id == $course?->course_level_id) value="{{ $level->id }}" name="level" id="id-{{ $level->id }}">
                             <label class="form-check-label" for="id-{{ $level->id }}">
                                 {{ $level->name }}
                             </label>
@@ -73,7 +67,7 @@
                         <h3>Language</h3>
                         @foreach($languages as $language)
                         <div class="form-check">
-                            <input class="form-check-input" @checked($language->id == $course->course_language_id) type="radio" name="language"
+                            <input class="form-check-input" @checked($language->id == $course?->course_language_id) type="radio" name="language"
                                 value="{{ $language->id }}"
                                 id="id-{{ $language->id }}">
                             <label class="form-check-label" for="id-{{ $language->id }}">
@@ -90,5 +84,5 @@
             </div>
         </form> 
     </div>
-</div>
+</div> --}}
 @endsection

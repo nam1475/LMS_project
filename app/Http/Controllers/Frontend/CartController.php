@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\Course;
+use App\Notifications\StudentEnrolledCourse;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -16,17 +17,20 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-  function index(Request $request) : View
+  function index(Request $request)
   {
+    $user = auth('web')->user();
     $couponObject = new Coupon();
     $couponCode = session('coupon_code');
     $coupon = $couponCode ? $couponObject->findCouponByCode($couponCode) : null;
     $couponsUserNotUsed = $couponObject->where('status', 1)->where('expire_date', '>=', Carbon::now())
-      ->whereDoesntHave('orders', function ($query) {
-        $query->where('buyer_id', auth('web')->user()->id);
+      ->whereDoesntHave('orders', function ($query) use ($user) {
+        $query->where('buyer_id', $user->id);
     })->get();
     $originalAmount = cartTotal();
-    $cart = Cart::with(['course'])->where('user_id', user()->id)->paginate(); 
+    $cart = Cart::with(['course'])->where('user_id', $user->id)->get(); 
+
+    
 
     return view('frontend.pages.cart', [
       'cart' => $cart,

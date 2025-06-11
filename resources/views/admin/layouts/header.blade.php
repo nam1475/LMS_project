@@ -1,3 +1,49 @@
+<style>
+    .dropdown-menu-custom {
+      width: 400px;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .icon-success, .icon-error {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .icon-success {
+      background-color: #d4edda;
+      color: #28a745;
+    }
+
+    .icon-error {
+      background-color: #f8d7da;
+      color: #dc3545;
+    }
+
+    .notification-text a {
+      text-decoration: none;
+    }
+
+    .notification-text a:hover {
+      text-decoration: underline;
+    }
+</style>
+    
 <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none">
     <div class="container-xl">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
@@ -5,6 +51,19 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-nav flex-row order-md-last">
+            <div class="nav-item dropdown">
+                <a href="javascript:;" id="notification" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" 
+                    aria-label="Open user menu" data-bs-auto-close="outside">
+                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bell"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+                    </svg>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-custom p-0" aria-labelledby="dropdownMenuButton">
+                    <div id="notification-container">
+                        
+                    </div>
+                </div>
+            </div>
+            
             <div class="d-none d-md-flex ms-3 me-3">
                 <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode"
                     data-bs-toggle="tooltip" data-bs-placement="bottom">
@@ -30,6 +89,7 @@
                 </a>
                 
             </div>
+            
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown"
                     aria-label="Open user menu">
@@ -42,7 +102,7 @@
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                     <a href="{{ route('admin.profile.index') }}" class="dropdown-item">Profile</a>
                     <div class="dropdown-divider"></div>
-                    <a href="./settings.html" class="dropdown-item">Settings</a>
+                    <a href="{{ route('admin.settings.index') }}" class="dropdown-item">Settings</a>
                     <a href="./sign-in.html"
                         onclick="event.preventDefault();
                                                 getElementById('logout').submit();"
@@ -58,3 +118,7 @@
         </div>
     </div>
 </header>
+
+@push('scripts')
+    @vite(['resources/js/admin/notification.js'])
+@endpush

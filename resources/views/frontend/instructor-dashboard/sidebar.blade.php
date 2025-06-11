@@ -27,6 +27,14 @@
                     Instructor Profile
                 </a>
             </li>
+            <li>
+                <a href="{{ route('instructor.notifications.index') }}" class="{{ sidebarItemActive(['instructor.notifications.index']) }}">
+                    <div class="img">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                    </div>
+                    Notifications
+                </a>
+            </li>
 
             <li>
                 <a href="{{ route('instructor.courses.index') }}" class="{{ sidebarItemActive(['instructor.courses.index']) }}">
@@ -34,6 +42,15 @@
                         <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Courses
+                </a>
+            </li>
+            
+            <li>
+                <a href="{{ route('instructor.courses.index') }}" class="{{ sidebarItemActive(['instructor.courses.enrollments.index']) }}">
+                    <div class="img">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                    </div>
+                    Enrollments
                 </a>
             </li>
             

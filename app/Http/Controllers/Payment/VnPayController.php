@@ -143,8 +143,10 @@ class VnPayController extends \App\Http\Controllers\Controller
                 session()->forget('coupon_code');
                 session()->forget('discount_amount');
                 session()->forget('subtotal_amount');
-                
+
                 notyf()->success('Payment successful! You are now enrolled in the course.');
+
+                
 
                 DB::commit();
                 return redirect()->route('order.success');

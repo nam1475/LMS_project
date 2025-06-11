@@ -69,12 +69,16 @@
 
     .chat-message.sender {
         margin-bottom: 10px;
-        text-align: left;
+        text-align: right;
     }
 
     .chat-message.receiver {
         margin-bottom: 10px;
-        text-align: right;
+        text-align: left;
+    }
+
+    .chat-message.receiver .message-content {
+        background-color: #ececec; /** Gray */
     }
 
     .list-group-item.active {
@@ -107,7 +111,6 @@
     .chat-message.sender .message-content {
         background-color: #d1e7dd;
         /* Example color for sender */
-        text-align: right;
         margin-left: auto;
         /* Align right */
     }
@@ -230,28 +233,32 @@
                                                             <div class="list-group chat-list" id="chatList"
                                                                 style="max-height: 500px; overflow-y: auto;">
                                                                 <ul class="list-group list-group-flush">
-                                                                    @foreach ($senders as $sender)
-                                                                        <li class="list-group-item d-flex align-items-center chat-item">
-                                                                            {{-- @if($user->unreadMessages()->contains($sender->id))
-                                                                                <span id="marked-{{ $sender->id }}" class="position-absolute top-0 start-0 p-2 bg-danger border border-light rounded-circle"></span>
-                                                                            @endif --}}
-                                                                            <span id="marked-{{ $sender->id }}" 
-                                                                                @class([
-                                                                                    'position-absolute top-0 start-0 p-2 bg-danger border border-light rounded-circle' => $user->unreadMessages($sender->id)->exists(),
-                                                                                ]) 
-                                                                            ></span>
-                                                                            <img src="{{ asset($sender->image) }}"
-                                                                                class="profile_img rounded-circle mr-3 w-25" alt="Profile Picture">
-                                                                            <div class="profile_info">
-                                                                                <span class="profile_name">
-                                                                                    {{ $sender->name}}
-                                                                                </span>
-                                                                                <span class="sender_id" style="display: none;">
-                                                                                    {{ $sender->id}}
-                                                                                </span>
-                                                                            </div>
-                                                                        </li>
-                                                                    @endforeach
+                                                                    @if($senders->count() > 0)
+                                                                        @foreach ($senders as $sender)
+                                                                            <li class="list-group-item d-flex align-items-center chat-item">
+                                                                                {{-- @if($user->unreadMessages()->contains($sender->id))
+                                                                                    <span id="marked-{{ $sender->id }}" class="position-absolute top-0 start-0 p-2 bg-danger border border-light rounded-circle"></span>
+                                                                                @endif --}}
+                                                                                <span id="marked-{{ $sender->id }}" 
+                                                                                    @class([
+                                                                                        'position-absolute top-0 start-0 p-2 bg-danger border border-light rounded-circle' => $user->unreadMessages($sender->id)->exists(),
+                                                                                    ]) 
+                                                                                ></span>
+                                                                                <img src="{{ asset($sender->image) }}"
+                                                                                    class="profile_img rounded-circle mr-3 w-25" alt="Profile Picture">
+                                                                                <div class="profile_info">
+                                                                                    <span class="profile_name">
+                                                                                        {{ $sender->name}}
+                                                                                    </span>
+                                                                                    <span class="sender_id" style="display: none;">
+                                                                                        {{ $sender->id}}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </li>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <p class="text-center">No Chats</p>
+                                                                    @endif
                                                                 </ul>
                                                             </div>
                                                         </div>

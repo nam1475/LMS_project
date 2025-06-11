@@ -49,17 +49,37 @@
                             @csrf
 
                             <div class="wsus__dashboard_profile wsus__dashboard_profile_avatar">
-                                <div class="img">
+                                {{-- <div class="img">
                                     <img src="{{ asset(auth()->user()->image) }}" alt="profile" class="img-fluid w-100">
                                     <label for="profile_photo">
                                         <img src="{{ asset('frontend/assets/images/dash_camera.png') }}" alt="camera" class="img-fluid w-100">
                                     </label>
                                     <input type="file" id="profile_photo" name="avatar" hidden="">
-                                </div>
+                                 </div>
                                 <div class="text">
                                     <h6>Your avatar</h6>
                                     <p>PNG or JPG no bigger than 400px wide and tall.</p>
+                                </div> --}}
+
+                                <div class="">
+                                    <div class="mb-4 img">
+                                        <img id="selectedAvatar" src="{{ asset(auth()->user()->image) }}"
+                                            class="" alt="Image" />
+                                        <input type="hidden" id="thumbnail-display-default" value="{{ auth()->user()->image }}">
+                                    </div>
+                                    <div>
+                                        <div data-mdb-ripple-init class="btn btn-primary btn-rounded">
+                                            <label class="form-label text-white m-1" for="thumbnail-input">Choose file</label>
+                                            <input type="file" class="form-control d-none" name="avatar" id="thumbnail-input" 
+                                                />
+                                        </div>
+                                        <div class="btn btn-danger btn-rounded d-none" id="remove-thumbnail">
+                                            <label class="form-label text-white m-1" >Remove file</label>
+                                        </div>
+
+                                    </div>
                                 </div>
+
                             </div>
 
                             <div class="row">
@@ -216,3 +236,7 @@
                     DASHBOARD OVERVIEW END
                 ============================-->
 @endsection
+
+@push('scripts')
+    @vite(['resources/js/upload.js'])
+@endpush

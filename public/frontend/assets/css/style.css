@@ -8860,6 +8860,15 @@ footer {
     margin-top: 40px;
 }
 
+.reviews{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.reviews i{
+    color: var(--ratingColor);
+}
 .wsus__single_review_img {
     width: 60px;
     height: 60px;
@@ -14006,7 +14015,8 @@ footer {
 }
 
 .wsus__dash_course_table .image img {
-    width: 160px !important;
+    width: 120px !important;
+    height: 120px;
     border-radius: 10px;
 }
 
@@ -14032,6 +14042,24 @@ footer {
 .wsus__dash_course_table .action .edit {
     background: var(--colorGreen);
     color: var(--colorWhite);
+}
+
+.wsus__dash_course_table .action .draft {
+    background: var(--colorOrange);
+    color: var(--colorWhite);
+}
+
+.wsus__dash_course_table .action .draft:hover {
+    background: #DED371;
+}
+
+.wsus__dash_course_table .action .commit {
+    background: var(--colorPrimary);
+    color: var(--colorWhite);
+}
+
+.wsus__dash_course_table .action .commit:hover {
+    background: #596cb8;
 }
 
 .wsus__dash_course_table .action .del {
@@ -14221,6 +14249,10 @@ footer {
 
 .wsus__dash_course_table .status .inactive {
     background: #E53935;
+}
+
+.wsus__dash_course_table .status .draft {
+    background: #ababab;
 }
 
 .wsus__dash_course_table .status .pending {

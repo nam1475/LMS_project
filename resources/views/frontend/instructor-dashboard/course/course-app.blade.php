@@ -10,10 +10,10 @@
                 <div class="row">
                     <div class="col-12 wow fadeInUp">
                         <div class="wsus__breadcrumb_text">
-                            <h1>Add Courses</h1>
+                            <h1>{{ @$title }}</h1>
                             <ul>
                                 <li><a href="#">Home</a></li>
-                                <li>Add Courses</li>
+                                <li>{{ @$title }}</li>
                             </ul>
                         </div>
                     </div>
@@ -36,33 +36,40 @@
 
                 <div class="col-xl-9 col-md-8 wow fadeInRight">
                     <div class="wsus__dashboard_contant">
-                        <div class="wsus__dashboard_contant_top">
+                        <div class="wsus__dashboard_contant_top d-flex justify-content-between">
                             <div class="wsus__dashboard_heading relative">
-                                <h5>Add Courses</h5>
-                                <p>Manage your courses and its update like live, draft and insight.</p>
+                                <h5>{{ @$title }}</h5>
+                                {{-- <p>Manage your courses and its update like live, draft and insight.</p> --}}
                             </div>
                         </div>
 
                         <div class="dashboard_add_courses">
-                            <ul class="nav nav-pills" id="pills-tab" role="tablist">
-                                <li class="nav-item" role="presentation ">
-                                    <a href="" class="nav-link course-tab {{ request('step') == 1 ? 'active' : '' }}" data-step="1">Basic Infos</a>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <a href="" class="nav-link course-tab {{ request('step') == 2 ? 'active' : '' }}" data-step="2">More Info</a>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <a href="" class="nav-link course-tab {{ request('step') == 3 ? 'active' : '' }}" data-step="3">Course Contents</a>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <a href="" class="nav-link course-tab {{ request('step') == 4 ? 'active' : '' }}" data-step="4" >Finish</a>
-                                </li>
-                            </ul>
+                            @if(@!$isCommits)
+                                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                                    {{-- <li class="nav-item" role="presentation ">
+                                        <a href="" class="nav-link course-tab {{ request('step') == 0 ? 'active' : '' }}" data-step="0">Commits</a>
+                                    </li> --}}
+                                    <li class="nav-item" role="presentation ">
+                                        <a href="" class="nav-link course-tab {{ request('step') == 1 ? 'active' : '' }}" data-step="1">Basic Infos</a>
+                                    </li>
+                                    {{-- <li class="nav-item" role="presentation">
+                                        <a href="" class="nav-link course-tab {{ request('step') == 2 ? 'active' : '' }}" data-step="2">More Info</a>
+                                    </li> --}}
+                                    <li class="nav-item" role="presentation">
+                                        <a href="" class="nav-link course-tab {{ request('step') == 2 ? 'active' : '' }}" data-step="2">Course Contents</a>
+                                    </li>
+                                    @if(@$course->is_current && @$isCreateDraft)
+                                        <li class="nav-item" role="presentation">
+                                            <a href="" class="nav-link course-tab {{ request('step') == 3 ? 'active' : '' }}" data-step="3" >Finish</a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            @endif
                                 
-                               @yield('course_content') 
-                            </div>
+                            @yield('course_content') 
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </div>

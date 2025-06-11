@@ -48,6 +48,7 @@ use App\Http\Controllers\Admin\TopBarController;
 use App\Http\Controllers\Admin\VideoSectionController;
 use App\Http\Controllers\Admin\WithdrawRequestController;
 use App\Http\Controllers\Frontend\HeroController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Models\BecomeInstructorSection;
 use App\Models\FeaturedInstructor;
 use App\Models\Footer;
@@ -129,6 +130,8 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
     /** Course Module Routes */
     Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
     Route::put('courses/{course}/update-approval', [CourseController::class, 'updateApproval'])->name('courses.update-approval');
+    Route::get('courses/{course}/reject-approval', [CourseController::class, 'rejectApprovalModal'])->name('courses.reject-approval');
+    Route::put('courses/{course}/reject-approval/send', [CourseController::class, 'sendRejectApproval'])->name('courses.reject-approval.send');
 
     Route::get('courses/create', [CourseController::class, 'create'])->name('courses.create');
     Route::post('courses/create', [CourseController::class, 'storeBasicInfo'])->name('courses.store-basic-info');
@@ -155,10 +158,18 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
     Route::get('course-content/{course}/sort-chapter', [CourseContentController::class, 'sortChapter'])->name('course-content.sort-chpater');
     Route::post('course-content/{course}/sort-chapter', [CourseContentController::class, 'updateSortChapter'])->name('course-content.update-sort-chpater');
 
+    Route::get('courses/{id}/commits', [CourseController::class, 'showCommits'])->name('courses.commits');
+
     /** Coupon Routes */
     Route::resource('coupons', CouponController::class);
     Route::put('coupons/{coupon}/update-approval', [CouponController::class, 'updateApproval'])->name('coupons.update-approval');
-
+    
+    /** Notification Routes */
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/fetch-messages', [NotificationController::class, 'fetchMessages'])->name('notifications.fetch.messages');
+    Route::post('notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+    Route::delete('notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    
     /** Order Routes */
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');

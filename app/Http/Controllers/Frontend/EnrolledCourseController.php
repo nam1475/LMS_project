@@ -19,12 +19,13 @@ class EnrolledCourseController extends Controller
         return view('frontend.student-dashboard.enrolled-course.index', compact('enrollments'));     
     }
 
-    function payerIndex(string $slug) : View
+    function playerIndex(string $slug) : View
     {
-        $course = Course::where('slug', $slug)->firstOrFail();
-
-        if(!Enrollment::where('user_id', user()->id)->where('course_id', $course->id)->where('have_access', 1)->exists()) return abort(404);
-        $lessonCount = CourseChapterLession::where('course_id', $course->id)->count();
+        $course = Course::withoutGlobalScopesWithRelations()->where('slug', $slug)->firstOrFail();
+        if(!Enrollment::where('user_id', user()->id)->where('course_id', $course->id)->where('have_access', 1)->exists()){
+            return abort(404);
+        }
+        $lessonCount = CourseChapterLession::withoutGlobalScopes()->where('course_id', $course->id)->count();
         $lastWatchHistory = WatchHistory::where(['user_id' => user()->id, 'course_id' => $course->id])->orderBy('updated_at', 'desc')->first();
         $watchedLessonIds = WatchHistory::where(['user_id' => user()->id, 'course_id' => $course->id, 'is_completed' => 1])->pluck('lesson_id')->toArray();
         return view('frontend.student-dashboard.enrolled-course.player-index', 
@@ -33,7 +34,7 @@ class EnrolledCourseController extends Controller
 
     function getLessonContent(Request $request) 
     {
-        $lesson = CourseChapterLession::where([
+        $lesson = CourseChapterLession::withoutGlobalScopes()->where([
             'course_id' => $request->course_id,
             'chapter_id' => $request->chapter_id,
             'id' => $request->lesson_id
@@ -79,7 +80,7 @@ class EnrolledCourseController extends Controller
 
     function fileDownload(string $id)
     {
-        $lesson = CourseChapterLession::findOrFail($id);
+        $lesson = CourseChapterLession::withoutGlobalScopes()->findOrFail($id);
         return response()->download(public_path($lesson->file_path));     
     }
 }

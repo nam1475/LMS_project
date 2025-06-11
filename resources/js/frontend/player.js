@@ -75,7 +75,7 @@ function updateWatchHistory(courseId, chapterId, lessonId) {
         },
         beforeSend: function() {},
         success: function(data) {
-           
+            // location.reload();
         },
         error: function(xhr, status, error) {}
     })
@@ -153,6 +153,9 @@ $('.make_completed').on('click', function() {
         beforeSend: function() {},
         success: function(data) {
             notyf.success(data.message);
+            setTimeout(function() {
+                location.reload();
+            }, 700);
         },
         error: function(xhr, status, error) {}
     })

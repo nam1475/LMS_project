@@ -45,7 +45,11 @@
                         <tbody>
                             @forelse($reviews as $review)
                             <tr>
-                                <td>{{ $review->course->title }}</td>
+                                <td>
+                                    <a class="title" href="{{ route('courses.show', $review->course->slug) }}">
+                                        {{ $review->course->title }}
+                                    </a>
+                                </td>
                                 <td>{{ $review->rating }}</td>
                                 <td>{{ $review->review }}</td>
                                 <td>

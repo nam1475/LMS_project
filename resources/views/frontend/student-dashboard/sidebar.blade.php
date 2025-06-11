@@ -29,6 +29,15 @@
             </li>
 
             <li>
+                <a href="{{ route('student.notifications.index') }}" class="{{ sidebarItemActive(['student.notifications.index']) }}">
+                    <div class="img">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                    </div>
+                    Notifications
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ route('student.enrolled-courses.index') }}" class="{{ sidebarItemActive(['student.enrolled-courses.index']) }}">
                     <div class="img">
                         <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
@@ -47,7 +56,7 @@
             </li>
             
             <li>
-                <a href="{{ route('student.orders.index') }}" class="{{ sidebarItemActive(['student.review.index']) }}">
+                <a href="{{ route('student.orders.index') }}" class="{{ sidebarItemActive(['student.orders.index']) }}">
                     <div class="img">
                         <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
                     </div>

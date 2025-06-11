@@ -19,7 +19,7 @@ class StudentDashboardController extends Controller
     use FileUpload;
 
     function index() : View {
-        $userCourses = user()->enrollments()->count();
+        $userCourses = auth('web')->user()->enrollments()->count();
         $reviewCount = Review::where('user_id', user()->id)->count();
         $orderCount = Order::where('buyer_id', user()->id)->count();
 
@@ -30,11 +30,11 @@ class StudentDashboardController extends Controller
 
 
     function becomeInstructor() : View {
-       if(auth()->user()->role == 'instructor') abort(403);
+       if(auth('web')->user()->role == 'instructor') abort(403);
 
        return view('frontend.student-dashboard.become-instructor.index'); 
     }
-
+    
     function becomeInstructorUpdate(Request $request, User $user) : RedirectResponse {
         $request->validate(['document' => ['required', 'mimes:pdf,doc,docx,jpg,png', 'max:12000']]);
 
