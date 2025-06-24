@@ -19,17 +19,40 @@ class EnrolledCourseController extends Controller
         return view('frontend.student-dashboard.enrolled-course.index', compact('enrollments'));     
     }
 
+    function enrollFreeCourse(Request $request, $courseId) : Response
+    {
+        $isEnrolled = Enrollment::where(['user_id' => $request->user_id, 'course_id' => $courseId, 'have_access' => 1])->exists();
+        if($request->is_free && !$isEnrolled) {
+            Enrollment::create([
+                'user_id' => $request->user_id,
+                'course_id' => $courseId,
+                'instructor_id' => $request->instructor_id,
+            ]);
+            return response(['status' => 'success', 'message' => 'Enrolled free course Successfully!']);
+        }
+        return response(['status' => 'success']);
+    }
+
     function playerIndex(string $slug) : View
     {
+        $user = auth('web')->user();
         $course = Course::withoutGlobalScopesWithRelations()->where('slug', $slug)->firstOrFail();
-        if(!Enrollment::where('user_id', user()->id)->where('course_id', $course->id)->where('have_access', 1)->exists()){
+        $isEnrolled = Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->where('have_access', 1)->exists();
+        if(!$isEnrolled && !$user->role == 'instructor') {
             return abort(404);
         }
+        // if($user->role == 'instructor'){
+        //     Enrollment::create([
+        //         'user_id' => $user->id,
+        //     ]);
+        // }
         $lessonCount = CourseChapterLession::withoutGlobalScopes()->where('course_id', $course->id)->count();
-        $lastWatchHistory = WatchHistory::where(['user_id' => user()->id, 'course_id' => $course->id])->orderBy('updated_at', 'desc')->first();
-        $watchedLessonIds = WatchHistory::where(['user_id' => user()->id, 'course_id' => $course->id, 'is_completed' => 1])->pluck('lesson_id')->toArray();
+        $lastWatchHistory = WatchHistory::where(['user_id' => $user->id, 'course_id' => $course->id])->orderBy('updated_at', 'desc')->first();
+        $watchedLessonIds = WatchHistory::where(['user_id' => $user->id, 'course_id' => $course->id, 'is_completed' => 1])->pluck('lesson_id')->toArray();
+        // $totalComments = $course->comments()->count();
+
         return view('frontend.student-dashboard.enrolled-course.player-index', 
-                compact('course', 'lastWatchHistory', 'watchedLessonIds', 'lessonCount'));
+                compact('course', 'lastWatchHistory', 'watchedLessonIds', 'lessonCount', 'user'));
     }
 
     function getLessonContent(Request $request) 

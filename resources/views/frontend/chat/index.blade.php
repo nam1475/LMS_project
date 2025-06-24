@@ -230,7 +230,7 @@
                                                             <div class="card-header bg-primary" >
                                                                 <h4 class="mb-0" style="color: white;">Chats</h4>
                                                             </div>
-                                                            <div class="list-group chat-list" id="chatList"
+                                                            <div class="list-group chat-list"
                                                                 style="max-height: 500px; overflow-y: auto;">
                                                                 <ul class="list-group list-group-flush">
                                                                     @if($senders->count() > 0)

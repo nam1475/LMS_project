@@ -62,7 +62,7 @@
                                                 <th class="text-center" style="width: 1%"></th>
                                                 <th>Product</th>
                                                 <th class="text-center" style="width: 1%">Qnt</th>
-                                                <th class="text-end" style="width: 4%">Amount</th>
+                                                <th class="text-end" style="width: 4%">Amount({{ $order->currency }})</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -76,16 +76,31 @@
                                                 <td class="text-center">
                                                     1
                                                 </td>
-                                                <td class="text-end">{{ $item->price }}</td>
+                                                <td class="text-end">{{ number_format($item->price) }}</td>
                                             </tr>
                                             @endforeach
                                             <tr>
+                                                <td colspan="3" class="strong text-end">Total</td>
+                                                <td class="text-end">{{ number_format($order->total_amount) }}</td>
+                                            </tr>
+                                            
+                                            @if($order->coupon_code)
+                                                <tr>
+                                                    <td colspan="3" class="strong text-end">Coupon code</td>
+                                                    <td class="text-end">{{ $order->coupon_code }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3" class="strong text-end">Discount amount</td>
+                                                    <td class="text-end">-{{ number_format($order->coupon_amount) }}</td>
+                                                </tr>
+                                            @endif
+                                            <tr>
                                                 <td colspan="3" class="strong text-end">Subtotal</td>
-                                                <td class="text-end">{{ $order->total_amount }}</td>
+                                                <td class="text-end">{{ number_format($order->subtotal_amount ?? $order->total_amount) }}</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="3" class="strong text-end">Paid Amount</td>
-                                                <td class="text-end">{{ $order->paid_amount }} {{ $order->currency }}</td>
+                                                <td class="text-end">{{ number_format($order->paid_amount) }} </td>
                                             </tr>
                                             
                                         </tbody>

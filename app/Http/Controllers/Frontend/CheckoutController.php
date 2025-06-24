@@ -20,6 +20,7 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index');
         }
         $cartItems = $cart->get();
+        $totalAmount = session('total_amount');
         $couponCode = session('coupon_code');
         $discountAmount = session('discount_amount');
         $subtotalAmount = session('subtotal_amount');

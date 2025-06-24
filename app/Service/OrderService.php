@@ -25,7 +25,7 @@ class OrderService
             $order->invoice_id = uniqid();
             $order->buyer_id = $buyer_id;
             $order->status = $status;
-            $order->total_amount = $total_amount;
+            $order->total_amount = session('total_amount') ?? $total_amount;
             $order->subtotal_amount = session('subtotal_amount') ?? $total_amount;
             $order->paid_amount = $paid_amount;
             $order->currency = $currency;

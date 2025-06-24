@@ -53,7 +53,7 @@ class CourseUpdated extends Notification
     {
         return [
             'title' => "Course Updated",
-            'message' => "Instructor {$this->instructor->name} changed course {$this->course->title}!",
+            'message' => "Instructor '{$this->instructor->name}' updated course {$this->course->title}!",
             'instructor_id' => $this->instructor->id,
             'time' => $this->time,
             'url' => $this->url

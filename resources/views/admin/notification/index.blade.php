@@ -20,6 +20,7 @@
                                 <tr>
                                     <th>Title</th>
                                     <th>Message</th>
+                                    <th>Time</th>
                                     <th>Is Read</th>
                                     <th>Action</th>
                                 </tr>
@@ -27,7 +28,7 @@
                             <tbody>
                                 @forelse ($notifications as $notification)
                                     <tr>
-                                        <td>{{ $notification->title }}</td>
+                                        <td>{{ $notification->data['title'] ?? '' }}</td>
                                         <td>
                                             <a class="mark-as-read" data-notification-id="{{ $notification->id }}"
                                                 data-redirect-url="{{ $notification->data['url'] }}" 
@@ -35,6 +36,7 @@
                                                 {{ $notification->data['message'] }}
                                             </a>
                                         </td>
+                                        <td>{{ $notification->data['time'] }}</td>
                                         <td>
                                             @if ($notification->read_at)
                                                 <span class="badge bg-success text-green-fg">Yes</span>

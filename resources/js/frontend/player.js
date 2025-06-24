@@ -2,12 +2,21 @@
 /** Variables */
 const csrf_token = $(`meta[name="csrf_token"]`).attr('content');
 const base_url = $(`meta[name="base_url"]`).attr('content');
+const currentUser = JSON.parse($('#current-user').val());
 
 /** Notyf init */
 var notyf = new Notyf({
     duration: 5000,
     dismissible: true
 });
+
+var loader = `
+<div class="modal-content text-center p-3" style="display:inline">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+`;
 
 
 /** Reusable Functions */
@@ -95,7 +104,7 @@ $('.lesson').on('click', function() {
 
     $.ajax({
         method: 'GET',
-        url: `${base_url}/student/get-lesson-content`,
+        url: `${base_url}/${currentUser.role}/get-lesson-content`,
         data: {
             'chapter_id': chapterId,
             'lesson_id': lessonId,
@@ -125,8 +134,11 @@ $('.lesson').on('click', function() {
             }
 
             // update watch history
+            if(currentUser.role == 'student') {
+                updateWatchHistory(courseId, chapterId, lessonId);
+            }
 
-            updateWatchHistory(courseId, chapterId, lessonId)
+            // location.reload();
         },
         error: function(xhr, status, error) {}
     })

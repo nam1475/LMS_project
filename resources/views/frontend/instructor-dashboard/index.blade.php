@@ -83,23 +83,32 @@
                     <div class="card mt-4">
                         <table class="table">
                             <thead>
+                                <th>Invoice ID</th>
                                 <th>Course Name</th>
                                 <th>Purchase By</th>
                                 <th>Price</th>
                                 <th>Commission</th>
                                 <th>Earning</th>
+                                <th>Action</th>
 
                             </thead>
                             <tbody>
                                 @forelse($orderItems as $orderItem)
                                     <tr>
-                                        <td>{{ $orderItem->course->title }}</td>
+                                        <td>{{ $orderItem->order->invoice_id }}</td>
+                                        <td>
+                                            <a href="{{ route('courses.show', $orderItem->course->slug) }}">
+                                                {{ $orderItem->course->title }}
+                                            </a>
+                                        </td>
                                         <td>{{ $orderItem->order->customer->name }}</td>
-                                        <td>{{ $orderItem->price }}</td>
+                                        <td>{{ number_format($orderItem->price) }} {{ $orderItem->order->currency }}</td>
                                         <td>{{ $orderItem->commission_rate ?? 0 }}%</td>
-                                        <td>{{ calculateCommission($orderItem->price, $orderItem->commission_rate) }}
+                                        <td>{{ number_format(calculateCommission($orderItem->price, $orderItem->commission_rate)) }}
                                             {{ $orderItem->order->currency }}</td>
-
+                                        <td>
+                                            <a href="{{ route('instructor.orders.show', $orderItem->order->invoice_id) }}">view</a>
+                                        </td>
                                     </tr>
                                 @empty
 

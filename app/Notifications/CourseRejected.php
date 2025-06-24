@@ -23,7 +23,8 @@ class CourseRejected extends Notification
         $this->course = $course;
         $this->instructor = $instructor;
         $this->time = now()->timezone('Asia/Ho_Chi_Minh')->format('H:i d/m/Y');
-        $this->url = route('admin.courses.edit', ['id' => $course->id, 'step' => 1, 'is_create_draft' => true]);
+        // $this->url = route('instructor.courses.edit', ['id' => $course->id, 'step' => 1, 'is_create_draft' => true]);
+        $this->url = route('instructor.courses.index', ['search' => $course->title]);
     }
 
     /**

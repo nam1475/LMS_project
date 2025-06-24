@@ -13,7 +13,7 @@ class NotificationController extends Controller
     }
 
     public function fetchMessages() {
-        $notifications = auth('web')->user()->notifications()->limit(10)->get();
+        $notifications = auth('web')->user()->notifications()->orderBy('created_at', 'desc')->limit(3)->get();
         return response()->json(['notifications' => $notifications]);
     }
 

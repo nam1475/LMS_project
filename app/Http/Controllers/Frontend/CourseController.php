@@ -10,6 +10,7 @@ use App\Models\CourseCategory;
 use App\Models\CourseChapter;
 use App\Models\CourseLanguage;
 use App\Models\CourseLevel;
+use App\Notifications\CourseDrafted;
 use App\Notifications\CourseUpdated;
 use App\Notifications\NewCourse;
 use App\Traits\FileUpload;
@@ -27,34 +28,46 @@ class CourseController extends Controller
 
     function index(Request $request): View
     {
-        // $courses = Course::withDrafts()->where('instructor_id', Auth::guard('web')->user()->id)
-        //     ->orderBy('uuid', 'DESC')->orderBy('updated_at', 'DESC')->paginate(25);
-        
+        $courseCategories = CourseCategory::with('subCategories')->where('status', 1)->get();
         $courses = Course::withoutGlobalScopes()->where([
             'instructor_id' => Auth::guard('web')->user()->id, 
             ])
             ->when($request->has('search') && $request->filled('search'), function($query) use ($request) {
                 $query->where('title', 'like', '%' . $request->search . '%');
             })
-            ->when($request->has('status') && $request->filled('status'), function($query) use ($request) {
-                if($request->status == 'all'){
-                    return;
+            ->when($request->has('is_published') && $request->filled('is_published'), function($query) use ($request) {
+                if($request->is_published == 'all'){
+                    return $query;
                 }
-                $query->where('is_approved', $request->status);
+                $query->where('is_published', $request->is_published);
+            })
+            ->when($request->has('is_approved') && $request->filled('is_approved'), function($query) use ($request) {
+                if($request->is_approved == 'all'){
+                    return $query;
+                }
+                $query->where('is_approved', $request->is_approved);
+            })
+            ->when($request->has('course_categories') && $request->filled('course_categories'), function($query) use ($request) {
+                if($request->course_categories == 'all'){
+                    return $query;
+                }
+                $query->whereHas('category', function ($q) use ($request) {
+                    $q->whereIn('id', $request->course_categories);
+                });
             })
             ->where(function ($query) {
                 $query->where(function ($q) {
-                    $q->where(['is_published' => true, 'is_current' => true]);
+                    $q->where(['is_published' => true]);
                 })
-                ->orWhere(function ($q) {
-                    $q->where(['is_published' => true, 'is_current' => false]);
-                })
+                // ->orWhere(function ($q) {
+                //     $q->where(['is_published' => true, 'is_current' => false]);
+                // });
                 ->orWhere(function ($q) {
                     $q->where(['is_published' => false, 'is_current' => true]);
                 });
             })
             ->orderBy('updated_at', 'DESC')->paginate(25);
-        return view('frontend.instructor-dashboard.course.index', compact('courses'));
+        return view('frontend.instructor-dashboard.course.index', compact('courses', 'courseCategories'));
     }
 
     function showCommits($id): View
@@ -81,7 +94,6 @@ class CourseController extends Controller
                 });
         })
         ->get();
-        // dd($enrollments);
 
         return view('frontend.instructor-dashboard.course.enrolled-students', [
             'title' => 'Enrolled Students',
@@ -92,12 +104,9 @@ class CourseController extends Controller
 
     function create(): View
     {
-        // $course = Course::withDrafts()->find($request->id);
         $categories = CourseCategory::where('status', 1)->get();
         $levels = CourseLevel::all();
         $languages = CourseLanguage::all();
-        // $courseId = $request->id;
-        // $chapters = CourseChapter::where(['course_id' => $courseId, 'instructor_id' => Auth::user()->id])->orderBy('order')->get();
         return view('frontend.instructor-dashboard.course.create', [
             'title' => 'Create Course',
             'categories' => $categories,
@@ -127,6 +136,7 @@ class CourseController extends Controller
             DB::beginTransaction();
             $thumbnailPath = $request->hasFile('thumbnail') ? $this->uploadFile($request->file('thumbnail')) : null;
             $course = Course::create([
+                'message_for_commit' => $request->message_for_commit,
                 'title' => $request->title,
                 'slug' => Str::slug($request->title),
                 'seo_description' => $request->seo_description,
@@ -137,13 +147,12 @@ class CourseController extends Controller
                 'discount' => $request->discount,
                 'description' => $request->description,
                 'instructor_id' => Auth::guard('web')->user()->id,
-                'capacity' => $request->capacity,
-                'qna' => $request->qna ? 1 : 0,
+                // 'capacity' => $request->capacity,
+                // 'qna' => $request->qna ? 1 : 0,
                 'certificate' => $request->certificate ? 1 : 0,
                 'category_id' => $request->category,
                 'course_level_id' => $request->level,
                 'course_language_id' => $request->language,
-                'message_for_reviewer' => $request->message_for_reviewer,
                 'is_published' => false,
             ]);
     
@@ -286,17 +295,15 @@ class CourseController extends Controller
                 try{
                     DB::beginTransaction();
 
-                    $course = Course::withoutGlobalScopes()->with([
-                        'chapters' => fn($q) => $q->withoutGlobalScopes(),
-                        'chapters.lessons' => fn($q) => $q->withoutGlobalScopes(),
-                    ])->find($request->id);
+                    $course = Course::withoutGlobalScopesWithRelations()->find($request->id);
 
                     // Tìm bản chính cùng uuid
-                    $original = Course::withoutGlobalScopes()->with([
-                        'chapters' => fn($q) => $q->withoutGlobalScopes(),
-                        'chapters.lessons' => fn($q) => $q->withoutGlobalScopes(),
-                        ])
-                        ->where('uuid', $course->uuid)
+                    $original = Course::withoutGlobalScopesWithRelations()
+                        ->when(
+                            $course->uuid != null, 
+                            fn($q) => $q->where('uuid', $course->uuid),
+                            fn($q) => $q->where('id', $course->id)
+                        )
                         ->where('is_published', true)
                         ->first();
                         
@@ -305,10 +312,13 @@ class CourseController extends Controller
                     // Nếu course hiện tại đã được publish thì khi sửa sẽ tạo 1 bản nháp mới
                     if($course->is_published && $course->is_current && $request->is_create_draft){
                         $course = Course::currentWithoutRevisionWithRelations($request->id);
+                        $newThumbnailPath = $this->reuploadFileFromPath($course->thumbnail);
                         $course->updateAsDraft([
+                            'message_for_commit' => 'New draft created',
                             'title' => $course->title,
                             'slug' => $course->slug,
-                            'thumbnail' => $course->thumbnail,
+                            // 'thumbnail' => $course->thumbnail,
+                            'thumbnail' => $newThumbnailPath,
                             'seo_description' => $course->seo_description,
                             'demo_video_storage' => $course->demo_video_storage,
                             'demo_video_source' => $course->demo_video_source,
@@ -316,8 +326,8 @@ class CourseController extends Controller
                             'discount' => $course->discount,
                             'description' => $course->description,
                             'instructor_id' => $course->instructor_id,
-                            'capacity' => $course->capacity,
-                            'qna' => $course->qna,
+                            // 'capacity' => $course->capacity,
+                            // 'qna' => $course->qna,
                             'certificate' => $course->certificate,
                             'category_id' => $course->category_id,
                             'course_level_id' => $course->course_level_id,
@@ -351,13 +361,15 @@ class CourseController extends Controller
                                     'chapter_id' => $chapterDraft->id
                                 ]);
                             }
+
                         }
+                        $admin = Admin::find(1);
+                        $admin->notify(new CourseDrafted($courseDraft, $courseDraft->instructor));
+
                         DB::commit();
 
                         notyf()->success('Create Draft Successfully!');
 
-                        $admin = Admin::find(1);
-                        $admin->notify(new CourseUpdated($courseDraft, $courseDraft->instructor));
                         
                         return redirect()->route('instructor.courses.edit', [
                             'id' => $courseDraft->id,
@@ -400,12 +412,9 @@ class CourseController extends Controller
 
             // case '3':
             case '2':
-                $course = Course::withoutGlobalScopes()->with([
-                        'chapters' => fn($q) => $q->withoutGlobalScopes(),
-                        'chapters.lessons' => fn($q) => $q->withoutGlobalScopes(),
-                    ])->find($request->id);
+                $course = Course::withoutGlobalScopesWithRelations()->find($request->id);
                 if($course->is_current) {
-                    $course = Course::currentWithoutRevision($request->id);
+                    // $course = Course::currentWithoutRevision($request->id);
                     $chapters = CourseChapter::with(['lessons' => fn($q) => $q->current()])
                     ->where('course_id', $course->id)
                     ->orderBy('order')
@@ -418,56 +427,20 @@ class CourseController extends Controller
                         ->where('course_id', $course->id)->orderBy('order')->get();
                 }
 
+                $isCourseHasDraft = $course->where('uuid', $course->uuid)->exists();
                 // Tìm bản chính cùng uuid
-                $original = Course::withoutGlobalScopes()->with([
-                    'chapters' => fn($q) => $q->withoutGlobalScopes(),
-                    'chapters.lessons' => fn($q) => $q->withoutGlobalScopes(),
-                    ])
-                    ->where('uuid', $course->uuid)
-                    ->where('is_published', true)
+                $original = Course::withoutGlobalScopesWithRelations()
+                    ->when($isCourseHasDraft, fn($q) => $q->where('is_published', true)) 
+                    ->when(
+                        $course->uuid != null, 
+                        fn($q) => $q->where('uuid', $course->uuid),
+                        fn($q) => $q->where('id', $course->id)
+                    )
                     ->first();
-
-                // $diff = [
-                //     'chapters' => [],
-                //     'lessons' => [],
-                // ];
-
-                // // So sánh từ bản nháp → bản chính
-                // foreach ($course->chapters as $draftChapter) {
-                //     $originalChapter = $original->chapters->firstWhere('uuid', $draftChapter->uuid);
-
-                //     if ($originalChapter) {
-                //         $diff['chapters'][$draftChapter->id] = diffModels($draftChapter, $originalChapter);
-                //     } else {
-                //         $diff['chapters'][$draftChapter->id] = 'New chapter';
-                //     }
-
-                //     foreach ($draftChapter->lessons as $draftLesson) {
-                //         $originalLesson = $originalChapter?->lessons->firstWhere('uuid', $draftLesson->uuid);
-                //         if ($originalLesson) {
-                //             $diff['lessons'][$draftLesson->id] = diffModels($draftLesson, $originalLesson);
-                //         } else {
-                //             $diff['lessons'][$draftLesson->id] = 'New lesson';
-                //         }
-                //     }
-                // }
-
-                // // So sánh từ bản chính → bản nháp (để phát hiện đã bị xoá)
-                // foreach ($original->chapters as $originalChapter) {
-                //     $draftChapter = $course->chapters->firstWhere('uuid', $originalChapter->uuid);
-                //     if (!$draftChapter) {
-                //         $diff['chapters']['new_' . $originalChapter->id] = $originalChapter;
-                //     }
-
-                //     foreach ($originalChapter->lessons as $originalLesson) {
-                //         $draftLesson = $draftChapter?->lessons->firstWhere('uuid', $originalLesson->uuid);
-                //         if (!$draftLesson) {
-                //             $diff['lessons']['new_' . $originalLesson->id] = $originalLesson;
-                //         }
-                //     }
-                // }
+                // dd($original, $course);
                 
                 $diff = compareChaptersWithNestedLessons($course, $original);
+                // dd($diff);
                 
                 return view('frontend.instructor-dashboard.course.course-content-edit', [
                     'title' => 'Edit Course',
@@ -486,15 +459,15 @@ class CourseController extends Controller
                     $course = Course::currentWithoutRevisionWithRelations($request->id);
                     // Nếu course hiện tại ko phải bản nháp chỉnh sửa
                     /**flatMap(): gộp toàn bộ lesson từ tất cả các chapter thành một collection phẳng.
-                        sum('duration'): tính tổng thời lượng của tất cả bài học gộp lại. */
+                        sum('duration'): tính tổng thời lượng của tất cả lesson gộp lại. */
                     $course->update([
                         'duration' => $course->chapters
                             ->flatMap(fn($chapter) => $chapter->lessons)
                             ->sum('duration')
                     ]);
 
-                    $admin = Admin::find(1);
-                    $admin->notify(new CourseUpdated($course, $course->instructor));
+                    // $admin = Admin::find(1);
+                    // $admin->notify(new CourseUpdated($course, $course->instructor));
 
                     DB::commit();
                     return redirect()->route('instructor.courses.index');
@@ -512,19 +485,18 @@ class CourseController extends Controller
         switch ($request->current_step) {
             case '1':
                 $rules = [
+                    'message_for_commit' => ['required', 'max:255', 'string'],
                     'title' => ['required', 'max:255', 'string'],
                     'seo_description' => ['nullable', 'max:255', 'string'],
-                    // 'demo_video_storage' => ['nullable', 'in:youtube,vimeo,external_link,upload', 'string'],
-                    // 'price' => ['required', 'numeric'],
-                    // 'discount' => ['nullable', 'numeric'],
-                    // 'description' => ['required'],
-                    // 'demo_video_source' => ['nullable'],
-                    // 'capacity' => ['required', 'numeric'],
-                    // 'qna' => ['nullable', 'boolean'],
-                    // 'certificate' => ['nullable', 'boolean'],
-                    // 'category' => ['required', 'integer'],
-                    // 'level' => ['required', 'integer'],
-                    // 'language' => ['required', 'integer'],
+                    'demo_video_storage' => ['nullable', 'in:youtube,vimeo,external_link,upload', 'string'],
+                    'price' => ['required', 'numeric'],
+                    'discount' => ['nullable', 'numeric'],
+                    'description' => ['required'],
+                    'demo_video_source' => ['nullable'],
+                    'certificate' => ['nullable', 'boolean'],
+                    'category' => ['required', 'integer'],
+                    'level' => ['required', 'integer'],
+                    'language' => ['required', 'integer'],
                 ];
                 $request->validate($rules);
 
@@ -570,6 +542,7 @@ class CourseController extends Controller
                         // Bản nháp đã có sẵn
                         // $course = $course->draft; 
                         $course->update([
+                            'message_for_commit' => $request->message_for_commit,
                             'title' => $request->title,
                             'slug' => Str::slug($request->title),
                             'seo_description' => $request->seo_description,
@@ -580,16 +553,21 @@ class CourseController extends Controller
                             'discount' => $request->discount,
                             'description' => $request->description,
                             'instructor_id' => Auth::guard('web')->user()->id,
-                            'capacity' => $request->capacity,
-                            'qna' => $request->qna ? 1 : 0,
+                            // 'capacity' => $request->capacity,
+                            // 'qna' => $request->qna ? 1 : 0,
                             'certificate' => $request->certificate ? 1 : 0,
                             'category_id' => $request->category,
                             'course_level_id' => $request->level,
                             'course_language_id' => $request->language,
                             'is_published' => false,
+                            'is_approved' => 'pending',
+                            'message_for_rejection' => null
                         ]);
                     // }
                     
+                    $admin = Admin::find(1);
+                    $admin->notify(new CourseUpdated($course, auth('web')->user()));
+
                     // save course id on session
                     Session::put('course_create_id', $course->id);
 

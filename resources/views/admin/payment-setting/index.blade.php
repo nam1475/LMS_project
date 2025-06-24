@@ -5,7 +5,7 @@
         <div class="container-xl">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Create Level</h3>
+                    <h3 class="card-title">Payment Settings</h3>
                     <div class="card-actions">
                         <a href="{{ route('admin.course-levels.index') }}" class="btn btn-primary">
                             <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
@@ -27,83 +27,66 @@
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <a href="#paypal-setting" class="nav-link active" data-bs-toggle="tab" aria-selected="false"
-                                        role="tab" tabindex="-1">Paypal Settings</a>
+                                    <a href="#vnpay-setting" class="nav-link active" data-bs-toggle="tab" aria-selected="false"
+                                        role="tab" tabindex="-1">VNPay Settings</a>
                                 </li>
-                                <li class="nav-item" role="presentation">
+                                {{-- <li class="nav-item" role="presentation">
                                     <a href="#stripe-setting" class="nav-link" data-bs-toggle="tab" aria-selected="false"
                                         role="tab" tabindex="-1">Stripe Settings</a>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <a href="#razorpay-setting" class="nav-link" data-bs-toggle="tab"
-                                        aria-selected="true" role="tab">Razorpay Settings</a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                         <div class="card-body">
                             <div class="tab-content">
-                                <div class="tab-pane active" id="paypal-setting" role="tabpanel">
-                                    <form action="{{ route('admin.paypal-setting.update') }}" method="POST">
+                                <div class="tab-pane active" id="vnpay-setting" role="tabpanel">
+                                    <form action="{{ route('admin.vnpay-setting.update') }}" method="POST">
                                         @csrf
                                         <div class="row">
                                             <div class="col-md-5">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Paypal Mode</label>
-                                                    <select name="paypal_mode" class="form-control" >
-                                                        <option @selected(config('gateway_settings.paypal_mode') === 'sandbox') value="sandbox">Sandbox</option>
-                                                        <option @selected(config('gateway_settings.paypal_mode') === 'live') value="live">Live</option>
+                                                    <label class="form-label">Status</label>
+                                                    <select name="vnpay_status" class="form-control" >
+                                                        <option @selected(config('gateway_settings.vnpay_status') === '1') value="1">Active</option>
+                                                        <option @selected(config('gateway_settings.vnpay_status') === '0') value="0">Inactive</option>
                                                     </select>
-                                                    <x-input-error :messages="$errors->get('paypal_mode')" class="mt-2" />
+                                                    <x-input-error :messages="$errors->get('vnpay_status')" class="mt-2" />
                                                 </div>
                                             </div>
-    
-                                            <div class="col-md-5">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Currency</label>
-                                                    <select name="paypal_currency" class="form-control select2" >
-                                                        @foreach(config('gateway_currencies.paypal_currencies') as $key => $value)
-                                                        <option @selected(config('gateway_settings.paypal_currency') == $value['code'])  value="{{ $value['code'] }}">{{ $value['code'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    
-                                                    <x-input-error :messages="$errors->get('paypal_currency')" class="mt-2" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
+                                            {{-- <div class="col-md-2">
                                                 <div class="mb-3">
                                                     <label class="form-label">Rate (USD)</label>
-                                                    <input type="text" class="form-control" name="paypal_rate"
-                                                        placeholder="Enter Paypal Rate" value="{{ config('gateway_settings.paypal_rate') }}">
-                                                    <x-input-error :messages="$errors->get('paypal_rate')" class="mt-2" />
+                                                    <input type="text" class="form-control" name="vnpay_rate"
+                                                        placeholder="Enter vnpay Rate" value="{{ config('gateway_settings.vnpay_rate') }}">
+                                                    <x-input-error :messages="$errors->get('vnpay_rate')" class="mt-2" />
+                                                </div>
+                                            </div> --}}
+    
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">TMN Code</label>
+                                                    <input type="text" class="form-control" name="vnpay_tmn_code"
+                                                        placeholder="Enter vnpay tmn code" value="{{ config('gateway_settings.vnpay_tmn_code') }}">
+                                                    <x-input-error :messages="$errors->get('vnpay_tmn_code')" class="mt-2" />
                                                 </div>
                                             </div>
     
                                             <div class="col-md-4">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Clinet Id</label>
-                                                    <input type="text" class="form-control" name="paypal_client_id"
-                                                        placeholder="Enter Paypal client id" value="{{ config('gateway_settings.paypal_client_id') }}">
-                                                    <x-input-error :messages="$errors->get('paypal_client_id')" class="mt-2" />
+                                                    <label class="form-label">Hash Secret</label>
+                                                    <input type="text" class="form-control" name="vnpay_hash_secret"
+                                                        placeholder="Enter vnpay hash secret" value="{{ config('gateway_settings.vnpay_hash_secret') }}">
+                                                    <x-input-error :messages="$errors->get('vnpay_hash_secret')" class="mt-2" />
                                                 </div>
                                             </div>
-    
+
                                             <div class="col-md-4">
                                                 <div class="mb-3">
-                                                    <label class="form-label">Clinet Secret</label>
-                                                    <input type="text" class="form-control" name="paypal_client_secret"
-                                                        placeholder="Enter paypal client secret" value="{{ config('gateway_settings.paypal_client_secret') }}">
-                                                    <x-input-error :messages="$errors->get('paypal_client_secret')" class="mt-2" />
+                                                    <label class="form-label">URL</label>
+                                                    <input type="text" class="form-control" name="vnpay_url"
+                                                        placeholder="Enter vnpay url" value="{{ config('gateway_settings.vnpay_url') }}">
+                                                    <x-input-error :messages="$errors->get('vnpay_url')" class="mt-2" />
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="mb-3">
-                                                    <label class="form-label">App Id</label>
-                                                    <input type="text" class="form-control" name="paypal_app_id"
-                                                        placeholder="Enter paypal app id" value="{{ config('gateway_settings.paypal_app_id') }}">
-                                                    <x-input-error :messages="$errors->get('paypal_app_id')" class="mt-2" />
-                                                </div>
-                                            </div>
-    
                                             
                                         </div>
                                         <div class="text-end">
@@ -111,7 +94,8 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="tab-pane" id="stripe-setting" role="tabpanel">
+
+                                {{-- <div class="tab-pane" id="stripe-setting" role="tabpanel">
                                     <form action="{{ route('admin.stripe-setting.update') }}" method="POST">
                                         @csrf
                                         <div class="row">
@@ -135,7 +119,7 @@
                                                         @endforeach
                                                     </select>
                                                     
-                                                    <x-input-error :messages="$errors->get('paypal_currency')" class="mt-2" />
+                                                    <x-input-error :messages="$errors->get('vnpay_currency')" class="mt-2" />
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
@@ -172,69 +156,7 @@
                                             <button type="submit" class="btn btn-primary">Save</button>
                                         </div>
                                     </form>
-                                </div>
-                                <div class="tab-pane show" id="razorpay-setting" role="tabpanel">
-                                    <form action="{{ route('admin.razorpay-setting.update') }}" method="POST">
-                                        @csrf
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Stripe Staus</label>
-                                                    <select name="razorpay_status" class="form-control" >
-                                                        <option @selected(config('gateway_settings.razorpay_status') === 'active') value="active">Active</option>
-                                                        <option @selected(config('gateway_settings.razorpay_status') === 'inactive') value="inactive">Inactive</option>
-                                                    </select>
-                                                    <x-input-error :messages="$errors->get('razorpay_status')" class="mt-2" />
-                                                </div>
-                                            </div>
-    
-                                            <div class="col-md-5">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Currency</label>
-                                                    <select name="razorpay_currency" class="form-control select2" >
-                                                        @foreach(config('gateway_currencies.razorpay_currencies') as $key => $value)
-                                                        <option @selected(config('gateway_settings.razorpay_currency') == $value)  value="{{ $value }}">{{ $value }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    
-                                                    <x-input-error :messages="$errors->get('razorpay_currency')" class="mt-2" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Rate (USD)</label>
-                                                    <input type="text" class="form-control" name="razorpay_rate"
-                                                        placeholder="Enter Razorpay Rate" value="{{ config('gateway_settings.razorpay_rate') }}">
-                                                    <x-input-error :messages="$errors->get('razorpay_rate')" class="mt-2" />
-                                                </div>
-                                            </div>
-    
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Publishable Key</label>
-                                                    <input type="text" class="form-control" name="razorpay_key"
-                                                        placeholder="Enter Razorpay key" value="{{ config('gateway_settings.razorpay_key') }}">
-                                                    <x-input-error :messages="$errors->get('razorpay_key')" class="mt-2" />
-                                                </div>
-                                            </div>
-    
-                                            <div class="col-md-6">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Clinet Secret</label>
-                                                    <input type="text" class="form-control" name="razorpay_secret"
-                                                        placeholder="Enter Razorpay client secret" value="{{ config('gateway_settings.razorpay_secret') }}">
-                                                    <x-input-error :messages="$errors->get('razorpay_secret')" class="mt-2" />
-                                                </div>
-                                            </div>
-                            
-    
-                                            
-                                        </div>
-                                        <div class="text-end">
-                                            <button type="submit" class="btn btn-primary">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>

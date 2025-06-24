@@ -35,6 +35,14 @@
                                 @csrf
                                 <h2>Sign Up<span>!</span></h2>
                                 <p class="new_user">Already have an account? <a href="{{ route('login') }}">Sign In</a></p>
+                                <a href="{{ route('auth.google.redirect') }}" data-mdb-ripple-init class="btn btn-primary btn-lg btn-block" style="background-color: #3b5998" href="#!"
+                                    role="button">
+                                    <i class="fab fa-google me-2"></i>Continue with Google
+                                </a>
+                            
+                                <div class="divider d-flex align-items-center my-4">
+                                    <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
+                                </div>
                                 <div class="row">
 
                                     <div class="col-xl-12">

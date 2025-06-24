@@ -72,6 +72,7 @@ class CartController extends Controller
         $couponCode = $request->coupon_code;
         $discountAmount = getDiscountAmount($courseTotalPrice, $couponCode);
         $subtotalAmount = $courseTotalPrice - $discountAmount;
+        session()->put('total_amount', $courseTotalPrice);
         session()->put('coupon_code', $couponCode);
         session()->put('discount_amount', $discountAmount);
         session()->put('subtotal_amount', $subtotalAmount);
@@ -84,6 +85,7 @@ class CartController extends Controller
 
   function removeCoupon()
   {
+    session()->forget('total_amount');
     session()->forget('coupon_code');
     session()->forget('discount_amount');
     session()->forget('subtotal_amount');

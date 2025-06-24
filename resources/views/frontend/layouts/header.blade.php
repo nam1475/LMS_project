@@ -127,13 +127,13 @@
                <li class="nav-item">
                    <a class="nav-link" href="{{ route('about.index') }}">About</a>
                </li>
-               <li class="nav-item">
+               {{-- <li class="nav-item">
                    <a class="nav-link" href="{{ route('blog.index') }}">Blogs</a>
                </li>
 
                <li class="nav-item">
                    <a class="nav-link" href="{{ route('contact.index') }}">contact us</a>
-               </li>
+               </li> --}}
                @foreach ($customPages as $page)
                    <li class="nav-item">
                        <a class="nav-link" href="{{ route('custom-page', $page->slug) }}">{{ $page->title }}</a>
@@ -145,36 +145,40 @@
                <div class="menu_search_btn">
                    <img src="{{ asset('frontend/assets/images/search_icon.png') }}" alt="Search" class="img-fluid">
                </div>
-               <div class="nav-item dropdown">
-                    {{-- Notification --}}
-                    <a href="javascript:;" id="notification123" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" 
-                        aria-label="Open user menu" data-bs-auto-close="outside">
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bell"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" />
-                        </svg>
-                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
-                            <span class="visually-hidden">New alerts</span>
-                        </span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-custom p-0" aria-labelledby="dropdownMenuButton">
-                        <div id="notification-container">
-                            
+               @if(auth('web')->user())
+                <div class="nav-item dropdown">
+                        {{-- Notification --}}
+                        <a href="javascript:;" id="notification" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" 
+                            aria-label="Open user menu" data-bs-auto-close="outside">
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bell"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+                            </svg>
+                            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                <span class="visually-hidden">New alerts</span>
+                            </span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-custom p-0" aria-labelledby="dropdownMenuButton">
+                            <div id="notification-container">
+                                
+                            </div>
                         </div>
+                        <div class="dropdown-divider"></div>
                     </div>
-                    <div class="dropdown-divider"></div>
-                </div>
-
+                @endif
+                    
                 <input type="hidden" id="current_user" value="{{ auth('web')->user() }}">
                 
                <ul>
-                   <li>
-                       <a class="menu_signin" href="{{ route('cart.index') }}">
-                           <span>
-                               <img src="{{ asset('frontend/assets/images/cart_icon_black.png') }}" alt="cart"
-                                   class="img-fluid">
-                           </span>
-                           <b class="cart_count">{{ cartCount() }}</b>
-                       </a>
-                   </li>
+                    @if((auth('web')->user() && auth('web')->user()->role == 'student'))
+                    <li>
+                        <a class="menu_signin" href="{{ route('cart.index') }}">
+                            <span>
+                                <img src="{{ asset('frontend/assets/images/cart_icon_black.png') }}" alt="cart"
+                                    class="img-fluid">
+                            </span>
+                            <b class="cart_count">{{ cartCount() }}</b>
+                        </a>
+                    </li>
+                   @endif
 
                    <li>
                     @if(!auth()->guard('web')->check())
@@ -258,13 +262,13 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('about.index') }}">About</a>
                             </li>
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a class="nav-link" href="{{ route('blog.index') }}">Blogs</a>
                             </li>
              
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('contact.index') }}">contact us</a>
-                            </li>
+                            </li> --}}
                             @foreach ($customPages as $page)
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('custom-page', $page->slug) }}">{{ $page->title }}</a>

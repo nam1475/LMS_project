@@ -35,11 +35,11 @@ window.Echo.private('chat.' + currentUser.id)
     let senderImage = data.sender_image; // Default image
     let currentUserChatWith = $('#receiver_id').val();
     let messageTime = data.time;
-
+    
     // Marked as not read message
     let marked = $('#marked-' + senderId);
     marked.toggleClass('position-absolute top-0 start-0 p-2 bg-danger border border-light rounded-circle');
-
+    
     // Check if the logged-in user is the receiver before displaying the message
     if (senderId == currentUserChatWith) {
         let messageHtml = `
@@ -84,30 +84,26 @@ $('.chat-item').on('click', function() {
             if(response.isRead){
                 let marked = $('#marked-' + response.receiverId);
                 marked.addClass('d-none');
-            }
+            }            
 
             let chatAreaHtml = `
-                <div class="card shadow-sm">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white">
-                            <div class="d-flex align-items-center">
-                                <div style="width: 40px; height: 40px;">
-                                    <img id="chat_img" src="${profileImage}" class="rounded-circle mr-3 img-fluid w-100"
-                                        alt="Profile Picture">
-                                </div>
-                                <h4 class="mb-0" id="chat_name" style="color: white;">Chatting with ${profileName}</h4>
-                            </div>
-                        </div>
+                <div class="card shadow-sm" style="width: 100%; height: 100%;">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center p-2">
+                            <strong>${profileName}</strong>
+                            <button id="closeChat" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div> 
+                    </div>
                 
-                    <div class="card-body chat-window" style="height: 400px; overflow-y: auto;">
+                    <div class="card-body chat-window" style="width: 100%; height: 100%;">
                         <div class="chat-message-container" id="chat-message-container">
                 `;
 
                 response.messages.forEach(function(message) {
                     let isSender = message.sender_id == currentUser.id;
                     let userAvatar = isSender ? currentUser.image : profileImage;
-                    let userName = isSender ? currentUser.name : profileName;
-
                     let messageTime = new Date(message.created_at).toLocaleString('vi-VN', {
                         day: '2-digit',
                         month: '2-digit',
@@ -173,6 +169,7 @@ $(document).on('submit', '#message-form', function(e) {
     let chatWindow = $('.chat-window');
     let chatMessageContainer = $('#chat-message-container');
     let route = $('#message-form').data('route');
+    let sendMessageButton = $('#send-message-button');
 
     if (message === "") {
         notyf.error('Please enter a message.');
@@ -189,11 +186,41 @@ $(document).on('submit', '#message-form', function(e) {
         },
         beforeSend: function() {
             // Disable the send button and change its text to "Sending..." for 1s
-            $('#send-message-button').text('Sending...').attr('disabled', true);
+            sendMessageButton.text('Sending...').attr('disabled', true);
             setTimeout(function() {}, 1000);
         },
         success: function(response) {
             if (response.success) {
+                let chatItem = $('#chat-item-' + receiverId);
+                if(chatItem.length <= 0){
+                    let chat = response.chat;
+                    let receiver = response.receiver;
+                    let chatList = $('#chat-list');
+                    let messageTime = new Date(chat.created_at).toLocaleString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    let chatItemHtml = `
+                        <li class="list-group-item d-flex align-items-center justify-content-between chat-item cursor-pointer" id="chat-item-${receiver.id}">
+                            <div class="d-flex align-items-center">
+                                <img src="${receiver.image}" class="profile_img rounded-circle me-2 w-25" alt="Profile Picture">
+                                <div>
+                                <div class="fw-bold profile_name">${receiver.name}</div>
+                                    <span class="sender_id" style="display: none;">
+                                        ${receiver.id}
+                                    </span>
+                                <small class="text-muted">${ chat.sender_id != receiver.id ? 'You: ' : '' }${chat.message}</small>
+                                </div>
+                            </div>
+                            <p class="text-end">${messageTime}</p>
+                        </li>
+                    `;
+                    chatList.prepend(chatItemHtml);
+                }
+
                 if(response.isRead){
                     let marked = $('#marked-' + receiverId);
                     marked.addClass('d-none');
@@ -231,7 +258,7 @@ $(document).on('submit', '#message-form', function(e) {
             console.error('Error:', xhr.responseJSON.message);
         },
         complete: function() {
-            $('#send-message-button').text('Send').attr('disabled', false);
+            sendMessageButton.text('Send').attr('disabled', false);
         }
     });
 });

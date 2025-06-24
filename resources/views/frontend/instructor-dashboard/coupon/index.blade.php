@@ -44,19 +44,69 @@
                             </div>
                         </div>
 
-                        {{-- <form action="#" class="wsus__dash_coupon_searchbox">
+                        <form action="{{ route('instructor.coupons.index') }}" class="wsus__dash_course_searchbox">
                             <div class="input">
-                                <input type="text" placeholder="Search our coupons">
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search our Courses">
                                 <button><i class="far fa-search"></i></button>
                             </div>
-                            <div class="selector">
-                                <select class="select_js">
-                                    <option value="">Choose</option>
-                                    <option value="">Choose 1</option>
-                                    <option value="">Choose 2</option>
+                           <div style="width: 200px; height: 46px">
+                                <select class="select_2" name="course_categories[]" multiple >
+                                    <option value="" disabled>Select Course Categories</option>
+                                    @foreach($courseCategories as $category)
+                                        @if($category->subCategories->isNotEmpty())
+                                            <optgroup label="{{ $category->name }}">
+                                            @foreach($category->subCategories as $subCategory)
+                                                <option value="{{ $subCategory->id }}" @selected(in_array($subCategory->id, request('course_categories', [])))>
+                                                    {{ $subCategory->name }}
+                                                </option>
+                                            @endforeach
+                                            </optgroup>
+                                        @endif
+                                    @endforeach
                                 </select>
                             </div>
-                        </form> --}}
+
+                            <div>
+                                <select class="select_js" name="type">
+                                    <option value="" disabled selected>Type</option>
+                                    <option value="all" @selected(request('type') == 'all')>All</option>
+                                    <option value="percent" @selected(request('type') == 'percent')>Percent</option>
+                                    <option value="fixed" @selected(request('type') == 'fixed')>Fixed</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <select class="select_js" name="is_approved">
+                                    <option value="" disabled selected>Is Approved</option>
+                                    <option value="all" @selected(request('is_approved') == 'all')>All</option>
+                                    <option value="approved" @selected(request('is_approved') == 'approved')>Approved</option>
+                                    <option value="pending" @selected(request('is_approved') == 'pending')>Pending</option>
+                                    <option value="rejected" @selected(request('is_approved') == 'rejected')>Rejected</option>
+                                </select>
+                            </div>
+
+
+                            <div>
+                                <select class="select_js" name="status">
+                                    <option value="" disabled selected>Status</option>
+                                    <option value="all" @selected(request('status') == 'all')>All</option>
+                                    <option value="1" @selected(request('status') == '1')>Active</option>
+                                    <option value="0" @selected(request('status') == '0')>Inactive</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <button type="submit" class="common_btn">
+                                    <i class="fas fa-filter"></i>
+                                    Filter
+                                </button>
+                                <a href="{{ route('instructor.coupons.index') }}" class="common_btn">
+                                    <i class="fas fa-redo"></i>                                    
+                                    Reset
+                                </a>
+                            </div>
+                            
+                        </form>
 
                         <div class="wsus__dash_course_table">
                             <div class="row">

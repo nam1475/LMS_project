@@ -38,7 +38,12 @@
                     <div class="wsus__dashboard_contant">
                         <div class="wsus__dashboard_contant_top">
                             <div class="wsus__dashboard_heading relative">
-                                <h5>Courses</h5>
+                                <h5>
+                                    Courses <i class="far fa-question-circle"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" 
+                                        data-bs-title="Once your course is published, any further edits to that course 
+                                        (e.g. change course title, adding chapters,...) will require creating a new draft and waiting for admin approval."></i>
+                                </h5>
                                 <p>Manage your courses and its update like live, draft and insight.</p>
                                 <a class="common_btn" href="{{ route('instructor.courses.create', ['step' => 1]) }}">+ add course</a>
                             </div>
@@ -49,10 +54,8 @@
                                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search our Courses">
                                 <button><i class="far fa-search"></i></button>
                             </div>
-                            {{-- <div>
-                                <button type="submit" class="common_btn">Filter</button>
-                            </div> --}}
-                            <div class="selector">
+
+                            {{-- <div class="selector">
                                 <select class="select_js filter-status">
                                     <option value="" disabled selected>Status</option>
                                     <option value="all" @selected(request('status') == 'all')>All</option>
@@ -60,6 +63,54 @@
                                     <option value="pending" @selected(request('status') == 'pending')>Pending</option>
                                     <option value="rejected" @selected(request('status') == 'rejected')>Rejected</option>
                                 </select>
+                            </div> --}}
+
+                            <div style="width: 200px; height: 46px">
+                                <select class="select_2" name="course_categories[]" multiple >
+                                    <option value="" disabled>Select Course Categories</option>
+                                    @foreach($courseCategories as $category)
+                                        @if($category->subCategories->isNotEmpty())
+                                            <optgroup label="{{ $category->name }}">
+                                            @foreach($category->subCategories as $subCategory)
+                                                <option value="{{ $subCategory->id }}" @selected(in_array($subCategory->id, request('course_categories', [])))>
+                                                    {{ $subCategory->name }}
+                                                </option>
+                                            @endforeach
+                                            </optgroup>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <select class="select_js" name="is_approved">
+                                    <option value="" disabled selected>Is Approved</option>
+                                    <option value="all" @selected(request('is_approved') == 'all')>All</option>
+                                    <option value="approved" @selected(request('is_approved') == 'approved')>Approved</option>
+                                    <option value="pending" @selected(request('is_approved') == 'pending')>Pending</option>
+                                    <option value="rejected" @selected(request('is_approved') == 'rejected')>Rejected</option>
+                                </select>
+                            </div>
+
+
+                            <div>
+                                <select class="select_js" name="is_published">
+                                    <option value="" disabled selected>Is Published</option>
+                                    <option value="all" @selected(request('is_published') == 'all')>All</option>
+                                    <option value="1" @selected(request('is_published') == '1')>Published</option>
+                                    <option value="0" @selected(request('is_published') == '0')>Draft</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <button type="submit" class="common_btn">
+                                    <i class="fas fa-filter"></i>
+                                    Filter
+                                </button>
+                                <a href="{{ route('instructor.courses.index') }}" class="common_btn">
+                                    <i class="fas fa-redo"></i>                                    
+                                    Reset
+                                </a>
                             </div>
                             
                         </form>
@@ -75,7 +126,13 @@
                                                         COURSES
                                                     </th>
                                                     <th class="details">
-
+                                                        
+                                                    </th>
+                                                    <th class="sale">
+                                                        TOTAL DURATION
+                                                    </th>
+                                                    <th class="sale">
+                                                        CATEGORY
                                                     </th>
                                                     <th class="sale">
                                                         STUDENT
@@ -101,7 +158,7 @@
                                                                 </div>
                                                             </td>
                                                             <td class="details">
-                                                                <p class="rating">
+                                                                {{-- <p class="rating">
                                                                     @for ($i = 1; $i <= 5; $i++)
                                                                         @if ($i <= $course->reviews()->avg('rating'))
                                                                             <i class="fas fa-star"></i>
@@ -112,7 +169,7 @@
 
                                                                     <span>({{ number_format($course->reviews()->avg('rating'), 2) ?? 0 }}
                                                                         Rating)</span>
-                                                                </p>
+                                                                </p> --}}
                                                                 <a class="title" href="{{ route('instructor.courses.edit', 
                                                                         ['id' => $course->id, 'step' => 1] 
                                                                         + ((!$course->is_published && $course->is_current) ? ['is_create_draft' => true] : ['is_create_draft' => false])
@@ -125,6 +182,14 @@
                                                                     </p>
                                                                 @endif
 
+                                                            </td>
+                                                            <td class="status">
+                                                                {{ convertMinutesToHours($course->duration) }}
+                                                            </td>
+                                                            <td class="status">
+                                                                @if($course->category)
+                                                                    <p class="draft w-100">{{ $course->category->name }}</p>
+                                                                @endif
                                                             </td>
                                                             <td class="sale">
                                                                 <p>{{ $course->enrollments()->count() }}</p>
@@ -149,7 +214,10 @@
                                                             </td>
                                                             <td class="action">
                                                                 @if($course->is_published)
-                                                                    <a class="commit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Enrolled students" 
+                                                                    <a class="enroll-course" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Enroll course" 
+                                                                        href="{{ route('instructor.course-player.index', $course->slug) }}">
+                                                                        <i class="far fa-bars"></i></a>
+                                                                    <a class="enrolled-students" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Enrolled students" 
                                                                         href="{{ route('instructor.courses.enrolled-students', $course->id) }}">
                                                                         <i class="far fa-user-graduate"></i></a>
                                                                 @endif
@@ -163,11 +231,12 @@
                                                                             <i class="far fa-copy"></i></a>
                                                                 @endif
                                                                 <a class="edit"
-                                                                    data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit" href="{{ route('instructor.courses.edit', 
+                                                                    data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ $course->is_published ? 'View' : 'Edit' }}" href="{{ route('instructor.courses.edit', 
                                                                             ['id' => $course->id, 'step' => 1] 
                                                                             + ((!$course->is_published && $course->is_current) ? ['is_create_draft' => true] : ['is_create_draft' => false])
                                                                         ); }}">
-                                                                        <i class="far fa-edit"></i></a>
+                                                                        <i class="far fa-{{ $course->is_published ? 'eye' : 'edit' }}"></i>
+                                                                </a>
                                                                 <a class="del delete-item" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete" href="{{ route('instructor.courses.destroy', $course->id) }}"><i
                                                                     class="fas fa-trash-alt"></i></a>
                                                                 

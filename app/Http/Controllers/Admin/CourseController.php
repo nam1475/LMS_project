@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CourseBasicInfoCreateRequest;
-
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\CourseChapter;
 use App\Models\CourseLanguage;
 use App\Models\CourseLevel;
 use App\Models\User;
+use App\Notifications\CourseApproved;
 use App\Notifications\CourseRejected;
 use App\Traits\FileUpload;
 use Barryvdh\Debugbar\Facades\Debugbar;
@@ -27,23 +27,52 @@ class CourseController extends Controller
 {
     use FileUpload;
 
-    function index(): View
+    function index(Request $request): View
     {
-        // $courses = Course::with(['instructor'])->withDrafts()
-        //         ->where('instructor_id', Auth::guard('web')->user()->id)
-        //         ->orderBy('updated_at', 'DESC')->paginate(25);
-        $courses = Course::withoutGlobalScopes()->where([
-            'instructor_id' => Auth::guard('web')->user()->id, 
-            ])->where(function ($query) {
+        $instructors = User::where('role', 'instructor')
+            ->where('approve_status', 'approved')->get();
+        $courseCategories = CourseCategory::with('subCategories')->where('status', 1)->get();
+        $courses = Course::withoutGlobalScopes()->with('category')
+            ->when($request->has('search') && $request->filled('search'), function($query) use ($request) {
+                $query->where('title', 'like', '%' . $request->search . '%');
+            })
+            ->when($request->has('status') && $request->filled('status'), function($query) use ($request) {
+                if($request->status == 'all'){
+                    return $query;
+                }
+                $query->where('is_approved', $request->status);
+            })
+            ->when($request->has('instructor_id') && $request->filled('instructor_id'), function($query) use ($request) {
+                if($request->instructor_id == 'all'){
+                    return $query;
+                }
+                $query->where('instructor_id', $request->instructor_id);
+            })
+            ->when($request->has('is_published') && $request->filled('is_published'), function($query) use ($request) {
+                if($request->is_published == 'all'){
+                    return $query;
+                }
+                $query->where('is_published', $request->is_published);
+            })
+            ->when($request->has('course_categories') && $request->filled('course_categories'), function($query) use ($request) {
+                if($request->course_categories == 'all'){
+                    return $query;
+                }
+                $query->whereHas('category', function ($q) use ($request) {
+                    $q->whereIn('id', $request->course_categories);
+                });
+            })
+            ->where(function ($query) {
                 $query->where(function ($q) {
-                    $q->where(['is_published' => true, 'is_current' => true]);
+                    // $q->where(['is_published' => true, 'is_current' => true]);
+                    $q->where(['is_published' => true]);
                 })
                 ->orWhere(function ($q) {
                     $q->where(['is_published' => false, 'is_current' => true]);
                 });
             })
             ->orderBy('updated_at', 'DESC')->paginate(25);
-        return view('admin.course.course-module.index', compact('courses'));
+        return view('admin.course.course-module.index', compact('courses', 'instructors', 'courseCategories'));
     }
 
     function showCommits($id): View
@@ -83,15 +112,6 @@ class CourseController extends Controller
         try{
             DB::beginTransaction();
             $course = Course::withoutGlobalScopes()->find($id);
-
-            // if($request->status == 'rejected'){
-            //     $course->update([
-            //         'message_for_rejection' => $request->message,
-            //         'is_approved' => $request->status,
-            //     ]);
-            //     DB::commit();
-            //     return response(['status' => 'success', 'message' => 'Send message successfully.']);
-            // }
             
             if($course->is_current){
                 $course = Course::currentWithoutRevisionWithRelations($id);
@@ -114,6 +134,9 @@ class CourseController extends Controller
             else{
                 $course->update(['is_approved' => $request->status]);
             }
+            $course->update(['message_for_rejection' => null]);
+            
+            $course->instructor->notify(new CourseApproved($course, $course->instructor));
             
             DB::commit();
             return response(['status' => 'success', 'message' => 'Updated successfully.']);
@@ -171,12 +194,18 @@ class CourseController extends Controller
                         'chapters' => fn($q) => $q->withoutGlobalScopes(),
                         'chapters.lessons' => fn($q) => $q->withoutGlobalScopes(),
                         ])
-                        ->where('uuid', $course->uuid)
+                        ->when(
+                            $course->uuid != null, 
+                            fn($q) => $q->where('uuid', $course->uuid),
+                            fn($q) => $q->where('id', $course->id)
+                        )
                         ->where('is_published', true)
                         ->first();
+                // dd($original, $course);
                 
                 $diff = diffModels($course, $original);
-                return view('admin.course.course-module.edit', compact('course', 'categories', 'levels', 'languages', 'diff'));
+                $title = 'Course basic info';
+                return view('admin.course.course-module.edit', compact('course', 'categories', 'levels', 'languages', 'diff', 'title'));
                 break;
 
             case '2':
@@ -202,7 +231,11 @@ class CourseController extends Controller
                     'chapters' => fn($q) => $q->withoutGlobalScopes()->orderBy('order'),
                     'chapters.lessons' => fn($q) => $q->withoutGlobalScopes()->orderBy('order'),
                     ])
-                    ->where('uuid', $course->uuid)
+                    ->when(
+                        $course->uuid != null, 
+                        fn($q) => $q->where('uuid', $course->uuid),
+                        fn($q) => $q->where('id', $course->id)
+                    )
                     ->where('is_published', true)
                     ->first();
                         
@@ -211,7 +244,8 @@ class CourseController extends Controller
                 return view('admin.course.course-module.course-content', [
                     'course' => $course,
                     // 'chapters' => $chapters,
-                    'diff' => $diff
+                    'diff' => $diff,
+                    'title' => 'Course content'
                 ]);
                 break;
 

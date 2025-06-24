@@ -8,7 +8,7 @@
                 <div class="col">
                     <!-- Page pre-title -->
                     <h2 class="page-title">
-                       Thống kê
+                       Dashboard
                     </h2>
                 </div>
 
@@ -41,10 +41,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                <b>{{ config('settings.currency_icon') }}{{ $todaysOrder }}</b>
+                                                <b>{{ config('settings.currency_icon') }}{{ number_format($todaysOrder) }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Đơn hàng hôm nay
+                                                Today's Orders
                                             </div>
                                         </div>
                                     </div>
@@ -71,10 +71,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                <b>{{ config('settings.currency_icon') }}{{ $thisWeekOrders }}</b>
+                                                <b>{{ config('settings.currency_icon') }}{{ number_format($thisWeekOrders) }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Đơn hàng tuần này
+                                                This Week's Orders
                                             </div>
                                         </div>
                                     </div>
@@ -101,10 +101,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                <b>{{ config('settings.currency_icon') }}{{ $thisMonthOrders }}</b>
+                                                <b>{{ config('settings.currency_icon') }}{{ number_format($thisMonthOrders) }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Đơn hàng tháng này
+                                                This Month's Orders
                                             </div>
                                         </div>
                                     </div>
@@ -131,10 +131,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                <b>{{ config('settings.currency_icon') }}{{ $thisYearOrders }}</b>
+                                                <b>{{ config('settings.currency_icon') }}{{ number_format($thisYearOrders) }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Đơn hàng năm nay
+                                                This Year's Orders
                                             </div>
                                         </div>
                                     </div>
@@ -156,7 +156,7 @@
                                                 <b>{{ $totalOrders }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Tổng số đơn hàng
+                                                Total Orders
                                             </div>
                                         </div>
                                     </div>
@@ -179,7 +179,7 @@
                                                 <b>{{ $pendingCourses }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Khóa học đang chờ duyệt
+                                                Pending Courses
                                             </div>
                                         </div>
                                     </div>
@@ -202,7 +202,7 @@
                                                 <b>{{ $rejectedCourses }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Khóa học bị từ chối
+                                                Rejected Courses
                                             </div>
                                         </div>
                                     </div>
@@ -225,7 +225,7 @@
                                                 <b>{{ $totalCourses }}</b>
                                             </div>
                                             <div class="text-secondary">
-                                                Tổng số khóa học
+                                                Total Courses
                                             </div>
                                         </div>
                                     </div>
@@ -245,14 +245,14 @@
                     <div class="col-4">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Khóa học gần đây</h3>
+                                <h3 class="card-title">Recent Courses</h3>
                             </div>
                             <div class="card-table table-responsive">
                                 <table class="table table-vcenter">
                                     <thead>
                                         <tr>
-                                            <th>Khóa học</th>
-                                            <th>Trạng thái</th>
+                                            <th>Course</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -279,11 +279,11 @@
                                                 </td>
                                                 <td class="text-secondary">
                                                     @if ($course->is_approved == 'approved')
-                                                        <span class="badge bg-success text-white">Đã duyệt</span>
+                                                        <span class="badge bg-success text-white">Approved</span>
                                                     @elseif($course->is_approved == 'pending')
-                                                        <span class="badge bg-warning text-white">Chờ duyệt</span>
+                                                        <span class="badge bg-warning text-white">Pending</span>
                                                     @elseif($course->is_approved == 'rejected')
-                                                        <span class="badge bg-danger text-white">Bị từ chối</span>
+                                                        <span class="badge bg-danger text-white">Rejected</span>
                                                     @endif
 
                                                 </td>
@@ -300,14 +300,14 @@
                     <div class="col-4">
                       <div class="card">
                           <div class="card-header">
-                              <h3 class="card-title">Blog gần đây</h3>
+                              <h3 class="card-title">Recent Blogs</h3>
                           </div>
                           <div class="card-table table-responsive">
                               <table class="table table-vcenter">
                                   <thead>
                                       <tr>
-                                          <th>Tiêu đề</th>
-                                          <th>Trạng thái</th>
+                                          <th>Title</th>
+                                          <th>Status</th>
                                       </tr>
                                   </thead>
                                   <tbody>
@@ -334,9 +334,9 @@
                                               </td>
                                               <td class="text-secondary">
                                                   @if ($blog->status == 1)
-                                                      <span class="badge bg-success text-white">Hoạt động</span>
+                                                      <span class="badge bg-success text-white">Active</span>
                                                   @else
-                                                      <span class="badge bg-danger text-white">Không hoạt động</span>
+                                                      <span class="badge bg-danger text-white">Inactive</span>
                                                   @endif
 
                                               </td>
@@ -353,15 +353,15 @@
                     <div class="col-4">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Đơn hàng gần đây</h3>
+                                <h3 class="card-title">Recent Orders</h3>
                             </div>
                             <div class="card-table table-responsive">
                                 <table class="table table-vcenter">
                                     <thead>
                                         <tr>
-                                            <th>Hóa đơn</th>
-                                            <th>Người dùng</th>
-                                            <th>Số tiền</th>
+                                            <th>Invoice</th>
+                                            <th>User</th>
+                                            <th>Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -404,9 +404,9 @@
         const orderChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                 datasets: [{
-                        label: 'Số tiền đơn hàng ({{ config('settings.currency_icon') }})',
+                        label: 'Order Amount ({{ config('settings.currency_icon') }})',
                         data: @json($monthlyOrderSums),
                         backgroundColor: 'rgba(0, 84, 166, 0.7)',
                         borderColor: 'rgb(0, 84, 166)',
@@ -414,7 +414,7 @@
                         yAxisID: 'y'
                     },
                     {
-                        label: 'Số lượng đơn hàng',
+                        label: 'Order Count',
                         data: @json($monthlyOrderCounts),
                         backgroundColor: 'rgba(255, 99, 132, 0.6)',
                         borderColor: 'rgba(255, 99, 132, 1)',
@@ -431,7 +431,7 @@
                         begainAtZero: true,
                         title: {
                             display: true,
-                            text: 'Số tiền đơn hàng ({{ config('settings.currency_icon') }})'
+                            text: 'Order Amount ({{ config('settings.currency_icon') }})'
                         },
                         position: 'left'
                     },
@@ -439,7 +439,7 @@
                         begainAtZero: true,
                         title: {
                             display: true,
-                            text: 'Số lượng đơn hàng'
+                            text: 'Order Count'
                         },
                         position: 'right',
                         grid: {

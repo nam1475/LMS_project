@@ -24,11 +24,14 @@
   </style>  
     <!--===========================
                 BREADCRUMB START
-            ============================-->
+                ============================-->
+    
     <section class="wsus__breadcrumb course_details_breadcrumb"
         style="background: url({{ asset(config('settings.site_breadcrumb')) }});">
         <div class="wsus__breadcrumb_overlay">
             <div class="container">
+                
+
                 <div class="row">
                     <div class="col-12 wow fadeInUp">
                         <div class="wsus__breadcrumb_text">
@@ -166,12 +169,16 @@
                                             <div class="wsus__courses_instructor_text">
                                                 <h4>{{ $course->instructor->name }}</h4>
                                                 @if ($user && $user->role == 'student')
-                                                    <button type="button" id="show-chat-modal" class="common_btn">
+                                                    {{-- <button type="button" id="show-chat-modal" class="common_btn"> --}}
+                                                    <button type="button" id="chat-with-instructor" data-receiver-image="{{ asset($course->instructor->image) }}" 
+                                                            data-receiver-name="{{ $course->instructor->name }}" data-receiver-id="{{ $course->instructor->id }}" 
+                                                            data-route="{{ route('student.fetch.messages') }}"
+                                                            class="common_btn">
                                                         Chat now
                                                     </button>
                                                 @endif
 
-                                                <div class="modal fade" id="chat-modal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+                                                {{-- <div class="modal fade" id="chat-modal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -188,16 +195,17 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
 
                                                 <p class="designation">{{ $course->instructor->headline }}</p>
                                                 <ul class="list">
                                                     @php
                                                         $coursesId = $course->instructor->courses()->pluck('id')->toArray();
                                                         $reviewsCount = \App\Models\Review::whereIn('course_id', $coursesId)->count();
+                                                        $avgRating = \App\Models\Review::whereIn('course_id', $coursesId)->avg('rating');
                                                     @endphp
                                                     <li><i class="fas fa-star"></i> <b> {{ $reviewsCount }} Reviews</b></li>
-                                                    <li><strong>4.7 Rating</strong></li>
+                                                    <li><strong>{{ number_format($avgRating, 1) ?? 0 }} Ratings</strong></li>
                                                     <li>
                                                         <span><img src="{{ asset('frontend/assets/images/book_icon.png') }}" alt="book"
                                                                 class="img-fluid"></span>
@@ -286,10 +294,12 @@
                                                 @endforeach
                                             </select> --}}
 
-                                            <input type="radio" data-course-id="{{ $course->id }}" class="btn-check filter-rating" value="all" name="options-base" id="all-reviews" autocomplete="off" checked>
+                                            <input type="radio" data-course-id="{{ $course->id }}" class="btn-check filter-rating" 
+                                                value="all" name="options-base" id="all-reviews" autocomplete="off" checked>
                                             <label class="btn" for="all-reviews">All <i class="fas fa-star"></i></label> 
                                             @foreach($ratingPercentages as $rating => $percentage)
-                                                <input type="radio" data-course-id="{{ $course->id }}" class="btn-check filter-rating" value="{{ $rating }}" name="options-base" id="{{ $rating }}-star" autocomplete="off">
+                                                <input type="radio" data-course-id="{{ $course->id }}" class="btn-check filter-rating" 
+                                                    value="{{ $rating }}" name="options-base" id="{{ $rating }}-star" autocomplete="off">
                                                 <label class="btn" for="{{ $rating }}-star">{{ $rating }} <i class="fas fa-star"></i></label>
                                             @endforeach
 
@@ -419,9 +429,7 @@
                             </ul>
                             @if ($isCourseAddedToCart)
                                 <a class="common_btn" href="{{ route('cart.index') }}" >Go to cart <i class="far fa-arrow-right"></i></a>
-                            @elseif(!$courseEnrolled)
-                                <a class="common_btn add_to_cart" data-course-id="{{ $course->id }}" href="" >Add to Cart <i class="far fa-arrow-right"></i></a>
-                            @else
+                            @elseif($courseEnrolled || $course->price == 0)
                                 <div class="mt-2">
                                     <div class="d-flex align-items-center justify-content-center">
                                         <div class="icon-circle me-2">i</div>
@@ -432,8 +440,10 @@
                                     </div>
 
                                     <a class="common_btn" href="{{ route('student.course-player.index', $course->slug) }}">Go to course</a>
-
+                                    
                                 </div>
+                            @elseif(!$courseEnrolled && !$isCourseAddedToCart && ($user && $user->role == 'student'))
+                                <a class="common_btn add_to_cart" data-course-id="{{ $course->id }}" href="" >Add to Cart <i class="far fa-arrow-right"></i></a>
                             @endif
                             
                             {{-- <a class="common_btn" href="{{ route('checkout.index', array_filter(['coupon_code' => $couponCode])) }}">
@@ -458,13 +468,13 @@
                                             alt="video" class="img-fluid"></span>
                                     {{ convertMinutesToHours($course->duration) }} Video Lectures
                                 </li>
-                                @if ($course->certificate)
+                                {{-- @if ($course->certificate)
                                     <li>
                                         <span><img src="{{ asset('frontend/assets/images/certificate_icon_black.png') }}"
                                                 alt="Certificate" class="img-fluid"></span>
                                         Certificate of Completion
                                     </li>
-                                @endif
+                                @endif --}}
                                 <li>
                                     <span><img src="{{ asset('frontend/assets/images/life_time_icon.png') }}"
                                             alt="Certificate" class="img-fluid"></span>
@@ -502,6 +512,9 @@
 <script src="https://cdn.jsdelivr.net/gh/shakilahmed0369/ez-share/dist/ez-share.min.js"></script>
 @vite(['resources/js/frontend/review.js'])
 <script>
+    const csrfToken = $(`meta[name="csrf_token"]`).attr('content');
+    const baseUrl = $(`meta[name="base_url"]`).attr('content');
+
     $(function() {
         // Khi tab được kích hoạt (đã mở)
         $('button[data-bs-toggle="pill"]').on('shown.bs.tab', function (e) {
@@ -537,7 +550,7 @@
             var route = $('#message-form').data('route');
 
             $.ajax({
-                url: "{{ route('student.send.message') }}",
+                url: route,
                 type: "POST",
                 data: {
                     _token: $('input[name="_token"]').val(),
@@ -559,6 +572,115 @@
             });
 
         
+        });
+
+        $('#chat-with-instructor').on('click', function (e) {
+            e.preventDefault();
+            $('#openChat').trigger('click');
+            // $('#receiver-id').val($(this).data('instructor-id'));
+
+            var currentUser = JSON.parse($('#current_user').val());
+            let profileImage = $(this).data('receiver-image');
+            let profileName = $(this).data('receiver-name');
+            let receiverId = $(this).data('receiver-id');
+            let route = $(this).data('route');
+            var chatArea = $('#chat-area');
+
+            $.ajax({
+                url: route,
+                method: 'GET',
+                data: { 
+                    receiver_id: receiverId,
+                },
+                beforeSend: function () {
+                    // $('#chat-area').html(loader);
+                },
+                success: function(response) {
+                    chatArea.empty();
+
+                    if(response.isRead){
+                        let marked = $('#marked-' + response.receiverId);
+                        marked.addClass('d-none');
+                    }
+                    // console.log(response.messages);
+
+                    let chatAreaHtml = `
+                        <div class="card shadow-sm" style="width: 100%; height: 100%;">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center p-2">
+                                    <strong>${profileName}</strong>
+                                    <button id="closeChat" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div> 
+                            </div>
+                        
+                            <div class="card-body chat-window" style="width: 100%; height: 80%;">
+                                <div class="chat-message-container" id="chat-message-container">
+                        `;
+                        
+                        if(response.messages.length > 0){
+                            response.messages.forEach(function(message) {
+                                let isSender = message.sender_id == currentUser.id;
+                                let userAvatar = isSender ? currentUser.image : profileImage;
+                                let messageTime = new Date(message.created_at).toLocaleString('vi-VN', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+    
+                                chatAreaHtml += `
+                                    <div class="chat-message ${isSender ? 'sender' : 'receiver'}">
+                                        <div class="message-avatar">
+                                            <img src="${userAvatar}" class="rounded-circle avatar" alt="User Avatar">
+                                        </div>
+                                        <div class="message-content">
+                                            <p>${message.message}</p>
+                                            <div class="timestamp">${messageTime}</div>
+                                        </div>
+                                    </div>
+                                        
+                                    `;
+                            });
+                        }
+                        // else{
+                        //     chatAreaHtml += `
+                        //         <p class="text-center mt-3 fw-bold">No Messages Yet</p>
+                        //     `;
+                        // }
+
+                    chatAreaHtml += `
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <form id="message-form" method="POST">
+                                    <input type="hidden" name="_token" value="${csrfToken}">
+                                    <input type="hidden" name="receiver_id" id="receiver_id" value="${response.receiverId}">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control"
+                                            placeholder="Type your message here..." id="messageInput"
+                                            name="message">
+                                        <button class="btn btn-primary" type="submit"
+                                            id="send-message-button">Send</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div> 
+                    `;
+
+                    chatArea.append(chatAreaHtml);
+
+                    // Scroll to the bottom of the chat container
+                    let chatWindow = $('.chat-window');
+                    $('.chat-window').scrollTop(chatWindow[0].scrollHeight);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching messages:', error);
+                },
+            });
         });
     })
 </script>

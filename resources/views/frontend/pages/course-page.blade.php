@@ -84,36 +84,14 @@
 
                             <div class="wsus__sidebar_course_lavel rating">
                                 <h3>Rating</h3>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultr1">
-                                    <label class="form-check-label" for="flexCheckDefaultr1">
-                                        <i class="fas fa-star"></i> 5 star
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultr2">
-                                    <label class="form-check-label" for="flexCheckDefaultr2">
-                                        <i class="fas fa-star"></i> 4 star or above
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultr3">
-                                    <label class="form-check-label" for="flexCheckDefaultr3">
-                                        <i class="fas fa-star"></i> 3 star or above
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultr4">
-                                    <label class="form-check-label" for="flexCheckDefaultr4">
-                                        <i class="fas fa-star"></i> 2 star or above
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefaultr5">
-                                    <label class="form-check-label" for="flexCheckDefaultr5">
-                                        <i class="fas fa-star"></i> 1 star or above
-                                    </label>
-                                </div>
+                                @for ($i = 5; $i >= 1; $i--)
+                                    <div class="form-check">
+                                        <input class="form-check-input" name="rating" @checked(request()->rating == $i) type="radio" value="{{ $i }}" id="rating{{ $i }}">
+                                        <label class="form-check-label" for="rating{{ $i }}">
+                                            <i class="fas fa-star"></i> {{ $i }} star {{ $i == 5 ? '' : 'or above' }}
+                                        </label>
+                                    </div>
+                                @endfor
                             </div>
 
                           
@@ -131,13 +109,47 @@
                                 
                             </div>
 
-                            <div class="wsus__sidebar_rating">
-                                <h3>Price Range</h3>
-                                <div class="range_slider"></div>
+                            <div class="wsus__sidebar_course_lavel rating">
+                                <h3>Price</h3>
+                                {{-- <div class="range_slider"></div> --}}
+                                <div class="form-check">
+                                    <input class="form-check-input" name="price" @checked(request()->price == 'paid') type="radio" value="paid" id="paid">
+                                    <label class="form-check-label" for="paid">
+                                        Paid
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="price" @checked(request()->price == 'free') type="radio" value="free" id="free">
+                                    <label class="form-check-label" for="free">
+                                        Free 
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="wsus__sidebar_course_lavel rating">
+                                <h3>Price range</h3>
+                                {{-- <div class="range_slider"></div> --}}
+                                <div class="form-check">
+                                    <input class="form-check-input" name="price_range" @checked(request()->price_range == 'asc') type="radio" value="asc" id="low_to_high">
+                                    <label class="form-check-label" for="low_to_high">
+                                        Low to High
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="price_range" @checked(request()->price_range == 'desc') type="radio" value="desc" id="high_to_low">
+                                    <label class="form-check-label" for="high_to_low">
+                                        High to Low
+                                    </label>
+                                </div>
                             </div>
                             <br>
                             <div class="row">
-                                <button type="submit" class="common_btn">Search</button>
+                                <div class="col-xl-6">
+                                    <button type="submit" class="common_btn">Filter</button>
+                                </div>
+                                <div class="col-xl-6">
+                                    <a href="{{ route('courses.index') }}" class="common_btn">Reset</a>
+                                </div>
                             </div>
 
                         </form>
@@ -148,12 +160,13 @@
                         <p>Showing <span>1-{{ $courses->count() }}</span> Of <span>{{ $courses->total() }}</span> Results</p>
                         
                         <form action="{{ route('courses.index') }}">
-                            <p>Sort-by:</p>
                             <select class="select_js" name="order" onchange="this.form.submit()">
+                                <option value="" disabled selected>Date</option>
                                 <option value="desc" @selected(request()->order == 'desc')>New to Old</option>
                                 <option value="asc" @selected(request()->order == 'asc')>Old to New</option>
                             </select>
                         </form>
+
                     </div>
                     <div class="row">
                         @forelse($courses as $course)
@@ -191,7 +204,7 @@
     
                                     <a class="title" href="{{ route('courses.show', $course->slug) }}">{{ $course->title }}</a>
                                     <ul>
-                                        <li>{{ $course->lessons()->count() }} Lessons</li>
+                                        <li>{{ $course->chapters->flatMap->lessons->count() }} Lessons</li>
                                         <li>{{ $course->enrollments()->count() }} Student</li>
                                     </ul>
                                     <a class="author" href="#">
@@ -202,7 +215,24 @@
                                     </a>
                                 </div>
                                 <div class="wsus__single_courses_3_footer">
-                                    <a class="common_btn add_to_cart" href="#" data-course-id="{{ $course->id }}">Add to Cart<i class="far fa-arrow-right"></i></a>
+                                    @php
+                                        $user = auth('web')->user();
+                                    @endphp
+                                    @if($user && $user->role == 'student')
+                                        @php
+                                            $courseEnrolled = $user ? App\Models\Enrollment::where(['user_id' => $user->id, 'course_id' => $course->id])->exists() : false;
+                                            $isCourseAddedToCart = $user ? App\Models\Cart::where(['user_id' => $user->id, 'course_id' => $course->id])->exists() : false;
+                                        @endphp
+                                        @if ($isCourseAddedToCart)
+                                            <a class="common_btn" href="{{ route('cart.index') }}" >Go to cart <i class="far fa-arrow-right"></i></a>
+                                        @elseif($courseEnrolled || $course->price == 0)
+                                            {{-- <a class="common_btn" href="{{ route('student.course-player.index', ['slug' => $course->slug, array_filter(['is+' => $coupon ? $coupon->code : null])]) }}">Go to course</a> --}}
+                                            <a href="javascript:;" class="common_btn go-to-course-enrolled" data-is-free="{{ $course->price == 0 }}" 
+                                                data-course="{{ $course }}" data-user-id="{{ $user->id }}">Go to course</a>
+                                        @elseif(!$courseEnrolled && !$isCourseAddedToCart)
+                                            <a class="common_btn add_to_cart" data-course-id="{{ $course->id }}" href="" >Add to Cart <i class="far fa-arrow-right"></i></a>
+                                        @endif
+                                    @endif
                                     <p>
                                         @php
                                             $coursePrice = $course->price;
@@ -217,7 +247,7 @@
                             </div>
                         </div>
                         @empty
-                        <p>No data Found</p>
+                        <p class="text-center fs-5 fw-bold">No data Found</p>
                         @endforelse
                     </div>
                     <div class="wsus__pagination mt_50 wow fadeInUp">
@@ -231,3 +261,8 @@
         COURSES PAGE END
     ============================-->
 @endsection
+
+@push('scripts')
+    @vite(['resources/js/frontend/course.js'])
+    
+@endpush

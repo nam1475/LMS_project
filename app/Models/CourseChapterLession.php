@@ -37,4 +37,9 @@ class CourseChapterLession extends Model
         $target->chapter_id = $target->getOriginal('chapter_id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(LessonComment::class, 'lesson_id', 'id');
+    }
+
 }

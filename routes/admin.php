@@ -49,6 +49,8 @@ use App\Http\Controllers\Admin\VideoSectionController;
 use App\Http\Controllers\Admin\WithdrawRequestController;
 use App\Http\Controllers\Frontend\HeroController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RejectApproval;
 use App\Models\BecomeInstructorSection;
 use App\Models\FeaturedInstructor;
 use App\Models\Footer;
@@ -111,6 +113,10 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
     Route::get('instructor-doc-download/{user}', [InstructorRequestController::class, 'download'])->name('instructor-doc-download');
     Route::resource('instructor-requests', InstructorRequestController::class);
 
+    /** Reject Approval */
+    Route::get('reject-approval/{id}', [RejectApproval::class, 'rejectApprovalModal'])->name('reject-approval');
+    Route::put('reject-approval/{id}/send', [RejectApproval::class, 'sendRejectApproval'])->name('reject-approval.send');
+
     /** Course Languages Routes */
     Route::resource('course-languages', CourseLanguageController::class);
 
@@ -164,6 +170,10 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
     Route::resource('coupons', CouponController::class);
     Route::put('coupons/{coupon}/update-approval', [CouponController::class, 'updateApproval'])->name('coupons.update-approval');
     
+    /** User Routes */
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
     /** Notification Routes */
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('notifications/fetch-messages', [NotificationController::class, 'fetchMessages'])->name('notifications.fetch.messages');
@@ -173,13 +183,13 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
     /** Order Routes */
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    // Route::get('orders/{invoice_id}/download', [OrderController::class, 'downloadInvoice'])->name('orders.download-invoice');
 
 
     /** Payment setting routes */
     Route::get('payment-setting', [PaymentSettingController::class, 'index'])->name('payment-setting.index');
-    Route::post('paypal-setting', [PaymentSettingController::class, 'paypalSetting'])->name('paypal-setting.update');
-    Route::post('stripe-setting', [PaymentSettingController::class, 'stripeSetting'])->name('stripe-setting.update');
-    Route::post('razorpay-setting', [PaymentSettingController::class, 'razorpaySetting'])->name('razorpay-setting.update');
+    Route::post('vnpay-setting', [PaymentSettingController::class, 'vnpaySetting'])->name('vnpay-setting.update');
+    // Route::post('stripe-setting', [PaymentSettingController::class, 'stripeSetting'])->name('stripe-setting.update');
 
     /** Site Settings Route */
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
@@ -205,6 +215,10 @@ Route::group(["middleware" => "auth:admin", "prefix" => "admin", "as" => "admin.
     Route::get('certificate-builder', [CertificateBuilderController::class, 'index'])->name('certificate-builder.index');
     Route::post('certificate-builder', [CertificateBuilderController::class, 'update'])->name('certificate-builder.update');
     Route::post('certificate-item', [CertificateBuilderController::class, 'itemUpdate'])->name('certificate-item.update');
+
+    /** Permission */
+    // Route::resource('permission', AdminPermissionController::class)->except('destroy');
+    // Route::delete('permission/{id?}', [AdminPermissionController::class, 'destroy'])->name('permission.destroy');
 
     /** Hero Routes */
     Route::resource('hero', HeroController::class);

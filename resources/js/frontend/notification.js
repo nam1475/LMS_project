@@ -67,8 +67,8 @@ var currentUser = JSON.parse($('#current_user').val());
 // });
 
 $(document).on('click', '.mark-as-read', function (e) {        
-    var notificationId = $('.mark-as-read').data('notification-id');
-    var redirectUrl = $('.mark-as-read').data('redirect-url');
+    var notificationId = $(this).data('notification-id');
+    var redirectUrl = $(this).data('redirect-url');
             
     $.ajax({
         url: `${baseUrl}/${currentUser.role == 'instructor' ? 'instructor' : 'student'}/notifications/${notificationId}/mark-as-read`,
@@ -77,6 +77,7 @@ $(document).on('click', '.mark-as-read', function (e) {
             '_token': csrfToken,
         },
         success: function (data) {
+            console.log(redirectUrl);
             window.location.href = redirectUrl;
         },
         error: function (xhr, status, error) {
@@ -85,7 +86,7 @@ $(document).on('click', '.mark-as-read', function (e) {
     });
 });
 
-$('#notification123').on('click', function() {
+$('#notification').on('click', function() {
     let notificationContainer = $('#notification-container');
     
     $.ajax({
@@ -102,8 +103,7 @@ $('#notification123').on('click', function() {
                 <div class="p-3 border-bottom fw-bold">Latest Notifications</div>
             `;
             let notifications = response.notifications;
-            if(notifications.length != 0){
-                
+            if(notifications.length > 0){
                 notifications.forEach(item => {
                     console.log(item);
                     let message = item.data.message;

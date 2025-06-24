@@ -64,7 +64,10 @@
                     @endif
 
                     <div class="text-end">
-                        <a href="{{ route('student.become-instructor') }}" class="btn btn-primary">Become a Instructor</a>
+                        <a href="{{ route('student.become-instructor') }}" class="btn btn-primary">
+                            Become a Instructor 
+                        </a>
+                        {{-- <p>The requirement to become a teacher is to have at least a university degree.</p> --}}
                     </div>
                     <div class="row">
                         <div class="col-xl-4 col-sm-6 wow fadeInUp">
@@ -95,6 +98,8 @@
                                 <th>No.</th>
                                 <th>Invoice</th>
                                 <th>Amount</th>
+                                <th>Coupon discount</th>
+                                <th>Subtotal</th>
                                 <th>Status</th>
                                 <th>Action</th>
 
@@ -104,9 +109,11 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $order->invoice_id }}</td>
-                                        <td>{{ $order->total_amount }} {{ $order->currency }}</td>
+                                        <td>{{ number_format($order->total_amount) }} {{ $order->currency }}</td>
+                                        <td>{{ number_format($order->coupon_amount) }}</td>
+                                        <td>{{ number_format($order->subtotal_amount) }} {{ $order->currency }}</td>
                                         <td><span class="badge bg-success text-green-fg">{{ $order->status }}</span></td>
-                                        <td><a href="">view</a></td>
+                                        <td><a href="{{ route('student.orders.show', $order->invoice_id) }}">view</a></td>
 
                                     </tr>
                                 @empty

@@ -13,7 +13,8 @@ $(function () {
     $(document).on('click', '.mark-as-read', function (e) {        
         var notificationId = $('.mark-as-read').data('notification-id');
         var redirectUrl = $('.mark-as-read').data('redirect-url');
-                
+        console.log(notificationId, redirectUrl);
+        
         $.ajax({
             url: baseUrl + '/admin/notifications/' + notificationId + '/mark-as-read',
             method: 'POST',
@@ -25,7 +26,7 @@ $(function () {
                 
             },
             error: function (xhr, status, error) {
-                console.log(xhr);
+                console.log(xhr.responseJSON.message);
             }
         });
     });
@@ -47,7 +48,7 @@ $(function () {
                 `;
 
                 let notifications = response.notifications;
-                if(notifications.length != 0){
+                if(notifications.length > 0){
                     notifications.forEach(item => {
                         let message = item.data.message;
                         let messageTime = item.data.time;
@@ -56,7 +57,7 @@ $(function () {
                                 <div class="icon-success">✔</div>
                                 <div class="notification-text">
                                     <div>
-                                        <p class="fw-bold">${item.data.title}</p> 
+                                        <p class="fw-bold m-0">${item.data.title}</p> 
                                         <a href="javascript:;" class="mark-as-read" 
                                             data-notification-id="${item.id}" data-redirect-url="${item.data.url}">
                                             ${message}
@@ -66,19 +67,25 @@ $(function () {
                                 </div>
                             </div>
                         `;
-                        notificationContainer.append(messageHtml);
                     });
+                    messageHtml += `
+                        <div class="p-3 border-top fw-bold">
+                            <a class="text-center" href="${baseUrl}/admin/notifications">
+                                All Notifications
+                            </a>
+                        </div>
+                    `;
                 }
                 else{
-                    let messageHtml = `
+                    messageHtml = `
                         <div class="p-3 fw-bold text-center">No Notifications</div>
                     `;
-                    notificationContainer.html(messageHtml);
                 }
+                notificationContainer.append(messageHtml);
             
             },
             error: function(xhr, status, error) {
-                console.error('Error fetching messages:', error);
+                console.error(xhr.responseJSON.message);
             },
 
         });

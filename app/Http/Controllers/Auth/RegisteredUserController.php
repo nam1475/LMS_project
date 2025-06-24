@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\User;
+use App\Notifications\NewInstructorRequest;
 use App\Traits\FileUpload;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -66,6 +68,9 @@ class RegisteredUserController extends Controller
                     'approve_status' => 'pending',
                     'document' => $filePath ?? null
                 ]);
+                
+                $admin = Admin::find(1);
+                $admin->notify(new NewInstructorRequest($user));
             }else {
                 abort(404);
             }

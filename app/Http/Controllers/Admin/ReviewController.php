@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use App\Models\Review;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,7 +15,17 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        $reviews = Review::with(['user', 'course'])->latest()->paginate(20);
+        $courses = Course::withoutGlobalScopes()
+            ->whereHas('reviews', function($query){
+                $query->where('status', 1);
+            })
+            ->where(['is_published' => 1, 'is_approved' => 'approved'])
+            ->orderBy('created_at', 'desc')->paginate(25);
+        return view('admin.review.course-reviews', compact('courses'));
+    }
+
+    public function show($courseId){
+        $reviews = Review::with(['user'])->where('course_id', $courseId)->latest()->paginate(20);
         return view('admin.review.index', compact('reviews'));
     }
 

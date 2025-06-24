@@ -267,6 +267,19 @@
                     </div>
                 </li>
 
+                <li class="nav-item {{ sidebarItemActive(['admin.users.*']) }}">
+                    <a class="nav-link" href="{{ route('admin.users.index') }}">
+
+                        <span
+                            class="nav-link-icon d-md-none d-lg-inline-block">
+                            <i class="ti ti-users"></i>
+                        </span>
+                        <span class="nav-link-title">
+                            Users
+                        </span>
+                    </a>
+                </li>
+
                 <li class="nav-item {{ sidebarItemActive(['admin.coupons.*']) }}">
                     <a class="nav-link" href="{{ route('admin.coupons.index') }}">
 
@@ -317,7 +330,7 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item {{ sidebarItemActive(['admin.withdraw-request.*']) }}">
+                {{-- <li class="nav-item {{ sidebarItemActive(['admin.withdraw-request.*']) }}">
                     <a class="nav-link" href="{{ route('admin.withdraw-request.index') }}">
 
                         <span
@@ -328,9 +341,9 @@
                             Withdrawal Requests
                         </span>
                     </a>
-                </li>
+                </li> --}}
 
-                <li class="nav-item dropdown {{ sidebarItemActive(['admin.blogs.*', 'admin.blog-categories.*']) }}">
+                {{-- <li class="nav-item dropdown {{ sidebarItemActive(['admin.blogs.*', 'admin.blog-categories.*']) }}">
                     <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
                         data-bs-auto-close="false" role="button" aria-expanded="false">
                         <span
@@ -360,9 +373,9 @@
                             </div>
                         </div>
                     </div>
-                </li>
+                </li> --}}
 
-                <li class="nav-item {{ sidebarItemActive(['admin.payout-gateway.*']) }}">
+                {{-- <li class="nav-item {{ sidebarItemActive(['admin.payout-gateway.*']) }}">
                     <a class="nav-link" href="{{ route('admin.payout-gateway.index') }}">
 
                         <span
@@ -373,7 +386,7 @@
                             Payment Gateways
                         </span>
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="nav-item dropdown {{ sidebarItemActive(['admin.hero.*', 'admin.feature.*', 'admin.counter-section.*', 'admin.about-section.*','admin.testimonial-section.*', 'admin.video-section.*','admin.featured-instructor-section.*', 'admin.brand-section.*', 'admin.latest-courses-section.*', 'admin.become-instructor-section.*']) }}">
                     <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
@@ -454,7 +467,7 @@
 
                 
 
-                <li class="nav-item dropdown {{ sidebarItemActive(['admin.contact.*', 'admin.contact-setting.*']) }}">
+                {{-- <li class="nav-item dropdown {{ sidebarItemActive(['admin.contact.*', 'admin.contact-setting.*']) }}">
                     <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
                         data-bs-auto-close="false" role="button" aria-expanded="false">
                         <span
@@ -483,7 +496,7 @@
                             </div>
                         </div>
                     </div>
-                </li>
+                </li> --}}
 
                 <li class="nav-item dropdown {{ sidebarItemActive(['admin.top-bar.*', 'admin.footer.*', 'admin.footer-column-one.*', 'admin.footer-column-two.*', 'admin.social-links.*']) }}">
                     <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
@@ -529,7 +542,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link {{ sidebarItemActive(['admin.custom-page.*']) }}" href="{{ route('admin.custom-page.index') }}">
 
                         <span
@@ -540,7 +553,7 @@
                             Custom Pages
                         </span>
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="nav-item">
                     <a class="nav-link {{ sidebarItemActive(['admin.payment-setting.*']) }}" href="{{ route('admin.payment-setting.index') }}">

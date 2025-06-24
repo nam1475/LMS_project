@@ -35,7 +35,6 @@
 
 <body class="home_3">
 
-
     {{-- <!--============ PRELOADER START ===========-->
     <div id="preloader">
         <div class="preloader_icon">
@@ -43,28 +42,33 @@
         </div>
     </div>
     <!--============ PRELOADER START ===========--> --}}
-
-
+    
+    
     <!--===========================
         COURSE VIDEO START
-    ============================-->
+        ============================-->
     <section class="wsus__course_video">
+        <input type="hidden" id="current-user" value="{{ $user }}">
+
         <div class="col-12">
             <div class="wsus__course_header">
-                <a href="{{ route('student.enrolled-courses.index') }}"><i class="fas fa-angle-left"></i> Go Back</a>
+                <a href="{{ route($user->role == 'student' ? 'student.enrolled-courses.index' : 'instructor.courses.index') }}"><i class="fas fa-angle-left"></i> Go Back</a>
                 <a class="title" href="{{ route('courses.show', $course->slug) }}">{{ $course->title }}</a>
-                <p>Your Progress: {{ $lessonCount }} of {{ count($watchedLessonIds) }} ({{ round((count($watchedLessonIds) / $lessonCount) * 100) }}%)</p>
+                <p>
+                    @if($user->role == 'student')
+                        Your Progress: {{ $lessonCount }} of {{ count($watchedLessonIds) }} ({{ round((count($watchedLessonIds) / $lessonCount) * 100) }}%)
+                    @endif
+                </p>
             </div>
         </div>
 
         <div class="wsus__course_video_player">
 
-            <!-- <video id="my-video" class="video-js" controls preload="auto" width="640" height="264"
+            {{-- <video id="my-video" class="video-js" controls preload="auto" width="640" height="264"
                 poster="images/video_thumb.jpg" data-setup="{}">
                 <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
                 <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/webm" />
-            </video> -->
-
+            </video> --}}
 
 
             <div class="video_holder">
@@ -90,13 +94,13 @@
                             aria-controls="pills-contact" aria-selected="false">Announcements</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="pills-disabled-tab" data-bs-toggle="pill"
-                            data-bs-target="#pills-disabled" type="button" role="tab"
-                            aria-controls="pills-disabled" aria-selected="false">Reviews</button>
+                        <button class="nav-link" id="pills-comment-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-comment" type="button" role="tab"
+                            aria-controls="pills-comment" aria-selected="false">Q&A</button>
                     </li>
                 </ul>
                 <div class="tab-content" id="pills-tabContent">
-                    <div class="tab-pane fade d-lg-none" id="pills-home2" role="tabpanel"
+                    {{-- <div class="tab-pane fade d-lg-none" id="pills-home2" role="tabpanel"
                         aria-labelledby="pills-home-tab2" tabindex="0">
                         <div class="video_course_content">
                             <div class="wsus__course_sidebar">
@@ -855,7 +859,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
                         aria-labelledby="pills-home-tab" tabindex="0">
                         <div class="video_about">
@@ -874,88 +878,52 @@
                                 to inform you of updates or additions to the course.</p>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="pills-disabled" role="tabpanel"
-                        aria-labelledby="pills-disabled-tab" tabindex="0">
+
+                    
+                    {{-- Comment --}}
+                    <div class="tab-pane fade" id="pills-comment" role="tabpanel"
+                        aria-labelledby="pills-comment-tab" tabindex="0">
                         <div class="video_review">
-                            <h2>Reviews (09)</h2>
-                            <div class="course-review-head">
-                                <div class="review-author-thumb">
-                                    <img src="images/review-author.png" alt="img">
-                                </div>
-                                <div class="review-author-content">
-                                    <div class="author-name">
-                                        <h5 class="name">Jura Hujaor <span>2 Days ago</span></h5>
-                                        <div class="author-rating">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
+                            <input type="hidden" id="course-id" value="{{ $course->id }}">
+                            <input type="hidden" id="lesson-id">
+
+                            <h2 id="all-comments">All comments (<b class="total-lesson-comments"></b>)</h2>
+                            {{-- <div id="comment-container"> --}}
+                            <div class="comments">
+                                {{-- <div class="course-review-head">
+                                    <div class="review-author-thumb">
+                                        <img src="images/review-author.png" alt="img">
                                     </div>
-                                    <h4 class="title">The best LMS Design System</h4>
-                                    <p>Maximus ligula eleifend id nisl quis interdum. Sed malesuada tortor non turpis
-                                        semper bibendum nisi porta, malesuada risus nonerviverra dolor. Vestibulum ante
-                                        ipsum primis in faucibus.</p>
-                                </div>
-                            </div>
-                            <div class="course-review-head">
-                                <div class="review-author-thumb">
-                                    <img src="images/review-author.png" alt="img">
-                                </div>
-                                <div class="review-author-content">
-                                    <div class="author-name">
-                                        <h5 class="name">Jura Hujaor <span>2 Days ago</span></h5>
-                                        <div class="author-rating">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
+                                    <div class="review-author-content">
+                                        <div class="author-name">
+                                            <h5 class="name">Jura Hujaor <span>2 Days ago</span></h5>
                                         </div>
+                                        <h4 class="title">The best LMS Design System</h4>
+                                        <p>Maximus ligula eleifend id nisl quis interdum. Sed malesuada tortor non turpis
+                                            semper bibendum nisi porta, malesuada risus nonerviverra dolor. Vestibulum ante
+                                            ipsum primis in faucibus.</p>
                                     </div>
-                                    <h4 class="title">The best LMS Design System</h4>
-                                    <p>Maximus ligula eleifend id nisl quis interdum. Sed malesuada tortor non turpis
-                                        semper bibendum nisi porta, malesuada risus nonerviverra dolor. Vestibulum ante
-                                        ipsum primis in faucibus.</p>
-                                </div>
-                            </div>
-                            <div class="course-review-head">
-                                <div class="review-author-thumb">
-                                    <img src="images/review-author.png" alt="img">
-                                </div>
-                                <div class="review-author-content">
-                                    <div class="author-name">
-                                        <h5 class="name">Jura Hujaor <span>2 Days ago</span></h5>
-                                        <div class="author-rating">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                    </div>
-                                    <h4 class="title">The best LMS Design System</h4>
-                                    <p>Maximus ligula eleifend id nisl quis interdum. Sed malesuada tortor non turpis
-                                        semper bibendum nisi porta, malesuada risus nonerviverra dolor. Vestibulum ante
-                                        ipsum primis in faucibus.</p>
-                                </div>
+                                </div> --}}
                             </div>
 
+                            <div class="child-comment-container">
+                                
+                            </div>
 
                             <div class="video_review_imput">
-                                <h2>Write a reviews</h2>
-                                <p>
+                                {{-- <h2>Write a comment</h2> --}}
+                                {{-- <p>
                                     <span>select rating:</span>
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
                                     <i class="fas fa-star"></i>
-                                </p>
-                                <form action="#">
-                                    <textarea name="" id="" cols="30" rows="5" placeholder="Youe coment..."></textarea>
-                                    <button type="submit" class="btn arrow-btn back_qna_list">Submit</button>
+                                </p> --}}
+                                <form id="send-comment">
+                                    <input type="hidden" name="comment_id" id="comment-id">
+                                    <textarea name="comment" id="comment" cols="30" rows="5" placeholder="Your comment..."></textarea>
+                                    <button type="submit" class="common_btn">Submit</button>
                                 </form>
                             </div>
 
@@ -975,7 +943,7 @@
                                 data-bs-target="#collapse-{{ $chapter->id }}" aria-expanded="true"
                                 aria-controls="collapse-{{ $chapter->id }}">
                                 <b>{{ $chapter->title }}</b>
-                                <span>5/5</span>
+                                <span>{{ count($chapter->lessons) }}/{{ count($chapter->lessons) }}</span>
                             </button>
                         </h2>
                         <div id="collapse-{{ $chapter->id }}" class="accordion-collapse collapse"
@@ -983,9 +951,11 @@
                             <div class="accordion-body">
                                 @foreach ($chapter->lessons as $lesson)
                                     <div class="form-check" >
-                                        <input @checked(in_array($lesson->id, $watchedLessonIds)) class="form-check-input make_completed" 
-                                            data-course-id="{{ $course->id }}" data-lesson-id="{{ $lesson->id }}" data-chapter-id="{{ $chapter->id }}" name="" type="checkbox" value="">
-                                        <label class="form-check-label lesson" data-course-id="{{ $course->id }}"
+                                        @if($user->role == 'student')
+                                            <input @checked(in_array($lesson->id, $watchedLessonIds)) class="form-check-input make_completed" 
+                                                data-course-id="{{ $course->id }}" data-lesson-id="{{ $lesson->id }}" data-chapter-id="{{ $chapter->id }}" name="" type="checkbox" value="">
+                                        @endif                                        
+                                            <label class="form-check-label lesson" data-course-id="{{ $course->id }}"
                                         data-lesson-id="{{ $lesson->id }}" data-chapter-id="{{ $chapter->id }}">
                                             {{ $lesson->title }}
                                             <span>
@@ -1068,9 +1038,18 @@
     <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
 
     <script>
+        var notyf = new Notyf({
+            duration: 5000,
+            dismissible: true
+        });
+    </script>
+
+    @vite(['resources/js/frontend/comment.js'])
+    
+    <script>
         $(function() {
             let lessons = $('.lesson');
-
+            
             $.each(lessons, function(index, lesson) {
                 let chapterId = $(lesson).data('chapter-id');
                 let courseId = $(lesson).data('course-id');
@@ -1082,6 +1061,9 @@
                     lessonId == {{ $lastWatchHistory?->lesson_id }}
                 ) {
                     $(lesson).click();
+                    $('#lesson-id').val(lessonId);
+                    $('.comments').attr('id', `comment-container-${lessonId}`);
+                    $('.total-lesson-comments').attr('id', `total-lesson-comments-${lessonId}`);
                     $(lesson).addClass('active');
 
                     $(lesson).closest('.accordion-collapse').addClass('show');

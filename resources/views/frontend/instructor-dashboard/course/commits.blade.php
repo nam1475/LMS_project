@@ -45,7 +45,7 @@
                         + ((!$course->is_published && $course->is_current) ? ['is_create_draft' => true] : ['is_create_draft' => false])
                     ); }}">
                         {{-- {{ $course->title }} ({{ ($course->is_current && $course->is_published) ? 'Publish' : 'Current revision' }}) --}}
-                        {{ $course->title }} -
+                        {{ $course->message_for_commit ?? $course->title }} -
                             @if($course->is_published)
                                 Published
                             @elseif($course->is_current && !$course->is_published)

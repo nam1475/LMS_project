@@ -13171,7 +13171,7 @@ footer {
 }
 
 .video_review {
-    padding: 30px;
+    padding: 30px 150px 30px 150px;
 }
 
 .video_review .course-review-head {
@@ -13656,17 +13656,17 @@ footer {
 .video_review .course-review-head {
     border-top: 0;
     border-bottom: 1px solid #DFDFDF;
-    padding-top: 40px;
+    padding-top: 30px;
     margin: 0;
-    padding-bottom: 40px;
+    padding-bottom: 30px;
     display: flex;
     align-items: center;
     gap: 30px;
 }
 
 .course-review-head .review-author-thumb {
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     overflow: hidden;
     flex: 0 0 auto;
     border-radius: 50%;
@@ -13686,7 +13686,7 @@ footer {
     flex-wrap: wrap;
     gap: 10px 20px;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .course-review-head .review-author-content .author-name .name {
@@ -14051,6 +14051,24 @@ footer {
 
 .wsus__dash_course_table .action .draft:hover {
     background: #DED371;
+}
+
+.wsus__dash_course_table .action .enroll-course {
+    background: var(--ratingColor);
+    color: var(--colorWhite);
+}
+
+.wsus__dash_course_table .action .enroll-course:hover {
+    background: #e6ab64;
+}
+
+.wsus__dash_course_table .action .enrolled-students {
+    background: var(--paraColor);
+    color: var(--colorWhite);
+}
+
+.wsus__dash_course_table .action .enrolled-students:hover {
+    background: #818287;
 }
 
 .wsus__dash_course_table .action .commit {

@@ -21,7 +21,7 @@
                                     <span>{{ $chapter['chapter_draft']['title'] ?? $chapter['diff']['title'] }}</span>
                                 </button>
                             </h2>
-                            @if(($chapter['diff']['id']))
+                            @if(($chapter['diff']['title']))
                                 <h2 class="accordion-header form-control is-invalid">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#collapse-{{ $chapter['diff']['id'] }}" aria-expanded="true"
@@ -31,7 +31,7 @@
                                 </h2>
                             @endif
                         @else
-                            @if(($chapter['diff']['id']))
+                            @if(($chapter['diff']['title']))
                                 <h2 class="accordion-header form-control is-invalid">
                                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#collapse-{{ $chapter['diff']['id'] }}" aria-expanded="true"
@@ -59,7 +59,7 @@
                                                         class="edit" href="javascript:;"><i class="ti ti-edit"></i></a>
                                                 </div>
                                             </li>
-                                            @if($lesson['diff']['id'] != null)
+                                            @if($lesson['diff']['title'] != null)
                                                 <ul class="item_list sortable_list form-control is-invalid">
                                                     <li class="" data-lesson-id="{{ $lesson['diff']['id'] }}" 
                                                         data-chapter-id="{{ $chapter['chapter_draft']['id'] ?? $chapter['diff']['id'] }}">
@@ -68,7 +68,7 @@
                                                 </ul>
                                             @endif
                                         @else
-                                            @if($lesson['diff']['id'] != null)
+                                            @if($lesson['diff']['title'] != null)
                                                 <ul class="item_list sortable_list form-control is-invalid">
                                                     <li class="" data-lesson-id="{{ $lesson['diff']['id'] }}" 
                                                         data-chapter-id="{{ $chapter['chapter_draft']['id'] ?? $chapter['diff']['id'] }}">

@@ -7,6 +7,7 @@
 use App\Models\Cart;
 use App\Models\Coupon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 if(!function_exists('convertMinutesToHours')) {
     function convertMinutesToHours($minutes) {
@@ -195,11 +196,15 @@ if (! function_exists('compareChaptersWithNestedLessons')) {
         foreach ($chapterUuids as $uuid) {
             $draftChapter = $draftCourse?->chapters->firstWhere('uuid', $uuid);
             $mainChapter = $mainCourse?->chapters->firstWhere('uuid', $uuid);
-
+            
             $chapterDiff = [
                 'chapter_draft' => $draftChapter?->only([
-                    'id', 'title', 'uuid', 'title', 'description', 'course_id',
+                    'id', 'title', 'uuid', 'description', 'course_id', 'order',
                 ]),
+                // 'chapter_draft' => Arr::except(
+                //     $draftChapter?->toArray() ?? [],
+                //     ['created_at', 'updated_at']
+                // ),
                 'diff' => diffModels($draftChapter, $mainChapter),
                 'lessons' => []
             ];
@@ -219,8 +224,9 @@ if (! function_exists('compareChaptersWithNestedLessons')) {
 
                 $chapterDiff['lessons'][] = [
                     'lesson_draft' => $draftLesson?->only([
-                        'id', 'title', 'uuid', 'chapter_id', 'course_id',
+                        'id', 'title', 'slug', 'uuid', 'chapter_id', 'course_id',
                     ]),
+                    // 'lesson_draft' => $draftLesson?->toArray(),
                     'diff' => diffModels($draftLesson, $mainLesson),
                 ];
             }

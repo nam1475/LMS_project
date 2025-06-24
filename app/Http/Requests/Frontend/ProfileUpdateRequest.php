@@ -24,7 +24,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'name' => ['required', 'max: 255', 'string'],
             'heading' => ['nullable', 'max: 255', 'string'],
-            'email' => ['required', 'max: 255', 'email', 'unique:users,email,'. auth()->user()->id],
+            'email' => ['required', 'max: 255', 'email', 'unique:users,email,'. auth('web')->user()->id],
             'about' => ['nullable', 'string', 'max:6000'],
             'gender' => ['nullable', 'in:male,female'],
             'avatar' => ['nullable', 'image', 'max:2000'],

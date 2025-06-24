@@ -16,6 +16,9 @@ function addToCart(courseId) {
         success: function(data) {
             $('.cart_count').html(data.cart_count);
             notyf.success(data.message);
+            setTimeout(() => {
+                window.location.reload();
+            }, 700);
 
             $('.add_to_cart').text('Add To Cart');
         },

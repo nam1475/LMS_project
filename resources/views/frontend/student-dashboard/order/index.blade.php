@@ -37,8 +37,10 @@
                                 <thead>
 
                                     <th>No.</th>
-                                    <th>Invoice</th>
-                                    <th>Amount</th>
+                                    <th>Invoice ID</th>
+                                    <th>Amount(VND)</th>
+                                    <th>Coupon discount(VND)</th>
+                                    <th>Subtotal(VND)</th>
                                     <th>Status</th>
                                     <th>Action</th>
 
@@ -48,10 +50,12 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $order->invoice_id }}</td>
-                                            <td>{{ $order->total_amount }} {{ $order->currency }}</td>
+                                            <td>{{ number_format($order->total_amount) }}</td>
+                                            <td>{{ number_format($order->coupon_amount) }}</td>
+                                            <td>{{ number_format($order->subtotal_amount) }}</td>
                                             <td><span class="badge bg-success text-green-fg">{{ $order->status }}</span>
                                             </td>
-                                            <td><a href="{{ route('student.orders.show', $order->id) }}">view</a></td>
+                                            <td><a href="{{ route('student.orders.show', $order->invoice_id) }}">view</a></td>
                                         </tr>
                                     @empty
 

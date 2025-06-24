@@ -28,6 +28,8 @@ class SettingServiceProvider extends ServiceProvider
 
 
         // set mail config
+        Config::set('mail.default', config('settings.mail_mailer'));
+        
         Config::set('mail.mailers.smtp', [
             'transport' => config('settings.mail_mailer'),
             'host' => config('settings.mail_host'),

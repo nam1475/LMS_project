@@ -120,10 +120,7 @@ function updateApproveStatus(status, route, message) {
             }, 1000);
         },
         error: function (xhr, status, error) {
-            let errorMessage = xhr.responseJSON;
-            // notyf.error(errorMessage.message);
-            console.log(errorMessage.message);
-            
+            // console.log(xhr.responseJSON.message);
         }
 
     })
@@ -134,12 +131,16 @@ $(function () {
         let status = $(this).val();
         if(status == 'rejected') {
             $('#dynamic-modal').modal("show");
-            let courseId = $(this).data('id');
+            let id = $(this).data('id');
+            let routeType = $(this).data('route-type');
 
             $.ajax({
                 method: 'GET',
-                url: base_url + '/admin/courses/'  + courseId + '/reject-approval',
-                data: {},
+                // url: base_url + '/admin/courses/'  + id + '/reject-approval',
+                url: base_url + '/admin/reject-approval/'  + id,
+                data: {
+                    route_type: routeType
+                },
                 beforeSend: function () {
                     $('.dynamic-modal-content').html(loader);
                 },
@@ -147,7 +148,7 @@ $(function () {
                     $('.dynamic-modal-content').html(data);
                 },
                 error: function (xhr, status, error) {
-
+                    console.log(xhr.responseJSON.message);
                 }
             })
         }

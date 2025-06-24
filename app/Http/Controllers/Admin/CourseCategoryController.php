@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CourseCategoryController extends Controller
 {
@@ -18,9 +19,19 @@ class CourseCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : View
+    public function index(Request $request) : View
     {
-        $categories = CourseCategory::whereNull('parent_id')->paginate(15);
+        $categories = CourseCategory::
+            when($request->has('search') && $request->filled('search'), function($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+            })
+            ->when($request->has('status') && $request->filled('status'), function($query) use ($request) {
+                if($request->status == 'all'){
+                    return $query;
+                }
+                $query->where('status', $request->status);
+            })
+            ->whereNull('parent_id')->paginate(15);
         return view('admin.course.course-category.index', compact('categories'));
     }
 
@@ -43,7 +54,7 @@ class CourseCategoryController extends Controller
         $category->image = $imagePath;
         $category->icon = $request->icon;
         $category->name = $request->name;
-        $category->slug = \Str::slug($request->name);
+        $category->slug = Str::slug($request->name);
         $category->show_at_trending = $request->show_at_treading ?? 0;
         $category->status = $request->status ?? 0;
         $category->save();
@@ -77,7 +88,7 @@ class CourseCategoryController extends Controller
         
         $category->icon = $request->icon;
         $category->name = $request->name;
-        $category->slug = \Str::slug($request->name);
+        $category->slug = Str::slug($request->name);
         $category->show_at_trending = $request->show_at_treading ?? 0;
         $category->status = $request->status ?? 0;
         $category->save();

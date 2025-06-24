@@ -12,13 +12,13 @@ class StudentOrderController extends Controller
 
     function index() : View
     {
-        $orders = Order::where('buyer_id', user()->id)->paginate(25);
+        $orders = Order::where('buyer_id', user()->id)->orderBy('created_at', 'desc')->paginate(25);
         return view('frontend.student-dashboard.order.index', compact('orders'));     
     }
 
-    function show(string $id) : View 
+    function show($invoiceId) : View 
     {
-        $order = Order::where('buyer_id', user()->id)->findOrFail($id);
+        $order = Order::where(['buyer_id' => user()->id, 'invoice_id' => $invoiceId])->firstOrFail();
         return view('frontend.student-dashboard.order.show', compact('order'));     
     }
 }

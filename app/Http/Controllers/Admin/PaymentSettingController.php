@@ -17,15 +17,13 @@ class PaymentSettingController extends Controller
         return view('admin.payment-setting.index');     
     }
 
-    function paypalSetting(Request $request) : RedirectResponse 
+    function vnpaySetting(Request $request) : RedirectResponse 
     {
         $validatedData = $request->validate([
-            'paypal_mode' => ['required', 'in:live,sandbox'],
-            'paypal_client_id' => ['required'],
-            'paypal_client_secret' => ['required'],
-            'paypal_currency' => ['required'],
-            'paypal_rate' => ['required', 'numeric'],
-            'paypal_app_id' => ['required'],
+            'vnpay_tmn_code' => ['required'],
+            'vnpay_hash_secret' => ['required'],
+            'vnpay_url' => ['required'],
+            'vnpay_status' => ['required'],
         ]);
         
         foreach($validatedData as $key => $value) {
@@ -39,44 +37,25 @@ class PaymentSettingController extends Controller
         return redirect()->back();
     }
 
-    function stripeSetting(Request $request) : RedirectResponse 
-    {
-        $validatedData = $request->validate([
-            'stripe_status' => ['required', 'in:active,inactive'],
-            'stripe_currency' => ['required'],
-            'stripe_rate' => ['required'],
-            'stripe_publishable_key' => ['required'],
-            'stripe_secret' => ['required'],
-        ]);
+    // function stripeSetting(Request $request) : RedirectResponse 
+    // {
+    //     $validatedData = $request->validate([
+    //         'stripe_status' => ['required', 'in:active,inactive'],
+    //         'stripe_currency' => ['required'],
+    //         'stripe_rate' => ['required'],
+    //         'stripe_publishable_key' => ['required'],
+    //         'stripe_secret' => ['required'],
+    //     ]);
         
-        foreach($validatedData as $key => $value) {
-            PaymentSetting::updateOrCreate(['key' => $key], ['value' => $value]);
-        }
+    //     foreach($validatedData as $key => $value) {
+    //         PaymentSetting::updateOrCreate(['key' => $key], ['value' => $value]);
+    //     }
 
-        Cache::forget('gatewaySettings');
+    //     Cache::forget('gatewaySettings');
 
-        notyf()->success("Update Successfully!");
+    //     notyf()->success("Update Successfully!");
 
-        return redirect()->back();
-    }
+    //     return redirect()->back();
+    // }
 
-    function razorpaySetting(Request $request) : RedirectResponse{
-        $validatedData = $request->validate([
-            'razorpay_status' => ['required', 'in:active,inactive'],
-            'razorpay_currency' => ['required'],
-            'razorpay_rate' => ['required'],
-            'razorpay_key' => ['required'],
-            'razorpay_secret' => ['required'],
-        ]);
-        
-        foreach($validatedData as $key => $value) {
-            PaymentSetting::updateOrCreate(['key' => $key], ['value' => $value]);
-        }
-
-        Cache::forget('gatewaySettings');
-
-        notyf()->success("Update Successfully!");
-
-        return redirect()->back();
-    }
 }

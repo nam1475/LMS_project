@@ -24,6 +24,42 @@ $('.filter-status').on('change', function () {
     window.location.href = url;
 });
 
+
+
+$(function (){
+    // Go to course enrolled
+    $(document).on('click', '.go-to-course-enrolled', function (e) {
+    // $('.go-to-course-enrolled').on('click', function (e) {
+        // e.preventDefault();
+        let course = $(this).data('course');
+        let userId = $(this).data('user-id');
+        let isFree = $(this).data('is-free');
+        $.ajax({
+            method: 'POST',
+            url: `${base_url}/student/course/enroll-free-course/${course.id}`,
+            data: {
+                _token: csrf_token,
+                user_id: userId,
+                instructor_id: course.instructor_id,
+                is_free: isFree
+            },
+            success: function (response) {
+                if(response.message){
+                    notyf.success(response.message);
+                    setTimeout(function () {
+                        window.location.href = `${base_url}/student/course-player/${course.slug}`;
+                    }, 1000);
+                }
+                window.location.href = `${base_url}/student/course-player/${course.slug}`;
+            },
+            error: function (xhr, status, error) {
+                notyf.error(xhr.responseJSON.message);
+            }
+        })
+    });
+
+})
+
 //course tab navigation
 $('.course-tab').on('click', function (e) {
     e.preventDefault();

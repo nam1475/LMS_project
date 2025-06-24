@@ -10,6 +10,12 @@
             <div class="row">
                 <div class="col-xl-12">
                     <div class="add_course_basic_info_imput">
+                        <label for="#">Commit message *</label>
+                        <input type="text" placeholder="Commit message" name="message_for_commit">  
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <div class="add_course_basic_info_imput">
                         <label for="#">Title *</label>
                         <input type="text" placeholder="Title" name="title">
                     </div>
@@ -50,7 +56,6 @@
                             <option value=""> Please Select </option>
                             <option value="upload"> Upload </option>
                             <option value="youtube"> Youtube </option>
-                            <option value="vimeo"> Vimeo </option>
                             <option value="external_link"> External Link </option>
                         </select>
                     </div>
@@ -96,32 +101,29 @@
                 </div>
 
                 {{-- More info --}}
-                <div class="col-xl-6">
+                {{-- <div class="col-xl-6">
                     <div class="add_course_more_info_input">
                         <label for="#">Capacity</label>
                         <input type="text" placeholder="Capacity" name="capacity">
                         <p>leave blank for unlimited</p>
                     </div>
-                </div>
+                </div> --}}
                 {{-- <div class="col-xl-6">
                     <div class="add_course_more_info_input">
                         <label for="#">Course Duration (Minutes)*</label>
                         <input type="text" placeholder="300" name="duration" value="{{ $course->duration }}">
                     </div>
                 </div> --}}
-                <div class="col-xl-6">
+                {{-- <div class="col-xl-6">
                     <div class="add_course_more_info_checkbox">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="qna" value="1" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">Q&A</label>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="certificate" value="1" id="flexCheckDefault2">
-                            <label class="form-check-label" for="flexCheckDefault2">Completion Certificate</label>
-                        </div>
                         
                     </div>
-                </div>
+                </div> --}}
+                
                 <div class="col-12">
                     <div class="add_course_more_info_input">
                         <label for="#">Category *</label>
@@ -169,12 +171,12 @@
                         @endforeach
                     </div>
                 </div>
-                <div class="col-xl-12">
+                {{-- <div class="col-xl-12">
                     <div class="add_course_more_info_input">
                         <label for="#">Message for Reviewer</label>
                         <textarea rows="7" placeholder="Message for Reviewer" name="message_for_reviewer"></textarea>
                     </div>
-                </div>
+                </div> --}}
                 <div class="col-xl-12">
                     <button type="submit" class="common_btn">Save</button>
                 </div>

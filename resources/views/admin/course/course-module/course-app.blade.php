@@ -5,7 +5,7 @@
         <div class="container-xl">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Course Create</h3>
+                    <h3 class="card-title">{{ $title ?? '' }}</h3>
                     <div class="card-actions">
                         <a href="{{ route('admin.courses.index') }}" class="btn btn-primary">
                             <!-- Download SVG icon from http://tabler-icons.io/i/plus -->

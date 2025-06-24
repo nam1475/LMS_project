@@ -41,7 +41,7 @@
                                 ['id' => $course->id, 'step' => 1] 
                             )}}">
                             {{-- {{ $course->title }} ({{ ($course->is_current && $course->is_published) ? 'Publish' : 'Current revision' }}) --}}
-                            {{ $course->title }} -
+                            {{ $course->message_for_commit ?? $course->title }} -
                                 @if($course->is_published)
                                     Published
                                 @elseif($course->is_current && !$course->is_published)
@@ -52,9 +52,6 @@
                         </a>
                     </h2>
                     <p class="text-muted mb-2 fw-bold">{{ $course->created_at->timezone('Asia/Ho_Chi_Minh')->format('H:i d/m/Y') }}</p>
-                    <p class="text-muted">
-                        {{ $course->title }}
-                    </p>
                     </li>
                 @endforeach
 

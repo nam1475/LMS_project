@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Draft;
+use BeyondCode\Comments\Traits\HasComments;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,7 +26,7 @@ class Course extends Model
         'seo_description',
         'description',
         'price',
-        'discount_price',
+        'discount',
         'category_id',
         'course_level_id',
         'course_language_id',
@@ -38,7 +39,8 @@ class Course extends Model
         'is_published',
         'is_current',
         'message_for_reviewer',
-        'message_for_rejection'
+        'message_for_rejection',
+        'message_for_commit',
     ];
 
     protected array $draftableRelations = ['chapters']; // Nếu có quan hệ cần quản lý trong draft
@@ -68,27 +70,35 @@ class Course extends Model
     {
         // publish(): Đổi DL giữa bản nháp <-> bản chính ngoại trừ id
         return DB::transaction(function () {
+            $currentCourseCommit = $this->message_for_commit;
+            $isCourseHasDraft = $this->where('uuid', $this->uuid)->exists();
+            if($isCourseHasDraft){
+                $mainCourseCommit = Course::withoutGlobalScopes()->where(['uuid' => $this->uuid, 'is_published' => true])
+                    ->first()->message_for_commit;
+            }
+            // $publishedCourse trong TH này là bản nháp khi đã chuyển đổi DL với bản chính 
             $publishedCourse = $this->publish();
-            $publishedCourse->save(); 
-            
-            
-            $allCourse = Course::withDrafts()->where(['uuid' => $this->uuid])
-                ->get();
-            $allCourse->each(function ($course) {
-                Log::info('Course: ' . $course); 
-            });
+            Log::info('Before publish course: ' . $publishedCourse);
+            $publishedCourse->withoutRevision();
             // Sau khi publish thì bản nháp sẽ ko còn là bản current
+            $publishedCourse->message_for_commit = $currentCourseCommit;
+            $publishedCourse->save(); 
+            Log::info('After publish course: ' . $publishedCourse);
+            
             if(!$this->isCurrent()){
                 // Lấy bản course chính hiện tại đã publish
                 $mainCourse = Course::withDrafts()->where(['uuid' => $this->uuid, 'is_published' => true])
-                    ->first();
+                ->first()->withoutRevision();
+                $mainCourse->message_for_commit = $mainCourseCommit;
+                $mainCourse->save();
                 Log::info('Main course: ' . $mainCourse);
             }
+
+            
             if ($publishedCourse) {
                 foreach ($publishedCourse->chapters as $chapter) {
                     $publishedChapter = $chapter->publish();
                     $publishedChapter->withoutRevision();
-                    // Log::info('Before save: ' . $publishedChapter);
                     $publishedChapter->course_id = $this->id;
                     $publishedChapter->save(); 
                     // Log::info('After save chapter: ' . $publishedChapter);
@@ -99,7 +109,6 @@ class Course extends Model
                         $mainChapter = CourseChapter::where(['uuid' => $chapter->uuid, 'is_published' => true])
                             ->first()->withoutRevision();
                         $mainChapter->update(['course_id' => $mainCourse->id]);
-                        Log::info('Chapter: ' . $mainChapter);
                     }
                     
                     foreach ($publishedChapter->lessons as $lesson) {
@@ -116,7 +125,6 @@ class Course extends Model
                                 ->first()->withoutRevision();
                             $mainLesson->update(['chapter_id' => $mainChapter->id]);
                             $mainLesson->update(['course_id' => $mainCourse->id]);
-                            Log::info('Lesson: ' . $mainLesson);
                         }
                     }
                 }
@@ -205,8 +213,8 @@ class Course extends Model
 
     function chapters() : HasMany
     {
-        // return $this->hasMany(CourseChapter::class, 'course_id', 'id')->orderBy('order');
-        return $this->hasMany(CourseChapter::class, 'course_id', 'id');
+        return $this->hasMany(CourseChapter::class, 'course_id', 'id')->orderBy('order');
+        // return $this->hasMany(CourseChapter::class, 'course_id', 'id');
     }
 
     function lessons() : HasMany

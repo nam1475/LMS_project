@@ -23,6 +23,7 @@ var loader = `
 /** on dom load */
 $(function () {
 
+
     //course tab navigation
     $('.course-tab').on('click', function (e) {
         e.preventDefault();

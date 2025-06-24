@@ -14,6 +14,8 @@
                     <!-- Page title actions -->
                     <div class="col-auto ms-auto d-print-none">
                         <button type="button" class="btn btn-primary" onclick="javascript:window.print();">
+                        {{-- <button type="button" class="btn btn-primary" id="print-invoice"> --}}
+                        {{-- <button type="button" class="btn btn-primary" onclick="downloadPDF();"> --}}
                             <!-- Download SVG icon from http://tabler-icons.io/i/printer -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -64,7 +66,7 @@
                                     <th class="text-center" style="width: 1%"></th>
                                     <th>Product</th>
                                     <th class="text-center" style="width: 1%">Qnt</th>
-                                    <th class="text-end" style="width: 4%">Amount</th>
+                                    <th class="text-end" style="width: 4%">Amount({{ $order->currency }})</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -78,12 +80,12 @@
                                         <td class="text-center">
                                             1
                                         </td>
-                                        <td class="text-end">{{ number_format($item->price) }}{{ $order->currency }}</td>
+                                        <td class="text-end">{{ number_format($item->price) }}</td>
                                     </tr>
                                 @endforeach
                                 <tr>
                                     <td colspan="3" class="strong text-end">Total</td>
-                                    <td class="text-end">{{ number_format($order->total_amount) }}{{ $order->currency }}</td>
+                                    <td class="text-end">{{ number_format($order->total_amount) }}</td>
                                 </tr>
 
                                 @if($order->coupon_code)
@@ -93,16 +95,16 @@
                                     </tr>
                                     <tr>
                                         <td colspan="3" class="strong text-end">Discount amount</td>
-                                        <td class="text-end">-{{ number_format($order->coupon_amount) }}{{ $order->currency }}</td>
+                                        <td class="text-end">-{{ number_format($order->coupon_amount) }}</td>
                                     </tr>
                                 @endif
                                 <tr>
                                     <td colspan="3" class="strong text-end">Subtotal</td>
-                                    <td class="text-end">{{ number_format($order->subtotal_amount) }}{{ $order->currency }}</td>
+                                    <td class="text-end">{{ number_format($order->subtotal_amount ?? $order->total_amount) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="strong text-end">Paid Amount</td>
-                                    <td class="text-end">{{ number_format($order->paid_amount) }}{{ $order->currency }}</td>
+                                    <td class="text-end">{{ number_format($order->paid_amount) }}</td>
                                 </tr>
                                 
                             </tbody>
@@ -117,3 +119,21 @@
        
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function downloadPDF() {
+                const oldTitle = document.title;
+                document.title = $order->invoice_id; // tên file mong muốn    
+            
+                window.print();
+            
+                // Khôi phục tiêu đề sau khi in (tránh ảnh hưởng SEO)
+                setTimeout(() => {
+                    document.title = oldTitle;
+                }, 1000);
+            }
+        });
+    </script>
+@endpush

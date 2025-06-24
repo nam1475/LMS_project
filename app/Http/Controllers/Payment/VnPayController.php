@@ -24,25 +24,29 @@ class VnPayController extends \App\Http\Controllers\Controller
                 $cartTotal += $item->course->discount > 0 ? $item->course->discount : $item->course->price;
             }
 
+            if(session()->has('discount_amount')) {
+                $cartTotal = $cartTotal - session()->get('discount_amount');
+            }
+
             if ($cartTotal <= 0) {
                 return redirect()->route('checkout.index')->with('error', 'Your cart is empty.');
             }
-
+            
             /** Chỉ nên gọi env() trong các file config, nếu gọi trong controller, class thông thường,... nó 
              * sẽ trả về null nếu đã chạy php artisan config:cache trước đó. */
-            $vnp_TmnCode = config('vnpay.vnp_tmnCode');
-            $vnp_HashSecret = config('vnpay.vnp_hashSecret');
-            $vnp_Url = config('vnpay.vnp_url');
+            $vnp_TmnCode = config('gateway_settings.vnpay_tmn_code');
+            $vnp_HashSecret = config('gateway_settings.vnpay_hash_secret');
+            $vnp_Url = config('gateway_settings.vnpay_url');
             $vnp_Returnurl = config('vnpay.vnp_returnUrl');
 
             $vnp_TxnRef = rand(1,100000); // Order ID
-            $vnp_OrderInfo = 'Thanh toán đơn hàng cho ' . $user->email . ' | Số lượng: ' . $cartItems->count();
+            $vnp_OrderInfo = 'Pay for the order ' . $user->email . ' | Quantity: ' . $cartItems->count();
             $vnp_OrderType = 'billpayment';
             $vnp_Amount = $cartTotal * 100; // Amount in VND * 100
             $vnp_Locale = 'vn';
             $vnp_BankCode = $request->input('bank_code', '');
             $vnp_IpAddr = $request->ip();
-
+            
             $inputData = [
                 "vnp_Version" => "2.1.0",
                 "vnp_TmnCode" => $vnp_TmnCode,
@@ -119,8 +123,7 @@ class VnPayController extends \App\Http\Controllers\Controller
                 'calculated_hash' => $secureHash,
                 'response_code' => $request->vnp_ResponseCode,
             ]);
-
-            // Thanh toán ko thành công do $secureHash và $vnp_SecureHash ko trùng khớp 
+ 
             if (strtoupper($secureHash) === strtoupper($vnp_SecureHash) && $request->vnp_ResponseCode == '00') {
                 // Payment successful
                 $user = Auth::user('web');
@@ -140,13 +143,12 @@ class VnPayController extends \App\Http\Controllers\Controller
                     'vnpay',
                 );
 
+                session()->forget('total_amount');
                 session()->forget('coupon_code');
                 session()->forget('discount_amount');
                 session()->forget('subtotal_amount');
 
                 notyf()->success('Payment successful! You are now enrolled in the course.');
-
-                
 
                 DB::commit();
                 return redirect()->route('order.success');

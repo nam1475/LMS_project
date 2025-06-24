@@ -14,7 +14,7 @@
             <li>
                 <a href="{{ route('instructor.dashboard') }}" class="{{ sidebarItemActive(['instructor.dashboard']) }}">
                     <div class="img">
-                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Dashboard
                 </a>
@@ -22,7 +22,7 @@
             <li>
                 <a href="{{ route('instructor.profile.index') }}" class="{{ sidebarItemActive(['instructor.profile.index']) }}">
                     <div class="img">
-                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Instructor Profile
                 </a>
@@ -30,7 +30,7 @@
             <li>
                 <a href="{{ route('instructor.notifications.index') }}" class="{{ sidebarItemActive(['instructor.notifications.index']) }}">
                     <div class="img">
-                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Notifications
                 </a>
@@ -39,55 +39,64 @@
             <li>
                 <a href="{{ route('instructor.courses.index') }}" class="{{ sidebarItemActive(['instructor.courses.index']) }}">
                     <div class="img">
-                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Courses
                 </a>
             </li>
-            
+
             <li>
+                <a href="{{ route('instructor.course-reviews.index') }}" class="{{ sidebarItemActive(['instructor.course-reviews.index']) }}">
+                    <div class="img">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
+                    </div>
+                    Course Reviews
+                </a>
+            </li>
+            
+            {{-- <li>
                 <a href="{{ route('instructor.courses.index') }}" class="{{ sidebarItemActive(['instructor.courses.enrollments.index']) }}">
                     <div class="img">
-                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Enrollments
                 </a>
-            </li>
+            </li> --}}
             
-            <li>
+            {{-- <li>
                 <a href="{{ route('instructor.chats.index') }}" class="{{ sidebarItemActive(['instructor.chats.index']) }}">
                     <div class="img">
-                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                    Chats
                 </a>
-            </li>
+            </li> --}}
 
             <li>
                 <a href="{{ route('instructor.orders.index') }}" class="{{ sidebarItemActive(['instructor.orders.index']) }}">
                     <div class="img">
-                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Orders
                 </a>
             </li>
-            <li>
+            {{-- <li>
                 <a href="{{ route('instructor.coupons.index') }}" class="{{ sidebarItemActive(['instructor.coupons.index']) }}">
                     <div class="img">
-                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Coupons
                 </a>
-            </li>
+            </li> --}}
 
-            <li>
+            {{-- <li>
                 <a href="{{ route('instructor.withdraw.index') }}" class="{{ sidebarItemActive(['instructor.withdraw.index']) }}">
                     <div class="img">
-                        <img src="{{ asset('frontend/assets/images/dash_icon_8.png') }}" alt="icon" class="img-fluid w-100">
+                        <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Withdrawals
                 </a>
-            </li>
+            </li> --}}
 
             <li>
                 <a href="javascript:;"

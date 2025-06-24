@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\CertificateController;
+use App\Http\Controllers\Frontend\CourseReviewController;
 use App\Http\Controllers\Frontend\ChatController;
 use App\Http\Controllers\Frontend\BlogController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\CouponController;
+use App\Http\Controllers\Frontend\LessonCommentController;
 use App\Http\Controllers\Frontend\CourseContentController;
 use App\Http\Controllers\Frontend\CourseController;
 use App\Http\Controllers\Frontend\CoursePageController;
@@ -53,12 +55,14 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
    Route::get('/courses/{id}/reviews', [CoursePageController::class, 'getReviews'])->name('courses.reviews');
 
 
+   Route::middleware(['auth:web', 'check_role:student'])->group(function () {
+      Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+      Route::post('add-to-cart/{course}', [CartController::class, 'addToCart'])->name('add-to-cart');
+      Route::get('remove-from-cart/{id}', [CartController::class, 'removeFromCart'])->name('remove-from-cart');
+      Route::post('cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-coupon');
+      Route::get('cart/remove-coupon', [CartController::class, 'removeCoupon'])->name('coupon.remove');
+   });
    /** Cart routes */
-   Route::get('cart', [CartController::class, 'index'])->name('cart.index')->middleware('auth');
-   Route::post('add-to-cart/{course}', [CartController::class, 'addToCart'])->name('add-to-cart')->middleware('auth');
-   Route::get('remove-from-cart/{id}', [CartController::class, 'removeFromCart'])->name('remove-from-cart')->middleware('auth');
-   Route::post('cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-coupon')->middleware('auth');
-   Route::get('cart/remove-coupon', [CartController::class, 'removeCoupon'])->name('coupon.remove')->middleware('auth');
 
    /** Payment Routes */
    Route::get('checkout', CheckoutController::class)->name('checkout.index');
@@ -98,31 +102,42 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
    Route::post('blog/comment/{id}', [BlogController::class, 'storeComment'])->name('blog.comment.store');
 
    
-
+   
    /**
     * ------------------------------------------------------
     * Student Routes
     * ------------------------------------------------------
     */
-   Route::group(['middleware' => ['auth:web', 'verified', 'check_role:student'], 'prefix' => 'student', 'as' => 'student.'], function() {
-      Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
-      Route::get('/become-instructor', [StudentDashboardController::class, 'becomeInstructor'])->name('become-instructor');
-      Route::post('/become-instructor/{user}', [StudentDashboardController::class, 'becomeInstructorUpdate'])->name('become-instructor.update');
-
-      /** Profile Routes */
-      Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
-      Route::post('profile/update', [ProfileController::class, 'profileUpdate'])->name('profile.update');
-      Route::post('profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
-      Route::post('profile/update-social', [ProfileController::class, 'updateSocial'])->name('profile.update-social');
-
-      /** Enroll Courses Routes */
+    Route::group(['middleware' => ['auth:web', 'verified', 'check_role:student'], 'prefix' => 'student', 'as' => 'student.'], function() {
+       Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
+       Route::get('/become-instructor', [StudentDashboardController::class, 'becomeInstructor'])->name('become-instructor');
+       Route::post('/become-instructor/{user}', [StudentDashboardController::class, 'becomeInstructorUpdate'])->name('become-instructor.update');
+       
+       /** Profile Routes */
+       Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
+       Route::post('profile/update', [ProfileController::class, 'profileUpdate'])->name('profile.update');
+       Route::post('profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+       Route::post('profile/update-social', [ProfileController::class, 'updateSocial'])->name('profile.update-social');
+       
+       /** Enroll Courses Routes */
       Route::get('enrolled-courses', [EnrolledCourseController::class, 'index'])->name('enrolled-courses.index');
+      Route::post('course/enroll-free-course/{id}', [EnrolledCourseController::class, 'enrollFreeCourse'])->name('course.enroll-free-course');
       Route::get('course-player/{slug}', [EnrolledCourseController::class, 'playerIndex'])->name('course-player.index');
       Route::get('get-lesson-content', [EnrolledCourseController::class, 'getLessonContent'])->name('get-lesson-content');
       Route::post('update-watch-history', [EnrolledCourseController::class, 'updateWatchHistory'])->name('update-watch-history');
       Route::post('update-lesson-completion', [EnrolledCourseController::class, 'updateLessonCompletion'])->name('update-lesson-completion');
       Route::get('file-download/{id}', [EnrolledCourseController::class, 'fileDownload'])->name('file-download');
-
+      
+      /** Course Comments */
+      // Route::get('course/{id}/fetch-comments', [LessonCommentController::class, 'fetchComments'])->name('course.fetch-comments');
+      // Route::post('course/{id}/send-comment', [LessonCommentController::class, 'sendComment'])->name('course.send-comment');
+      // Route::post('course/{id}/delete-comment', [LessonCommentController::class, 'deleteComment'])->name('course.delete-comment');
+      
+      /** Lesson comments */
+      Route::get('course/lesson/{id}/fetch-comments', [LessonCommentController::class, 'fetchComments'])->name('course.lesson.fetch-comments');
+      Route::post('course/lesson/{id}/send-comment', [LessonCommentController::class, 'sendComment'])->name('course.lesson.send-comment');
+      Route::post('course/lesson/{id}/delete-comment', [LessonCommentController::class, 'deleteComment'])->name('course.lesson.delete-comment');
+      
       /** Certificate Routes */
       Route::get('certificate/{course}/download', [CertificateController::class, 'download'])->name('certificate.download');
 
@@ -131,7 +146,7 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       Route::delete('review/{id}', [StudentDashboardController::class, 'reviewDestroy'])->name('review.destroy');
 
       Route::get('orders', [StudentOrderController::class, 'index'])->name('orders.index');
-      Route::get('orders/{order}', [StudentOrderController::class, 'show'])->name('orders.show');
+      Route::get('orders/{invoice_id}', [StudentOrderController::class, 'show'])->name('orders.show');
 
       /** Chat Routes */
       Route::get('chats', [ChatController::class, 'index'])->name('chats.index');
@@ -172,7 +187,13 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       Route::get('chats', [ChatController::class, 'index'])->name('chats.index');
       Route::get('chats/fetch-messages', [ChatController::class, 'fetchMessages'])->name('fetch.messages');
       Route::post('chats/send-message', [ChatController::class, 'sendMessage'])->name('send.message');
-      
+
+      /** Lesson Comment Routes */
+      Route::get('course/lesson/{id}/fetch-comments', [LessonCommentController::class, 'fetchComments'])->name('course.lesson.fetch-comments');
+      Route::post('course/lesson/{id}/send-comment', [LessonCommentController::class, 'sendComment'])->name('course.lesson.send-comment');
+      Route::post('course/lesson/{id}/delete-comment', [LessonCommentController::class, 'deleteComment'])->name('course.lesson.delete-comment');
+      Route::get('get-lesson-content', [EnrolledCourseController::class, 'getLessonContent'])->name('get-lesson-content');
+
       /** Profile Routes */
       Route::get('profile', [ProfileController::class, 'instructorIndex'])->name('profile.index');
       Route::post('profile/update', [ProfileController::class, 'profileUpdate'])->name('profile.update');
@@ -184,6 +205,10 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       // Route::get('notifications/fetch-messages', [NotificationController::class, 'fetchMessages'])->name('notifications.fetch.messages')->middleware('auth:web');
       // Route::post('notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
 
+
+      /** Course Reviews Routes */
+      Route::get('course-reviews', [CourseReviewController::class, 'index'])->name('course-reviews.index');
+      Route::get('course-reviews/{id}', [CourseReviewController::class, 'show'])->name('course-reviews.show');
 
       /** Course Routes */
       Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
@@ -216,8 +241,12 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
       /** Enrolled Students */
       Route::get('courses/{id}/enrolled-students', [CourseController::class, 'enrolledStudents'])->name('courses.enrolled-students');
       
+      /** Enroll course for instructor */
+      Route::get('course-player/{slug}', [EnrolledCourseController::class, 'playerIndex'])->name('course-player.index');
+
       /** Orders Routes */
       Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+      Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
       /** Withdrawal routes */
       Route::get('withdrawals', [WithdrawController::class, 'index'])->name('withdraw.index');

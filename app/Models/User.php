@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use BeyondCode\Comments\Contracts\Commentator;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'approve_status',
         'document',
         'enmail_verified_at',
+        'message_for_rejection'
     ];
 
     /**

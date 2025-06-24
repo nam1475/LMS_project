@@ -55,6 +55,9 @@
                                                     <th class="details">
                                                         MESSAGE
                                                     </th>
+                                                    <th class="details">
+                                                        TIME
+                                                    </th>
                                                     <th class="sale">
                                                         IS READ
                                                     </th>
@@ -70,6 +73,7 @@
                                                                 {{ $notification->data['message'] }}
                                                             </a>
                                                         </td>
+                                                        <td class="sale">{{ $notification->data['time'] }}</td>
                                                         <td class="status">
                                                             @if ($notification->read_at)
                                                                 <p class="active">Yes</p>

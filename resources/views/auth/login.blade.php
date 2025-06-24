@@ -79,7 +79,7 @@
                 </div>
             </div>
         </div>
-        <a class="back_btn" href="index.html">Back to Home</a>
+        <a class="back_btn" href="{{ route('home') }}">Back to Home</a>
     </section>
     <!--===========================
         SIGN IN END

@@ -44,21 +44,15 @@ class ChatController extends Controller
         $user = auth('web')->user();
         $receiverId = $request->input('receiver_id');
 
-        $messages = Chat::where(function ($query) use ($user, $receiverId) {
+        $messages = Chat::
+        where(function ($query) use ($user, $receiverId) {
             $query->where(['sender_id' => $user->id, 'receiver_id' => $receiverId]);
-        })->orWhere(function ($query) use ($user, $receiverId) {
+        })
+        ->orWhere(function ($query) use ($user, $receiverId) {
             $query->where(['sender_id' => $receiverId, 'receiver_id' => $user->id]);
         })->orderBy('created_at', 'asc')->get();
         
         $isRead = $user->unreadMessages($receiverId)->update(['is_read' => true]);
-
-        // $cartItems = Cart::with('course.instructor')->where('user_id', $user->id)->get();
-        // // foreach($cartItems as $item) {
-        // //     $instructor = $item->course->instructor;
-        // //     $instructor->notify(new StudentEnrolledCourse($item->course, $user, $instructor));
-        // // }
-        // $instructor = $cartItems[0]->course->instructor;
-        // $instructor->notify(new StudentEnrolledCourse($cartItems[0]->course, $user, $instructor));
 
         return response()->json(['messages' => $messages, 'isRead' => $isRead, 'receiverId' => $receiverId]);
     }
@@ -70,6 +64,7 @@ class ChatController extends Controller
             'receiver_id' => ['required', 'exists:users,id'],
         ]);
         $receiverId = $request->input('receiver_id');
+        $receiver = User::find($receiverId);
         $message = $request->input('message');
         $user = auth('web')->user();
 
@@ -83,6 +78,6 @@ class ChatController extends Controller
 
         event(new SendChatMessage($message, $user->id, $receiverId, $user->name, $user->image));
         
-        return response()->json(['chat' => $chat, 'success' => true, 'isRead' => $isRead]);
+        return response()->json(['chat' => $chat, 'success' => true, 'isRead' => $isRead, 'receiver' => $receiver]);
     }
 }

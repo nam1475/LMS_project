@@ -22,10 +22,10 @@ class CoursePageController extends Controller
     function index(Request $request): View
     {
         // filled(): Checks if the given key has a value in the request
-        $courses = Course::withoutGlobalScopes()->where(['is_approved' => 'approved'])->published()
+        $courses = Course::withoutGlobalScopesWithRelations()
+            ->where(['is_approved' => 'approved', 'is_published' => true])
             ->when($request->has('search') && $request->filled('search'), function($query) use ($request) {
                 $query->where('title', 'like', '%' . $request->search . '%')
-                ->orWhere('description', 'like', '%' . $request->search . '%')
                 ->orWhere(function($query) use ($request) {
                     $query->whereHas('instructor', function($query) use ($request) {
                         $query->where('name', 'like', '%' . $request->search . '%');
@@ -46,18 +46,34 @@ class CoursePageController extends Controller
                     });
                 });
             })
+            ->when($request->has('rating') && $request->filled('rating'), function($query) use ($request) {
+                $query->whereHas('reviews', function($query) use ($request){
+                    $query->where('rating', '>=', $request->rating);
+                });
+            })
             ->when($request->has('level') && $request->filled('level'), function($query) use ($request) {
                 $query->whereIn('course_level_id', $request->level);
             })
             ->when($request->has('language') && $request->filled('language'), function($query) use ($request) {
                 $query->whereIn('course_language_id', $request->language);
             })
-            ->when($request->has('from') && $request->has('to') && $request->filled('from') && $request->filled('to'), function($query) use ($request) {
-                $query->whereBetween('price', [$request->from, $request->to]);
+            // ->when($request->has('from') && $request->has('to') && $request->filled('from') && $request->filled('to'), function($query) use ($request) {
+            //     $query->whereBetween('price', [$request->from, $request->to]);
+            // })
+            ->when($request->has('price') && $request->filled('price'), function($query) use ($request) {
+                if($request->price == 'free'){
+                    $query->where('price', 0);
+                }
+                else{
+                    $query->where('price', '>', 0);
+                }
             })
-            ->orderBy('updated_at', $request->filled('order') ? $request->order : 'desc')
-            ->paginate(12);
-
+            ->when($request->has('price_range') && $request->filled('price_range'), function($query) use ($request) {
+                $query->orderBy('price', $request->price_range);
+            })
+            ->orderBy('created_at', $request->filled('order') ? $request->order : 'desc')
+            ->paginate(25);
+            // dd($courses->first()->lessons);
         $categories = CourseCategory::where('status', 1)->whereNull('parent_id')->get();
         $levels = CourseLevel::all();
         $languages = CourseLanguage::all();
@@ -71,8 +87,7 @@ class CoursePageController extends Controller
             ->where(['is_approved' => 'approved', 'is_published' => true])
             ->firstOrFail();
         $reviews = Review::where(['course_id' => $course->id, 'status' => true])->orderBy('created_at', 'desc')->get();
-        $ratingPercentages = $this->getRatingPercentages();
-        // dd($ratingPercentages);
+        $ratingPercentages = $this->getRatingPercentages($course->id);
         $user = auth('web')->user();
         $courseEnrolled = $user ? Enrollment::where(['user_id' => $user->id, 'course_id' => $course->id])->first() : null;
         $isCourseAddedToCart = $user ? Cart::where(['user_id' => $user->id, 'course_id' => $course->id])->exists() : null;
@@ -83,11 +98,12 @@ class CoursePageController extends Controller
         ));
     }
 
-    public function getRatingPercentages()
+    public function getRatingPercentages($courseId)
     {
         // Lấy số lượng review theo từng rating (1-5)
         $counts = Review::groupBy('rating')
             ->select('rating', DB::raw('COUNT(*) as count'))
+            ->where(['status' => 1, 'course_id' => $courseId])
             ->pluck('count', 'rating');
 
         // Đảm bảo có đủ 5 mức rating, nếu thiếu thì thêm giá trị 0

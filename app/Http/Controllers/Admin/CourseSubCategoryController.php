@@ -10,6 +10,7 @@ use App\Models\CourseCategory;
 use App\Traits\FileUpload;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CourseSubCategoryController extends Controller
 {
@@ -44,7 +45,7 @@ class CourseSubCategoryController extends Controller
         }
         $category->icon = $request->icon;
         $category->name = $request->name;
-        $category->slug = \Str::slug($request->name);
+        $category->slug = Str::slug($request->name);
         $category->parent_id = $course_category->id;
         $category->show_at_trending = $request->show_at_treading ?? 0;
         $category->status = $request->status ?? 0;
@@ -79,7 +80,7 @@ class CourseSubCategoryController extends Controller
         }
         $category->icon = $request->icon;
         $category->name = $request->name;
-        $category->slug = \Str::slug($request->name);
+        $category->slug = Str::slug($request->name);
         $category->parent_id = $course_category->id;
         $category->show_at_trending = $request->show_at_treading ?? 0;
         $category->status = $request->status ?? 0;
