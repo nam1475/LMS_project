@@ -46,7 +46,7 @@
                             </select>
                         </div>
 
-                        <div>
+                        {{-- <div>
                             <select class="select2" name="is_approved">
                                 <option value="" disabled selected>Is Approved</option>
                                 <option value="all" @selected(request('is_approved') == 'all')>All</option>
@@ -54,7 +54,7 @@
                                 <option value="pending" @selected(request('is_approved') == 'pending')>Pending</option>
                                 <option value="rejected" @selected(request('is_approved') == 'rejected')>Rejected</option>
                             </select>
-                        </div>
+                        </div> --}}
 
 
                         <div>
@@ -103,7 +103,7 @@
                                     <th>Created By Instructor</th>
                                     <th>Expire Date</th>
                                     <th>Status</th>
-                                    <th>Approve</th>
+                                    {{-- <th>Approve</th> --}}
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -134,7 +134,7 @@
                                                <span class="badge bg-red text-red-fg">Inactive</span> 
                                             @endif
                                         </td>
-                                        <td>
+                                        {{-- <td>
                                             <select name="" class="form-control update-approval-status" data-id="{{ $coupon->id }}" 
                                                 data-route="{{ route('admin.coupons.update-approval', $coupon->id) }}"
                                             >
@@ -142,7 +142,7 @@
                                                 <option @selected($coupon->is_approved == 'approved') value="approved">Approved</option>
                                                 <option @selected($coupon->is_approved == 'rejected') value="rejected">Rejected</option>
                                             </select>
-                                        </td>
+                                        </td> --}}
                                         <td>
                                             {{-- @if (!$coupon->instructor) --}}
                                                 <a href="{{ route('admin.coupons.edit', $coupon->id) }}"

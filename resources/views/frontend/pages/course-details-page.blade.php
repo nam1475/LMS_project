@@ -372,8 +372,8 @@
                         <div class="wsus__courses_sidebar_video">
                             <img src="{{ asset($course->thumbnail) }}" alt="Video" class="img-fluid">
                             @if ($course->demo_video_source != null)
-                                <a class="play_btn venobox vbox-item" data-autoplay="true" data-vbtype="video"
-                                    href="{{ $course->demo_video_source }}">
+                                <a class="play_btn venobox vbox-item" data-autoplay="true" data-vbtype="{{ in_array($course->demo_video_storage, ['youtube', 'external_link']) ? 'video' : 'iframe' }}"
+                                    href="{{ asset($course->demo_video_source) }}">
                                     <img src="{{ asset('frontend/assets/images/play_icon_white.png') }}" alt="Play"
                                         class="img-fluid">
                                 </a>
@@ -384,7 +384,7 @@
                                 $coursePrice = $course->price;
                             @endphp
                             @if($course->discount > 0)
-                                Price: <del>{{ config('settings.currency_icon') }}{{ number_format($coursePrice) }}</del>{{ $course->discount }}
+                                Price: <del>{{ config('settings.currency_icon') }}{{ number_format($coursePrice) }}</del>{{ number_format($course->discount) }}
                             @elseif($coursePrice <= 0)
                                 FREE
                             @else

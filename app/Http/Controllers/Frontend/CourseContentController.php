@@ -6,16 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseChapter;
 use App\Models\CourseChapterLession;
+use App\Traits\FileUpload;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CourseContentController extends Controller
 {
+    use FileUpload;
+
     function createChapterModal(string $id): String
     {
         return view('frontend.instructor-dashboard.course.partials.course-chapter-modal', compact('id'))->render();
@@ -28,19 +32,11 @@ class CourseContentController extends Controller
             'title' => ['required', 'max:255'],
         ]);
         
-        // $chapter = new CourseChapter();
-        // $chapter->title = $request->title;
-        // $chapter->course_id = $courseId;
-        // $chapter->instructor_id = Auth::user()->id;
-        // $chapter->order = CourseChapter::where('course_id', $courseId)->count() + 1;
-        // $chapter->is_published = false;
-        // $chapter->save();
-        
         $course = Course::currentWithoutRevision($courseId);
         $course->chapters()->create([
             'title' => $request->title,
             'instructor_id' => auth('web')->user()->id,
-            'order' => CourseChapter::where('course_id', $courseId)->count() + 1,
+            'order' => CourseChapter::withoutGlobalScopes()->where('course_id', $courseId)->count() + 1,
             'is_published' => false,
             'course_id' => $courseId
         ]);
@@ -64,42 +60,51 @@ class CourseContentController extends Controller
 
     function storeLesson(Request $request): RedirectResponse
     {
-        $rules = [
-            'title' => ['required', 'string', 'max:255'],
-            'source' => ['required', 'string'],
-            'file_type' => ['required', 'in:video,audio,file,pdf,doc'],
-            'is_preview' => ['nullable', 'boolean'],
-            'downloadable' => ['nullable', 'boolean'],
-            'description' => ['required']
-        ];
-        if ($request->filled('file')) {
-            $rules['file'] = ['required'];
-        } else {
-            $rules['url'] = ['required'];
+        try{
+
+            $rules = [
+                'title' => ['required', 'string', 'max:255'],
+                'source' => ['required', 'string'],
+                'file_type' => ['required', 'in:video,audio,file,pdf,doc,link'],
+                'is_preview' => ['nullable', 'boolean'],
+                'downloadable' => ['nullable', 'boolean'],
+                'description' => ['required']
+            ];
+            if ($request->filled('file')) {
+                $rules['file'] = ['required'];
+            } else {
+                $rules['url'] = ['required'];
+            }
+            $request->validate($rules);
+            
+            DB::beginTransaction();
+            
+            $chapter = CourseChapter::currentWithoutRevision($request->chapter_id);
+            $chapter->lessons()->create([
+                'title' => $request->title,
+                'slug' => Str::slug($request->title),
+                'storage' => $request->source,
+                'file_path' => $request->filled('file') ? $request->file : $request->url,
+                'file_type' => $request->file_type,
+                'duration' => $request->duration,
+                'is_preview' => $request->filled('is_preview') ? 1 : 0,
+                'downloadable' => $request->filled('downloadable') ? 1 : 0,
+                'description' => $request->description,
+                'instructor_id' => Auth::user()->id,
+                'course_id' => $request->course_id,
+                'chapter_id' => $request->chapter_id,
+                'order' => CourseChapterLession::withoutGlobalScopes()->where('chapter_id', $request->chapter_id)->count() + 1,
+                'is_published' => false
+            ]);
+    
+            DB::commit();
+            notyf()->success('Created Success fully');
+            return redirect()->back();
+        }catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+            return redirect()->back();
         }
-        $request->validate($rules);
-
-        $chapter = CourseChapter::currentWithoutRevision($request->chapter_id);
-        $chapter->lessons()->create([
-            'title' => $request->title,
-            'slug' => Str::slug($request->title),
-            'storage' => $request->source,
-            'file_path' => $request->filled('file') ? $request->file : $request->url,
-            'file_type' => $request->file_type,
-            'duration' => $request->duration,
-            'is_preview' => $request->filled('is_preview') ? 1 : 0,
-            'downloadable' => $request->filled('downloadable') ? 1 : 0,
-            'description' => $request->description,
-            'instructor_id' => Auth::user()->id,
-            'course_id' => $request->course_id,
-            'chapter_id' => $request->chapter_id,
-            'order' => CourseChapterLession::where('chapter_id', $request->chapter_id)->count() + 1,
-            'is_published' => false
-        ]);
-
-        notyf()->success('Created Success fully');
-
-        return redirect()->back();
     }
 
     function editChapterModal(string $id): String
@@ -171,11 +176,11 @@ class CourseContentController extends Controller
     {
         $rules = [
             'title' => ['required', 'string', 'max:255'],
-            // 'source' => ['required', 'string'],
-            // 'file_type' => ['required', 'in:video,audio,file,pdf,doc'],
-            // 'is_preview' => ['nullable', 'boolean'],
-            // 'downloadable' => ['nullable', 'boolean'],
-            // 'description' => ['required']
+            'source' => ['required', 'string'],
+            'file_type' => ['required', 'in:video,audio,file,pdf,doc'],
+            'is_preview' => ['nullable', 'boolean'],
+            'downloadable' => ['nullable', 'boolean'],
+            'description' => ['required']
         ];
         if ($request->filled('file')) {
             $rules['file'] = ['required'];
@@ -183,21 +188,6 @@ class CourseContentController extends Controller
             $rules['url'] = ['required'];
         }
         $request->validate($rules);
-
-        // $lesson = CourseChapterLession::findOrFail($id);
-        // $lesson->title = $request->title;
-        // $lesson->slug = Str::slug($request->title);
-        // $lesson->storage = $request->source;
-        // $lesson->file_path = $request->filled('file') ? $request->file : $request->url;
-        // $lesson->file_type = $request->file_type;
-        // $lesson->duration = $request->duration;
-        // $lesson->is_preview = $request->filled('is_preview') ? 1 : 0;
-        // $lesson->downloadable = $request->filled('downloadable') ? 1 : 0;
-        // $lesson->description = $request->description;
-        // $lesson->instructor_id = Auth::user()->id;
-        // $lesson->course_id = $request->course_id;
-        // $lesson->chapter_id = $request->chapter_id;
-        // $lesson->save();
 
         $lesson = CourseChapterLession::currentWithoutRevision($id);
         $lesson->update([

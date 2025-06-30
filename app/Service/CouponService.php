@@ -59,7 +59,7 @@ class CouponService
 
     public function storeForAdmin($request){
         $request->validate([
-            'code' => 'required|string|max:255',
+            'code' => 'required|string|max:255|unique:coupons,code',
             'description' => 'nullable|string|max:255',
             'type' => 'required|string|in:fixed,percent',
             'value' => [

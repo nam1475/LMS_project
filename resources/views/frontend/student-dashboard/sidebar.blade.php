@@ -34,7 +34,12 @@
                         <img src="{{ asset('frontend/assets/images/dash_icon_2.png') }}" alt="icon" class="img-fluid w-100">
                     </div>
                     Notifications
+                    <span class="badge text-bg-danger ms-3">{{ auth('web')->user()->unreadNotifications->count() > 0 ? auth('web')->user()->unreadNotifications->count() : '' }}</span>
                 </a>
+                {{-- <span class="position-absolute top-30 translate-middle badge rounded-pill bg-danger" style="left: 400px">
+                    99+
+                    <span class="visually-hidden">unread messages</span>
+                </span> --}}
             </li>
 
             <li>

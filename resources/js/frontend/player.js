@@ -41,13 +41,24 @@ function playerHtml(id, source_type, source, file_type) {
             return;
         } else if(file_type == 'file') {
             let player = `    <div class="file_type">
-            <div class="file_type_inner">
-                    <div><img src="${base_url}/default-files/folder.png" alt=""></div>
-                    <h6 class="mt-2">Type: File</h6>
-                    ${source_type == 'external_link' ? `<a href="${source}" target="_blank" class="common_btn mt-3">Download</a>` : `<a href="${base_url}/student/file-download/${id}" class="common_btn mt-3">Download</a>`}
-                    
-            </div>
-        </div>`;
+                <div class="file_type_inner">
+                        <div><img src="${base_url}/default-files/folder.png" alt=""></div>
+                        <h6 class="mt-2">Type: File</h6>
+                        <a href="${base_url}${source}" class="common_btn mt-3">Download</a>
+                        
+                </div>
+            </div>`;
+            return player;
+        }
+        else if(file_type == 'link') {
+            let player = `    <div class="file_type">
+                <div class="file_type_inner">
+                        <div><i class="fas fa-link"></i></div>
+                        <h6 class="mt-2">Type: External link</h6>
+                        <a href="${source}" target="_blank" class="common_btn mt-3">Click to view</a>
+                </div>
+            </div>`;
+
             return player;
         }
 

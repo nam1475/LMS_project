@@ -15,7 +15,7 @@ class EnrolledCourseController extends Controller
 {
     function index() : View
     {
-        $enrollments = Enrollment::with('course')->where('user_id', user()->id)->get();
+        $enrollments = Enrollment::with('course')->where('user_id', user()->id)->orderBy('created_at', 'desc')->get();
         return view('frontend.student-dashboard.enrolled-course.index', compact('enrollments'));     
     }
 

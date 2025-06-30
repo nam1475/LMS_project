@@ -103,7 +103,11 @@
                                                     class="img-fluid w-100">
                                     </div>
                                     <div class="ms-3">
-                                        <h5 class="mb-1">{{ $item->course->title }}</h5>
+                                        <h5 class="mb-1">
+                                            <a class="title" href="{{ route('courses.show', $item->course->slug) }}">
+                                                {{ $item->course->title }}
+                                            </a>
+                                        </h5>
                                         <div>
                                             @if($item->course->discount > 0)
                                                 <span class="discount-price">đ{{ number_format($item->course->discount) }}</span>

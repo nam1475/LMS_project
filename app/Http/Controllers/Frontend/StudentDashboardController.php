@@ -45,7 +45,8 @@ class StudentDashboardController extends Controller
         
         $user->update([
             'approve_status' => 'pending',
-            'document' => $filePath
+            'document' => $filePath,
+            'message_for_rejection' => null
         ]);
 
         $admin = Admin::find(1);

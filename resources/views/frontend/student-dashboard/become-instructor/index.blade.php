@@ -43,7 +43,10 @@
                     
                     <div class="card mt-4">
                         <div class="card-header">
-                            Become a Instructor
+                            Become a Instructor 
+                            <span>
+                                (Minimum of a college degree or teaching certificate required)
+                            </span>
                         </div>
                         <div class="card-body">
                             <form action="{{ route('student.become-instructor.update', auth()->user()->id) }}" method="POST" enctype="multipart/form-data">

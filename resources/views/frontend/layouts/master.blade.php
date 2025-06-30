@@ -444,11 +444,11 @@
         });
 
 
-        // @if ($errors->any())
-        //     @foreach ($errors->all() as $error)
-        //         notyf.error("{{ $error }}");
-        //     @endforeach
-        // @endif
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                notyf.error("{{ $error }}");
+            @endforeach
+        @endif
     </script>
 
     {{-- @include('frontend.alert.alert') --}}

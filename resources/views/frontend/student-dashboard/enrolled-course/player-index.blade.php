@@ -865,17 +865,19 @@
                         <div class="video_about">
                             <h1>About this lecture</h1>
                             <p class="short_description about_lecture"></p>
-
-                            
                         </div>
                     </div>
                     
                     <div class="tab-pane fade" id="pills-contact" role="tabpanel"
                         aria-labelledby="pills-contact-tab" tabindex="0">
                         <div class="video_announcement">
+                        @if(!$course->message_for_reviewer)
                             <h1>No announcements posted yet</h1>
                             <p>The instructor hasn’t added any announcements to this course yet. Announcements are used
                                 to inform you of updates or additions to the course.</p>
+                        @else
+                            <p>{{ $course->message_for_reviewer }}</p>
+                        @endif
                         </div>
                     </div>
 
@@ -959,9 +961,14 @@
                                         data-lesson-id="{{ $lesson->id }}" data-chapter-id="{{ $chapter->id }}">
                                             {{ $lesson->title }}
                                             <span>
-                                                <img src="{{ asset('frontend/assets/images/video_icon_black_2.png') }}"
+                                                @if(!in_array($lesson->file_type, ['doc', 'pdf', 'file']))
+                                                        <img src="{{ asset('frontend/assets/images/video_icon_black_2.png') }}"
+                                                            alt="video" class="img-fluid">
+                                                            {{ convertMinutesToHours($lesson->duration) }}
+                                                @else
+                                                    <img src="{{ asset('frontend/assets/images/file_icon.png') }}"
                                                     alt="video" class="img-fluid">
-                                                {{ convertMinutesToHours($lesson->duration) }}
+                                                @endif
                                             </span>
                                         </label>
                                     </div>

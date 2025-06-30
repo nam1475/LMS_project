@@ -41,9 +41,9 @@ class Coupon extends Model
             // else{
             //     $coupon->update(['status' => true]);
             // }
-            if($coupon->is_approved == 'pending' || $coupon->is_approved == 'rejected') {
-                $coupon->update(['status' => false]);
-            }
+            // if($coupon->is_approved == 'pending' || $coupon->is_approved == 'rejected') {
+            //     $coupon->update(['status' => false]);
+            // }
         }); 
     }
 

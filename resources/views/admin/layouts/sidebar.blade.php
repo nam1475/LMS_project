@@ -302,6 +302,11 @@
                         <span class="nav-link-title">
                             Notifications
                         </span>
+                        {{-- <span class="position-absolute top-10 translate-middle badge rounded-pill bg-danger" style="left: 50px">
+                            99+
+                            <span class="visually-hidden">unread messages</span>
+                        </span> --}}
+                        <span class="badge text-bg-danger me-2">{{ auth('admin')->user()->unreadNotifications->count() > 0 ? auth('admin')->user()->unreadNotifications->count() : '' }}</span>
                     </a>
                 </li>
 

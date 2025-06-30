@@ -70,7 +70,9 @@
                                             <tr>
                                                 <td class="text-center">1</td>
                                                 <td>
-                                                    <p class="strong mb-1">{{ $item->course->title }}</p>
+                                                    <a class="title" href="{{ route('courses.show', $item->course->slug) }}">
+                                                        {{ $item->course->title }}
+                                                    </a>
                                                     <div class="text-secondary">By {{ $item->course->instructor->name }}</div>
                                                 </td>
                                                 <td class="text-center">
