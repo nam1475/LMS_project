@@ -26,7 +26,7 @@ class CourseBasicInfoCreateRequest extends FormRequest
             'title' => ['required', 'max:255', 'string'],
             'seo_description' => ['nullable', 'max:255', 'string'],
             'thumbnail' => ['required', 'image', 'max:3000'],
-            'demo_video_storage' => ['nullable', 'in:youtube,vimeo,external_link,upload', 'string'],
+            'demo_video_storage' => ['nullable', 'in:youtube,vimeo,external_link,upload', 'string', 'size:255', 'mimes:mp4, mov'],
             'price' => ['required', 'numeric'],
             'discount' => ['nullable', 'numeric'],
             'description' => ['required'],

@@ -55,17 +55,18 @@ Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->
    Route::get('/courses/{id}/reviews', [CoursePageController::class, 'getReviews'])->name('courses.reviews');
 
 
-   Route::middleware(['auth:web', 'check_role:student'])->group(function () {
+   Route::middleware(['auth:web', 'check_role:student', 'verified'])->group(function () {
       Route::get('cart', [CartController::class, 'index'])->name('cart.index');
       Route::post('add-to-cart/{course}', [CartController::class, 'addToCart'])->name('add-to-cart');
       Route::get('remove-from-cart/{id}', [CartController::class, 'removeFromCart'])->name('remove-from-cart');
       Route::post('cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-coupon');
       Route::get('cart/remove-coupon', [CartController::class, 'removeCoupon'])->name('coupon.remove');
+      
+      /** Payment Routes */
+      Route::get('checkout', CheckoutController::class)->name('checkout.index');
    });
    /** Cart routes */
 
-   /** Payment Routes */
-   Route::get('checkout', CheckoutController::class)->name('checkout.index');
 
    //Route::get('paypal/payment', [PaymentController::class, 'payWithPaypal'])->name('paypal.payment');
    //Route::get('paypal/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
