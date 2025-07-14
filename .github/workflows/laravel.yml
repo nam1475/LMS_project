@@ -25,6 +25,7 @@ jobs:
     - name: Modify .env file
       run: |
         sed -i "s|APP_KEY=.*|APP_KEY=base64:Tpu47xSQ0OJ1mDC+NkI+cB5rc9ot2FqXogYYtx2eSJc=|" .env
+        sed -i "s|APP_ENV=.*|APP_ENV=production|" .env
         sed -i "s|APP_URL=.*|APP_URL=http://educore.kesug.com|" .env
         sed -i "s|DB_HOST=.*|DB_HOST=${{ secrets.DB_HOST }}|" .env
         sed -i "s|DB_PORT=.*|DB_PORT=3306|" .env
