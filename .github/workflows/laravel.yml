@@ -13,8 +13,11 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v4
     
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+    # - name: Copy .env
+    #   run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+    - name: Create .env file
+      run: echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
     
     # sed: Đây là một công cụ dòng lệnh dùng để tìm kiếm và thay thế văn bản trong các file.
     # -i: Chỉnh sửa file trực tiếp mà ko cần tạo một file tạm thời
@@ -32,11 +35,8 @@ jobs:
     # - name: Config Cache
     #   run: php artisan config:cache
 
-    - name: Update Composer dependencies
-      run: composer update --prefer-dist --no-progress --no-suggest
-    
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --optimize-autoloader
+    - name: Install dependencies
+      run: composer update --no-interaction --no-progress
       
     # - name: Generate key
     #   run: php artisan key:generate
