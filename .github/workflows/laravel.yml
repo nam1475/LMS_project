@@ -30,19 +30,22 @@ jobs:
         sed -i "s|DB_USERNAME=.*|DB_USERNAME=${{ secrets.DB_USERNAME }}|" .env
         sed -i "s|DB_PASSWORD=.*|DB_PASSWORD=${{ secrets.DB_PASSWORD }}|" .env
 
+    - name: Require laravel/views
+      run: composer require laravel/views
+    
     - name: Update Composer dependencies
       run: composer update --no-interaction --no-progress --prefer-dist --optimize-autoloader
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '21.6.0'
+    # - name: Setup Node.js
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: '21.6.0'
 
-    - name: Install Node.js dependencies
-      run: npm install
+    # - name: Install Node.js dependencies
+    #   run: npm install
       
-    - name: Build frontend assets
-      run: npm run build
+    # - name: Build frontend assets
+    #   run: npm run build
 
     - name: Cache config/routes/views
       run: |
