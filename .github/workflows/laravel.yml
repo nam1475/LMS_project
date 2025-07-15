@@ -30,8 +30,8 @@ jobs:
         sed -i "s|DB_USERNAME=.*|DB_USERNAME=${{ secrets.DB_USERNAME }}|" .env
         sed -i "s|DB_PASSWORD=.*|DB_PASSWORD=${{ secrets.DB_PASSWORD }}|" .env
 
-    - name: Require laravel/views
-      run: composer require laravel/views
+    # - name: Require laravel/views
+    #   run: composer require laravel/views
     
     - name: Update Composer dependencies
       run: composer update --no-interaction --no-progress --prefer-dist --optimize-autoloader
