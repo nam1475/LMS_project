@@ -33,10 +33,9 @@ jobs:
     # - name: Require laravel/views
     #   run: composer require laravel/views
     
-    - name: Install Composer dependencies
-      run: composer install --no-interaction --prefer-dist --optimize-autoloader
+    # - name: Install Composer dependencies
+    #   run: composer install --no-interaction --optimize-autoloader
 
-    
     # - name: Setup Node.js
     #   uses: actions/setup-node@v3
     #   with:
