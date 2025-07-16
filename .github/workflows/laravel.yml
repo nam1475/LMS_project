@@ -33,8 +33,8 @@ jobs:
     # - name: Require laravel/views
     #   run: composer require laravel/views
     
-    # - name: Update Composer dependencies
-    #   run: composer update --no-interaction --no-progress --prefer-dist --optimize-autoloader
+    - name: Update Composer dependencies
+      run: composer update --no-interaction --no-progress --prefer-dist --optimize-autoloader
     
     # - name: Setup Node.js
     #   uses: actions/setup-node@v3
