@@ -24,5 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Disable detailed exception pages in production
+        if (!config('app.debug')) {
+            $exceptions->dontReport([]);
+        }
     })->create();
