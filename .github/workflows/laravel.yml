@@ -47,10 +47,10 @@ jobs:
     # - name: Build frontend assets
     #   run: npm run build
 
-    - name: Cache config/routes/views
-      run: |
-        php artisan config:cache
-        php artisan view:cache
+    # - name: Cache config/routes/views
+    #   run: |
+    #     php artisan config:cache
+    #     php artisan view:cache
 
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
