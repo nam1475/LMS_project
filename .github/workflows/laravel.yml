@@ -36,13 +36,13 @@ jobs:
     - name: Install Composer dependencies
       run: composer install --no-interaction --no-progress --optimize-autoloader
 
-    # - name: Setup Node.js
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: '21.6.0'
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '21.6.0'
 
-    # - name: Install Node.js dependencies
-    #   run: npm install
+    - name: Install Node.js dependencies
+      run: npm install
       
     - name: Build frontend assets
       run: npm run build
